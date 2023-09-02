@@ -3,12 +3,16 @@
   "displayName": "Fresh Snippets",
   "description": "",
   "version": "0.0.1",
+  "publisher": "hashrock",
   "engines": {
     "vscode": "^1.81.0"
   },
   "categories": [
-    "Other"
+    "Other", "Snippets"
   ],
+  "keywords": [
+    "deno", "fresh"
+  ],  
   "activationEvents": [
     "workspaceContains:fresh.gen.ts"
   ],

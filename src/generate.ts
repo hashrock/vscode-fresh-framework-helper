@@ -130,6 +130,13 @@ function addTsxExtensionIfMissing(fileName: string) {
 }
 
 export async function generateRoute(uri: vscode.Uri) {
+  if (!uri) {
+    vscode.window.showErrorMessage(
+      "Please left click on a folder in the explorer and try again from context menu",
+    );
+    return;
+  }
+
   const fileName = await vscode.window.showInputBox({
     prompt: "Enter file name",
     placeHolder: "index.tsx",
@@ -184,6 +191,13 @@ async function generateFile(
   body: string,
   defaultFileName = "index.tsx",
 ) {
+  if (!uri) {
+    vscode.window.showErrorMessage(
+      "Please left click on a folder in the explorer and try again from context menu",
+    );
+    return;
+  }
+
   const fileName = await vscode.window.showInputBox({
     prompt: "Enter file name",
     placeHolder: defaultFileName,
