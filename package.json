@@ -1,6 +1,6 @@
 {
   "name": "fresh-snippets",
-  "displayName": "fresh-snippets",
+  "displayName": "Fresh Snippets",
   "description": "",
   "version": "0.0.1",
   "engines": {
@@ -12,6 +12,24 @@
   "activationEvents": [
     "workspaceContains:fresh.gen.ts"
   ],
+  "contributes": {
+    "commands": [
+      {
+        "command": "fresh-snippets.generateRoute",
+        "title": "New Route Component"
+      }
+    ],
+    "menus": {
+      "explorer/context": [
+        {
+          "when": "explorerResourceIsFolder",
+          "command": "fresh-snippets.generateRoute",
+          "group": "Fresh"
+        }
+      ]
+    }
+
+  },
   "main": "./out/extension.js",
   "scripts": {
     "vscode:prepublish": "npm run compile",
