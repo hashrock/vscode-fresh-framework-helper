@@ -42,10 +42,10 @@ function camelizeWhatever(str: string) {
 const routes = [
   {
     label: "Simple JSX Page",
-    body: `export default function AboutPage() {
+    body: `export default function __FILENAME__() {
   return (
     <main>
-      <h1>About</h1>
+      <h1>__FILENAME__</h1>
       <p>This is the about page.</p>
     </main>
   );
