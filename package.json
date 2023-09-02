@@ -1,7 +1,7 @@
 {
   "name": "fresh-snippets",
   "displayName": "Fresh Snippets",
-  "description": "",
+  "description": "Deno Fresh Framework Snippets & Code generator",
   "version": "0.0.1",
   "publisher": "hashrock",
   "engines": {
