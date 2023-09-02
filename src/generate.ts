@@ -108,6 +108,9 @@ export async function generateRoute(uri: vscode.Uri) {
     placeHolder: "index.tsx",
     value: "index.tsx",
   });
+  if (!fileName) {
+    return;
+  }
 
   const newFile = uri.fsPath + "/" + fileName;
   const optAsync = await vscode.window.showQuickPick([
@@ -115,11 +118,14 @@ export async function generateRoute(uri: vscode.Uri) {
     "Yes",
   ], {
     placeHolder: "Do you need async route? (example: data fetching)",
-  }) === "Yes";
+  }) ;
+  if (!optAsync) {
+    return;
+  }
 
   let body = "";
 
-  if (optAsync) {
+  if (optAsync === "Yes") {
     body = (await vscode.window.showQuickPick(asyncRoutes, {
       placeHolder: "Select a snippet",
     }))?.body ?? "";
@@ -147,6 +153,10 @@ async function generateFile(uri: vscode.Uri, body: string, defaultFileName = "in
     placeHolder: defaultFileName,
     value: defaultFileName,
   });
+
+  if (!fileName) {
+    return;
+  }
 
   const newFile = uri.fsPath + "/" + fileName;
 
