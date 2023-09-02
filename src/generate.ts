@@ -213,9 +213,11 @@ export default function Layout({ Component, state }: LayoutProps) {
 }
 
 export async function generateComponent(uri: vscode.Uri) {
-  const body = `export function __FILENAME__() {
+  const body = `import { JSX } from "preact";
+
+export function __FILENAME__(props: JSX.HTMLAttributes<HTMLDivElement>) {
   return (
-    <div>
+    <div {...props}>
       <h1>__FILENAME__</h1>
     </div>
   );
