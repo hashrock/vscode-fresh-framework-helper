@@ -1,5 +1,15 @@
 import * as vscode from "vscode";
 
+const defineRoute = [
+  "import { defineRoute } from '$fresh/server.ts';",
+  "",
+  "export default defineRoute(async (req, ctx) => {",
+  "	return (",
+  "		<div></div>",
+  "	);",
+  "});",
+].join("\n");
+
 export const generateFile = async (uri: vscode.Uri) => {
   const fileName = await vscode.window.showInputBox({
     prompt: "Enter file name",
@@ -23,15 +33,7 @@ export const generateFile = async (uri: vscode.Uri) => {
 
   vscode.workspace.fs.writeFile(
     vscode.Uri.file(newFile),
-    new Uint8Array(Buffer.from([
-      "import { defineRoute } from '$fresh/server.ts';",
-      "",
-      "export default defineRoute(async (req, ctx) => {",
-      "	return (",
-      "		<div></div>",
-      "	);",
-      "});",
-    ].join("\n"))),
+    new Uint8Array(Buffer.from(defineRoute)),
   );
 
   vscode.window.showInformationMessage("File Created");
