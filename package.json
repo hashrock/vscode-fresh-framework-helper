@@ -1,7 +1,9 @@
 {
-  "name": "fresh-snippets",
-  "displayName": "Fresh Snippets",
+  "name": "fresh-mini-codegen",
+  "displayName": "Fresh mini codegen",
   "description": "Deno Fresh Framework Snippets & Code generator",
+  "repository": "https://github.com/hashrock/fresh-mini-codegen",
+  "license": "MIT",
   "version": "0.0.1",
   "publisher": "hashrock",
   "engines": {

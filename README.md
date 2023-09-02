@@ -1,4 +1,4 @@
-# Fresh Snippets 
+# Fresh mini codegen
 
 Deno Fresh Framework Snippets & Code generator for Visual Studio Code
 
