@@ -39,7 +39,6 @@ function camelizeWhatever(str: string) {
   return capitalizeFirstLetter(snakeToCamelCase(kebabToCamelCase(str)));
 }
 
-
 const routes = [
   {
     label: "Simple JSX Page",
@@ -80,8 +79,7 @@ export const handler: Handlers = {
 const asyncRoutes = [
   {
     label: "Async component route",
-    body:
-      `import { RouteContext } from "$fresh/server.ts";
+    body: `import { RouteContext } from "$fresh/server.ts";
   
   export default async function __FILENAME__(req: Request, ctx: RouteContext) {
   // const value = await loadFooValue();
@@ -124,6 +122,13 @@ export default defineRoute(async (req, ctx) => {
   },
 ];
 
+function addTsxExtensionIfMissing(fileName: string) {
+  if (fileName.endsWith(".tsx")) {
+    return fileName;
+  }
+  return fileName + ".tsx";
+}
+
 export async function generateRoute(uri: vscode.Uri) {
   const fileName = await vscode.window.showInputBox({
     prompt: "Enter file name",
@@ -134,13 +139,13 @@ export async function generateRoute(uri: vscode.Uri) {
     return;
   }
 
-  const newFile = uri.fsPath + "/" + fileName;
+  const newFile = uri.fsPath + "/" + addTsxExtensionIfMissing(fileName);
   const optAsync = await vscode.window.showQuickPick([
     "No",
     "Yes",
   ], {
     placeHolder: "Do you need async route? (example: data fetching)",
-  }) ;
+  });
   if (!optAsync) {
     return;
   }
@@ -160,7 +165,10 @@ export async function generateRoute(uri: vscode.Uri) {
     return;
   }
 
-  body = body.replace(/__FILENAME__/g, camelizeWhatever(fileName.replace(".tsx", "")));
+  body = body.replace(
+    /__FILENAME__/g,
+    camelizeWhatever(fileName.replace(".tsx", "")),
+  );
 
   try {
     await writeFile(newFile, body);
@@ -171,7 +179,11 @@ export async function generateRoute(uri: vscode.Uri) {
   }
 }
 
-async function generateFile(uri: vscode.Uri, body: string, defaultFileName = "index.tsx") {
+async function generateFile(
+  uri: vscode.Uri,
+  body: string,
+  defaultFileName = "index.tsx",
+) {
   const fileName = await vscode.window.showInputBox({
     prompt: "Enter file name",
     placeHolder: defaultFileName,
@@ -182,11 +194,10 @@ async function generateFile(uri: vscode.Uri, body: string, defaultFileName = "in
     return;
   }
 
-  const newFile = uri.fsPath + "/" + fileName;
+  const newFile = uri.fsPath + "/" + addTsxExtensionIfMissing(fileName);
 
   const nameForClass = camelizeWhatever(fileName.split(".")[0]);
   body = body.replace(/__FILENAME__/g, nameForClass);
-
 
   try {
     await writeFile(newFile, body);
@@ -198,8 +209,7 @@ async function generateFile(uri: vscode.Uri, body: string, defaultFileName = "in
 }
 
 export async function generateLayout(uri: vscode.Uri) {
-  const body =
-    `import { LayoutProps } from "$fresh/server.ts";
+  const body = `import { LayoutProps } from "$fresh/server.ts";
 
 export default function Layout({ Component, state }: LayoutProps) {
   return (
