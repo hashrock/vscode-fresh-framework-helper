@@ -35,31 +35,55 @@ export function activate(context: vscode.ExtensionContext) {
           "};",
         ].join("\n"));
 
-        // a completion item that inserts its text as snippet,
-        // the `insertText`-property is a `SnippetString` which will be
-        // honored by the editor.
-        const snippetCompletion = new vscode.CompletionItem(
-          "Good part of the day",
+        const layout = new vscode.CompletionItem(
+          "Fresh - Layouts",
         );
-        snippetCompletion.insertText = new vscode.SnippetString(
-          "Good ${1|morning,afternoon,evening|}. It is ${1}, right?",
-        );
-        const docs: any = new vscode.MarkdownString(
-          "Inserts a snippet that lets you select [link](x.ts).",
-        );
-        snippetCompletion.documentation = docs;
-        docs.baseUri = vscode.Uri.parse("http://example.com/a/b/c/");
 
-        // return all completion items as array
+        layout.insertText = new vscode.SnippetString([
+          "export default function Layout({ Component, state }: LayoutProps) {",
+          "	// do something with state here",
+          "	return (",
+          '		<div class="layout">',
+          "			<Component />",
+          "		</div>",
+          "	);",
+          "}",
+        ].join("\n"));
+
+        const defineRoute = new vscode.CompletionItem(
+          "Fresh - Define Route",
+        );
+        defineRoute.insertText = new vscode.SnippetString([
+          "export default defineRoute(async (req, ctx) => {",
+          "	return (",
+          "		<div></div>",
+          "	);",
+          "});",
+        ].join("\n"));
+
+        const defineLayout = new vscode.CompletionItem(
+          "Fresh - Define Layout",
+        );
+        defineLayout.insertText = new vscode.SnippetString([
+          "export default defineLayout(async (req, ctx) => {",
+          "	return (",
+          "		<div>",
+          "			<ctx.Component />",
+          "		</div>",
+          "	);",
+          "});",
+        ].join("\n"));
+
         return [
           simpleRoute,
-					customHandlers,
-          snippetCompletion,
+          customHandlers,
+          layout,
+          defineRoute,
+					defineLayout,
         ];
       },
     },
   );
-
 
   context.subscriptions.push(provider1);
 }
