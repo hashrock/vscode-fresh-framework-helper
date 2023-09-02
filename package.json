@@ -39,7 +39,17 @@
           "group": "Fresh"
         },
         {
+          "when": "explorerResourceIsFolder && resourceDirname =~ /routes/",
+          "command": "fresh-snippets.generateRoute",
+          "group": "Fresh"
+        },
+        {
           "when": "explorerResourceIsFolder && resourceFilename =~ /islands/",
+          "command": "fresh-snippets.generateIsland",
+          "group": "Fresh"
+        },
+        {
+          "when": "explorerResourceIsFolder && resourceDirname =~ /islands/",
           "command": "fresh-snippets.generateIsland",
           "group": "Fresh"
         },
@@ -49,13 +59,22 @@
           "group": "Fresh"
         },
         {
+          "when": "explorerResourceIsFolder && resourceDirname =~ /components/",
+          "command": "fresh-snippets.generateComponent",
+          "group": "Fresh"
+        },
+        {
           "when": "explorerResourceIsFolder && resourceFilename =~ /routes/",
+          "command": "fresh-snippets.generateLayout",
+          "group": "Fresh"
+        },
+        {
+          "when": "explorerResourceIsFolder && resourceDirname =~ /routes/",
           "command": "fresh-snippets.generateLayout",
           "group": "Fresh"
         }
       ]
     }
-
   },
   "main": "./out/extension.js",
   "scripts": {
