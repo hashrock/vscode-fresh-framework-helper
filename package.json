@@ -17,13 +17,40 @@
       {
         "command": "fresh-snippets.generateRoute",
         "title": "New Route Component"
+      },
+      {
+        "command": "fresh-snippets.generateLayout",
+        "title": "New Layout"
+      },
+      {
+        "command": "fresh-snippets.generateComponent",
+        "title": "New Component"
+      },
+      {
+        "command": "fresh-snippets.generateIsland",
+        "title": "New Island Component"
       }
     ],
     "menus": {
       "explorer/context": [
         {
-          "when": "explorerResourceIsFolder",
+          "when": "explorerResourceIsFolder && resourceFilename =~ /routes/",
           "command": "fresh-snippets.generateRoute",
+          "group": "Fresh"
+        },
+        {
+          "when": "explorerResourceIsFolder && resourceFilename =~ /islands/",
+          "command": "fresh-snippets.generateIsland",
+          "group": "Fresh"
+        },
+        {
+          "when": "explorerResourceIsFolder && resourceFilename =~ /components/",
+          "command": "fresh-snippets.generateComponent",
+          "group": "Fresh"
+        },
+        {
+          "when": "explorerResourceIsFolder && resourceFilename =~ /routes/",
+          "command": "fresh-snippets.generateLayout",
           "group": "Fresh"
         }
       ]

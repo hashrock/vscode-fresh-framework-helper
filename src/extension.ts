@@ -1,14 +1,29 @@
 import * as vscode from "vscode";
 import * as snippets from "./snippets";
-import { generateFile } from "./generate";
+import { generateComponent, generateIsland, generateLayout, generateRoute } from "./generate";
 
 export function activate(context: vscode.ExtensionContext) {
-  const disposable = vscode.commands.registerCommand(
-    "fresh-snippets.generateRoute",
-    generateFile,
-  );
 
-  context.subscriptions.push(disposable);
+  context.subscriptions.push(vscode.commands.registerCommand(
+    "fresh-snippets.generateRoute",
+    generateRoute,
+  ));
+
+	context.subscriptions.push(vscode.commands.registerCommand(
+		"fresh-snippets.generateLayout",
+		generateLayout,
+	));
+
+	context.subscriptions.push(vscode.commands.registerCommand(
+		"fresh-snippets.generateComponent",
+		generateComponent,
+	));
+
+	context.subscriptions.push(vscode.commands.registerCommand(
+		"fresh-snippets.generateIsland",
+		generateIsland,
+	));
+
 
   const provider = vscode.languages.registerCompletionItemProvider(
     "typescriptreact",
