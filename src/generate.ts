@@ -39,10 +39,18 @@ function camelizeWhatever(str: string) {
   return capitalizeFirstLetter(snakeToCamelCase(kebabToCamelCase(str)));
 }
 
-const routes = [
+interface Route {
+  label: string;
+  body: string;
+}
+
+const routes: Route[] = [
   {
     label: "Simple JSX Page",
-    body: `export default function __FILENAME__() {
+    body:
+      `// Document https://fresh.deno.dev/docs/getting-started/create-a-route
+
+export default function __FILENAME__() {
   return (
     <main>
       <h1>__FILENAME__</h1>
@@ -53,7 +61,10 @@ const routes = [
   },
   {
     label: "Dynamic route",
-    body: `import { PageProps } from "$fresh/server.ts";
+    body:
+      `// Document https://fresh.deno.dev/docs/getting-started/dynamic-routes
+
+import { PageProps } from "$fresh/server.ts";
 
 export default function __FILENAME__(props: PageProps) {
   const { name } = props.params;
@@ -66,7 +77,9 @@ export default function __FILENAME__(props: PageProps) {
   },
   {
     label: "Handler route",
-    body: `import { HandlerContext, Handlers } from "$fresh/server.ts";
+    body: `// Document https://fresh.deno.dev/docs/concepts/routes#handler-route
+
+import { HandlerContext, Handlers } from "$fresh/server.ts";
 
 export const handler: Handlers = {
   GET(_req: Request, _ctx: HandlerContext) {
@@ -76,10 +89,12 @@ export const handler: Handlers = {
   },
 ];
 
-const asyncRoutes = [
+const asyncRoutes: Route[] = [
   {
     label: "Async component route",
-    body: `import { RouteContext } from "$fresh/server.ts";
+    body: `// Document https://fresh.deno.dev/docs/concepts/routes#handler-route
+
+import { RouteContext } from "$fresh/server.ts";
   
   export default async function __FILENAME__(req: Request, ctx: RouteContext) {
   // const value = await loadFooValue();
@@ -88,7 +103,10 @@ const asyncRoutes = [
   },
   {
     label: "Mixed handler and component route",
-    body: `import { Handlers, PageProps } from "$fresh/server.ts";
+    body:
+      `// Document https://fresh.deno.dev/docs/concepts/routes#mixed-handler-and-component-route
+
+import { Handlers, PageProps } from "$fresh/server.ts";
 
 interface Data {
   foo: number;
@@ -107,7 +125,9 @@ export default function __FILENAME__(props: PageProps<Data>) {
   },
   {
     label: "Async component route with defineHelper",
-    body: `import { defineRoute } from "$fresh/server.ts";
+    body: `// Document https://fresh.deno.dev/docs/concepts/routes#define-helper
+
+import { defineRoute } from "$fresh/server.ts";
 
 export default defineRoute(async (req, ctx) => {
   // const data = await loadData();
@@ -223,7 +243,9 @@ async function generateFile(
 }
 
 export async function generateLayout(uri: vscode.Uri) {
-  const body = `import { LayoutProps } from "$fresh/server.ts";
+  const body = `// Document https://fresh.deno.dev/docs/concepts/layouts
+
+import { LayoutProps } from "$fresh/server.ts";
 
 export default function Layout({ Component, state }: LayoutProps) {
   return (
@@ -251,7 +273,9 @@ export function __FILENAME__(props: JSX.HTMLAttributes<HTMLDivElement>) {
 }
 
 export async function generateIsland(uri: vscode.Uri) {
-  const body = `import type { Signal } from "@preact/signals";
+  const body = `// Document https://fresh.deno.dev/docs/concepts/islands
+
+import type { Signal } from "@preact/signals";
 
 interface __FILENAME__Props {
   count: Signal<number>;

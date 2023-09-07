@@ -11,11 +11,13 @@
     "vscode": "^1.81.0"
   },
   "categories": [
-    "Other", "Snippets"
+    "Other",
+    "Snippets"
   ],
   "keywords": [
-    "deno", "fresh"
-  ],  
+    "deno",
+    "fresh"
+  ],
   "activationEvents": [
     "workspaceContains:fresh.gen.ts"
   ],
