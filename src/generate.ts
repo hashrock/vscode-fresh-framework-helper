@@ -91,15 +91,21 @@ export const handler: Handlers = {
 
 const asyncRoutes: Route[] = [
   {
-    label: "Async component route",
-    body: `// Document https://fresh.deno.dev/docs/concepts/routes#handler-route
+    label: "Async component route with defineHelper (Recommended)",
+    body: `// Document https://fresh.deno.dev/docs/concepts/routes#define-helper
 
-import { RouteContext } from "$fresh/server.ts";
-  
-  export default async function __FILENAME__(req: Request, ctx: RouteContext) {
-  // const value = await loadFooValue();
-  return <p>foo is: {1}</p>;
-}`,
+import { defineRoute } from "$fresh/server.ts";
+
+export default defineRoute(async (req, ctx) => {
+  // const data = await loadData();
+  const data = { name: "World" };
+
+  return (
+    <div class="page">
+      <h1>Hello {data.name}</h1>
+    </div>
+  );
+});`,
   },
   {
     label: "Mixed handler and component route",
@@ -124,21 +130,15 @@ export default function __FILENAME__(props: PageProps<Data>) {
 }`,
   },
   {
-    label: "Async component route with defineHelper",
-    body: `// Document https://fresh.deno.dev/docs/concepts/routes#define-helper
+    label: "Async component route",
+    body: `// Document https://fresh.deno.dev/docs/concepts/routes#handler-route
 
-import { defineRoute } from "$fresh/server.ts";
-
-export default defineRoute(async (req, ctx) => {
-  // const data = await loadData();
-  const data = { name: "World" };
-
-  return (
-    <div class="page">
-      <h1>Hello {data.name}</h1>
-    </div>
-  );
-});`,
+import { RouteContext } from "$fresh/server.ts";
+  
+  export default async function __FILENAME__(req: Request, ctx: RouteContext) {
+  // const value = await loadFooValue();
+  return <p>foo is: {1}</p>;
+}`,
   },
 ];
 
