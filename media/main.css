@@ -20,8 +20,22 @@ body {
 .route-entry {
   width: 100%;
   display: flex;
+  flex-direction: column;
   margin-bottom: 0.4em;
-  border: 1px solid var(--vscode-input-border);
+  align-content: center;
+}
+
+.route-name {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  flex: 1;
+  white-space: nowrap;
+  overflow-x: hidden;
+  text-overflow: ellipsis;
+}
+.route-label {
+  flex: 1;
 }
 
 .color-list {
@@ -62,8 +76,24 @@ body {
 }
 
 .icon {
-  width: 1em;
-  height: 1em;
-  margin: 0 0.2em;
   flex: none;
+  display: block;
+  width: 1.6em;
+  height: 1.6em;
+}
+
+.route-action {
+  display: flex;
+  justify-content: flex-end;
+  gap: 2px;
+}
+
+@media screen and (min-width: 280px) {
+  .route-entry {
+    flex-direction: row;
+    align-items: center;
+  }
+  .route-action {
+    justify-content: center;
+  }
 }

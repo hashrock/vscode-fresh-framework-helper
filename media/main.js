@@ -43,27 +43,34 @@
       // _404
       // _500
 
-      li.appendChild(createRouteIcon());
-      li.appendChild(createPreviewLink());
+      const routeName = document.createElement("div");
+      routeName.className = "route-name";
+      li.appendChild(routeName);
 
-      const input = document.createElement("input");
-      input.className = "route-input";
-      input.type = "text";
-      input.value = route.route;
-      input.addEventListener("change", (e) => {
-        // @ts-ignore
-        const value = e.target.value;
-        if (!value) {
-          // Treat empty value as delete
-          routes.splice(routes.indexOf(route), 1);
-        } else {
-          route.route = value;
-        }
-        updateRoutes(routes);
-      });
-      li.appendChild(input);
+      routeName.appendChild(createRouteIcon());
 
-      // @ts-ignore
+      const routeNameLabel = document.createElement("div");
+      routeNameLabel.className = "route-label";
+      routeNameLabel.textContent = route.route.replace(/^routes\//, "");
+      routeName.appendChild(routeNameLabel);
+
+      const routeAction = document.createElement("div");
+      routeAction.className = "route-action";
+      li.appendChild(routeAction);
+
+      const routeType = document.createElement("div");
+      routeType.className = "route-type";
+      routeType.textContent = "Route"; // TODO
+      routeAction.appendChild(routeType);
+
+      routeAction.appendChild(createPreviewLink());
+
+      const routeEdit = document.createElement("div");
+      routeEdit.className = "route-edit";
+      routeEdit.textContent = "Edit";
+
+      routeAction.appendChild(routeEdit);
+
       ul.appendChild(li);
     }
 
@@ -76,72 +83,6 @@
     }
   }
 
-  /**
-   * @param {Array<{ value: string }>} colors
-   */
-  function updateColorList(colors) {
-    const ul = document.querySelector(".color-list");
-    if (!ul) {
-      return;
-    }
-    ul.textContent = "";
-    for (const color of colors) {
-      const li = document.createElement("li");
-      li.className = "color-entry";
-
-      const colorPreview = document.createElement("div");
-      colorPreview.className = "color-preview";
-      colorPreview.style.backgroundColor = `#${color.value}`;
-      colorPreview.addEventListener("click", () => {
-        onColorClicked(color.value);
-      });
-      li.appendChild(colorPreview);
-
-      const input = document.createElement("input");
-      input.className = "color-input";
-      input.type = "text";
-      input.value = color.value;
-      input.addEventListener("change", (e) => {
-        // @ts-ignore
-        const value = e.target.value;
-        if (!value) {
-          // Treat empty value as delete
-          colors.splice(colors.indexOf(color), 1);
-        } else {
-          color.value = value;
-        }
-        updateColorList(colors);
-      });
-      li.appendChild(input);
-
-      // @ts-ignore
-      ul.appendChild(li);
-    }
-
-    // Update the saved state
-    vscode.setState({ colors: colors });
-  }
-
-  /**
-   * @param {string} color
-   */
-  function onColorClicked(color) {
-    vscode.postMessage({ type: "colorSelected", value: color });
-  }
-
-  /**
-   * @returns string
-   */
-  function getNewCalicoColor() {
-    const colors = ["020202", "f1eeee", "a85b20", "daab70", "efcb99"];
-    return colors[Math.floor(Math.random() * colors.length)];
-  }
-
-  function addColor() {
-    colors.push({ value: getNewCalicoColor() });
-    updateColorList(colors);
-  }
-
   function createRouteIcon() {
     const icon = document.createElementNS(
       "http://www.w3.org/2000/svg",
@@ -150,6 +91,7 @@
     icon.setAttribute("width", "24");
     icon.setAttribute("height", "25");
     icon.setAttribute("viewBox", "0 0 24 25");
+    icon.classList.add("icon");
 
     const useTag = document.createElementNS(
       "http://www.w3.org/2000/svg",
