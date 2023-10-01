@@ -37,6 +37,20 @@ export class FreshRouteViewProvider implements vscode.WebviewViewProvider {
             type: "setRoutes",
             value: routes,
           });
+          break;
+        }
+        case "open": {
+          // open in editor
+          const projectPath = vscode.workspace.workspaceFolders?.[0].uri;
+          if (!projectPath) {
+            return;
+          }
+          const uri = vscode.Uri.joinPath(projectPath, data.value);
+
+          const doc = await vscode.workspace.openTextDocument(uri);
+          await vscode.window.showTextDocument(doc);
+
+          break;
         }
       }
     });

@@ -12,6 +12,8 @@
   /** @type {Array<{ value: string }>} */
   let colors = oldState.colors;
 
+  let selectedRoute = null;
+
   // Handle messages sent from the extension to the webview
   window.addEventListener("message", (event) => {
     const message = event.data; // The json data that the extension sent
@@ -38,6 +40,18 @@
 
       const li = document.createElement("li");
       li.className = "route-entry";
+
+      li.addEventListener("click", () => {
+        if (selectedRoute) {
+          selectedRoute.classList.remove("selected");
+        }
+        selectedRoute = li;
+        selectedRoute.classList.add("selected");
+        vscode.postMessage({
+          type: "open",
+          value: route.file,
+        });
+      });
 
       // Special routes:
       // _app
@@ -112,12 +126,6 @@
           createPreviewLink("Preview", `http://localhost:8000/${cleanedRoute}`),
         );
       }
-
-      const routeEdit = document.createElement("div");
-      routeEdit.className = "route-edit";
-      routeEdit.textContent = "Edit";
-
-      routeAction.appendChild(routeEdit);
 
       ul.appendChild(li);
     }
