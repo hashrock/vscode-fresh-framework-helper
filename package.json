@@ -4,7 +4,7 @@
   "description": "Deno Fresh Framework Snippets & Code generator",
   "repository": "https://github.com/hashrock/fresh-mini-codegen",
   "license": "MIT",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "publisher": "hashrock",
   "icon": "logo.png",
   "engines": {
