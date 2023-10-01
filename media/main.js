@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/naming-convention */
 //@ts-check
 
 // This script will be run within the webview itself
@@ -33,6 +34,8 @@
     }
     ul.textContent = "";
     for (const route of routes) {
+      const cleanedRoute = route.route.replace(/^routes\//, "");
+
       const li = document.createElement("li");
       li.className = "route-entry";
 
@@ -43,6 +46,47 @@
       // _404
       // _500
 
+      const routeTypeMatcher = [
+        {
+          fileName: "_app.tsx",
+          name: "App Wrapper",
+          shortName: "App",
+          document: "https://fresh.deno.dev/docs/concepts/app-wrapper",
+        },
+        {
+          fileName: "_layout.tsx",
+          name: "Layout",
+          shortName: "Layout",
+          document: "https://fresh.deno.dev/docs/concepts/layouts",
+        },
+        {
+          fileName: "_middleware.ts",
+          name: "Middleware",
+          shortName: "Middleware",
+          document: "https://fresh.deno.dev/docs/concepts/middleware",
+        },
+        {
+          fileName: "_404.tsx",
+          name: "Error page",
+          shortName: "Error",
+          document: "https://fresh.deno.dev/docs/concepts/error-pages",
+        },
+        {
+          fileName: "_500.tsx",
+          name: "Error page",
+          shortName: "Error",
+          document: "https://fresh.deno.dev/docs/concepts/error-pages",
+        },
+      ];
+
+      const matched = routeTypeMatcher.find((matcher) =>
+        route.file.endsWith(matcher.fileName)
+      ) || {
+        name: "Route",
+        shortName: "Route",
+        document: "https://fresh.deno.dev/docs/concepts/routing",
+      };
+
       const routeName = document.createElement("div");
       routeName.className = "route-name";
       li.appendChild(routeName);
@@ -51,19 +95,23 @@
 
       const routeNameLabel = document.createElement("div");
       routeNameLabel.className = "route-label";
-      routeNameLabel.textContent = route.route.replace(/^routes\//, "");
+      routeNameLabel.textContent = cleanedRoute;
       routeName.appendChild(routeNameLabel);
 
       const routeAction = document.createElement("div");
       routeAction.className = "route-action";
       li.appendChild(routeAction);
 
-      const routeType = document.createElement("div");
-      routeType.className = "route-type";
-      routeType.textContent = "Route"; // TODO
-      routeAction.appendChild(routeType);
+      // Document
+      routeAction.appendChild(
+        createPreviewLink(matched.name, matched.document),
+      );
 
-      routeAction.appendChild(createPreviewLink());
+      if (matched.shortName === "Route") {
+        routeAction.appendChild(
+          createPreviewLink("Preview", `http://localhost:8000/${cleanedRoute}`),
+        );
+      }
 
       const routeEdit = document.createElement("div");
       routeEdit.className = "route-edit";
@@ -74,11 +122,15 @@
       ul.appendChild(li);
     }
 
-    function createPreviewLink() {
+    /**
+     * @param {string} name
+     * @param {string} href
+     */
+    function createPreviewLink(name, href) {
       const fileLink = document.createElement("a");
       fileLink.className = "file-link";
-      fileLink.textContent = "open";
-      fileLink.href = `https://code.visualstudio.com/`;
+      fileLink.textContent = name;
+      fileLink.href = href;
       return fileLink;
     }
   }
