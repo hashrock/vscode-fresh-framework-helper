@@ -36,7 +36,10 @@
     }
     ul.textContent = "";
     for (const route of routes) {
-      const cleanedRoute = route.route.replace(/^routes\//, "");
+      let cleanedRoute = route.route.replace(/^routes\//, "").replace(
+        /index$/,
+        "",
+      );
 
       const li = document.createElement("li");
       li.className = "route-entry";
@@ -113,22 +116,21 @@
 
       const routeNameLabel = document.createElement("div");
       routeNameLabel.className = "route-label";
-      routeNameLabel.textContent = cleanedRoute;
+      routeNameLabel.textContent = cleanedRoute || "/ (root)";
       routeName.appendChild(routeNameLabel);
 
       const routeAction = document.createElement("div");
       routeAction.className = "route-action";
       li.appendChild(routeAction);
 
-      // Document
+      // Document Link
       routeAction.appendChild(
         createPreviewLink(matched.name, matched.document),
       );
 
       if (matched.shortName === "Route") {
         routeName.appendChild(
-          // createPreviewLink("Preview", `http://localhost:8000/${cleanedRoute}`),
-          createExternalIcon(`http://localhost:8000/${cleanedRoute}`),
+          createExternalIcon(`http://localhost:8000/${cleanedRoute}`), // TODO: fix port
         );
       }
 
