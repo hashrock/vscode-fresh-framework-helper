@@ -21,7 +21,7 @@ body {
   width: 100%;
   display: flex;
   flex-direction: column;
-  margin-bottom: 0.4em;
+  margin-bottom: 0.6em;
   align-content: center;
 }
 
@@ -41,55 +41,25 @@ body {
   white-space: nowrap;
   overflow-x: hidden;
   text-overflow: ellipsis;
-}
-.route-label {
-  flex: 1;
-}
-
-.color-list {
-  list-style: none;
-  padding: 0;
-}
-
-.color-entry {
-  width: 100%;
-  display: flex;
-  margin-bottom: 0.4em;
-  border: 1px solid var(--vscode-input-border);
-}
-
-.color-preview {
-  width: 2em;
-  height: 2em;
-}
-
-.color-preview:hover {
-  outline: inset white;
-}
-
-.color-input {
-  display: block;
-  flex: 1;
-  width: 100%;
-  color: var(--vscode-input-foreground);
-  background-color: var(--vscode-input-background);
-  border: none;
-  padding: 0 0.6em;
-}
-
-.add-color-button {
-  display: block;
-  border: none;
-  margin: 0 auto;
+  justify-content: flex-start;
 }
 
 .icon {
   flex: none;
   display: block;
-  width: 1.6em;
-  height: 1.6em;
+  margin-right: 0.2em;
+}
+.icon-link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
+.icon-link svg {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 .route-action {
   display: flex;
   justify-content: flex-end;

@@ -105,7 +105,11 @@
       routeName.className = "route-name";
       li.appendChild(routeName);
 
-      routeName.appendChild(createRouteIcon());
+      if (matched.shortName === "Route") {
+        routeName.appendChild(createRouteIcon());
+      } else {
+        routeName.appendChild(createSpecialIcon());
+      }
 
       const routeNameLabel = document.createElement("div");
       routeNameLabel.className = "route-label";
@@ -122,12 +126,27 @@
       );
 
       if (matched.shortName === "Route") {
-        routeAction.appendChild(
-          createPreviewLink("Preview", `http://localhost:8000/${cleanedRoute}`),
+        routeName.appendChild(
+          // createPreviewLink("Preview", `http://localhost:8000/${cleanedRoute}`),
+          createExternalIcon(`http://localhost:8000/${cleanedRoute}`),
         );
       }
 
       ul.appendChild(li);
+    }
+
+    function createExternalIcon(href) {
+      const link = document.createElement("a");
+      link.className = "icon-link";
+      link.href = href;
+      link.target = "_blank";
+      link.rel = "noopener noreferrer";
+      const icon = createIcon("#icon-external");
+      icon.setAttribute("width", "18");
+      icon.setAttribute("height", "18");
+      icon.setAttribute("viewBox", "0 0 20 21");
+      link.appendChild(icon);
+      return link;
     }
 
     /**
@@ -143,7 +162,10 @@
     }
   }
 
-  function createRouteIcon() {
+  function createSpecialIcon() {
+    return createIcon("#icon-special");
+  }
+  function createIcon(id) {
     const icon = document.createElementNS(
       "http://www.w3.org/2000/svg",
       "svg",
@@ -160,10 +182,14 @@
     useTag.setAttributeNS(
       "http://www.w3.org/1999/xlink",
       "href",
-      "#icon-path",
+      id,
     );
     icon.appendChild(useTag);
     return icon;
+  }
+
+  function createRouteIcon() {
+    return createIcon("#icon-path");
   }
 
   vscode.postMessage({ type: "update" });
