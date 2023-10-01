@@ -31,6 +31,18 @@
         updateColorList(colors);
         break;
       }
+      case "setRoutes": {
+        const routes = message.value;
+        const textarea = document.querySelector(".routes");
+        if (!textarea) {
+          return;
+        }
+        // @ts-ignore
+        textarea.value = JSON.stringify(routes);
+        console.log(routes);
+
+        break;
+      }
     }
   });
 
@@ -97,4 +109,6 @@
     colors.push({ value: getNewCalicoColor() });
     updateColorList(colors);
   }
+
+  vscode.postMessage({ type: "update" });
 })();

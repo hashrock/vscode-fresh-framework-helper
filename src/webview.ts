@@ -1,4 +1,5 @@
 import * as vscode from "vscode";
+import { getAllRoutes } from "./getRoutes";
 
 export class FreshRouteViewProvider implements vscode.WebviewViewProvider {
   private _view?: vscode.WebviewView;
@@ -22,13 +23,20 @@ export class FreshRouteViewProvider implements vscode.WebviewViewProvider {
 
     webviewView.webview.html = this._getHtmlForWebview(webviewView.webview);
 
-    webviewView.webview.onDidReceiveMessage((data) => {
+    webviewView.webview.onDidReceiveMessage(async (data) => {
       switch (data.type) {
         case "colorSelected": {
           vscode.window.activeTextEditor?.insertSnippet(
             new vscode.SnippetString(`#${data.value}`),
           );
           break;
+        }
+        case "update": {
+          const routes = await getAllRoutes();
+          webviewView.webview.postMessage({
+            type: "setRoutes",
+            value: routes,
+          });
         }
       }
     });
@@ -74,13 +82,11 @@ export class FreshRouteViewProvider implements vscode.WebviewViewProvider {
 				<title>Fresh URL Matcher</title>
 			</head>
 			<body>
-        <input type="text" class="color-input" placeholder="Enter a URL">
-        
+        <input type="text" class="path-input" placeholder="Enter a URL">
 
-				<ul class="color-list">
+        <ul class="route-list">
 				</ul>
 
-				<button class="add-color-button">Add Color</button>
 
 				<script nonce="${nonce}" src="${scriptUri}"></script>
 			</body>
