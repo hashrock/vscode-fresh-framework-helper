@@ -1,29 +1,33 @@
 import * as vscode from "vscode";
 import * as snippets from "./snippets";
-import { generateComponent, generateIsland, generateLayout, generateRoute } from "./generate";
+import {
+  generateComponent,
+  generateIsland,
+  generateLayout,
+  generateRoute,
+} from "./generate";
+import { FreshRouteViewProvider } from "./webview";
 
 export function activate(context: vscode.ExtensionContext) {
-
   context.subscriptions.push(vscode.commands.registerCommand(
     "fresh-snippets.generateRoute",
     generateRoute,
   ));
 
-	context.subscriptions.push(vscode.commands.registerCommand(
-		"fresh-snippets.generateLayout",
-		generateLayout,
-	));
+  context.subscriptions.push(vscode.commands.registerCommand(
+    "fresh-snippets.generateLayout",
+    generateLayout,
+  ));
 
-	context.subscriptions.push(vscode.commands.registerCommand(
-		"fresh-snippets.generateComponent",
-		generateComponent,
-	));
+  context.subscriptions.push(vscode.commands.registerCommand(
+    "fresh-snippets.generateComponent",
+    generateComponent,
+  ));
 
-	context.subscriptions.push(vscode.commands.registerCommand(
-		"fresh-snippets.generateIsland",
-		generateIsland,
-	));
-
+  context.subscriptions.push(vscode.commands.registerCommand(
+    "fresh-snippets.generateIsland",
+    generateIsland,
+  ));
 
   const provider = vscode.languages.registerCompletionItemProvider(
     "typescriptreact",
@@ -46,6 +50,14 @@ export function activate(context: vscode.ExtensionContext) {
   );
 
   context.subscriptions.push(provider);
+
+  const webviewProvider = new FreshRouteViewProvider(context.extensionUri);
+  context.subscriptions.push(
+    vscode.window.registerWebviewViewProvider(
+      "fresh-snippets.routeView",
+      webviewProvider,
+    ),
+  );
 }
 
 // This method is called when your extension is deactivated

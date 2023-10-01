@@ -22,6 +22,15 @@
     "workspaceContains:fresh.gen.ts"
   ],
   "contributes": {
+    "views": {
+      "explorer": [
+        {
+          "type": "webview",
+          "id": "fresh-snippets.routeView",
+          "name": "Fresh Routes"
+        }
+      ]
+    },
     "commands": [
       {
         "command": "fresh-snippets.generateRoute",
