@@ -60,3 +60,10 @@ body {
   border: none;
   margin: 0 auto;
 }
+
+.icon {
+  width: 1em;
+  height: 1em;
+  margin: 0 0.2em;
+  flex: none;
+}
