@@ -66,6 +66,14 @@
       })
       : routes;
 
+    if (filteredRoutes.length === 0) {
+      const li = document.createElement("li");
+      li.className = "route-entry";
+      li.textContent = "No routes found";
+      ul.appendChild(li);
+      return;
+    }
+
     for (const route of filteredRoutes) {
       let cleanedRoute = route.route.replace(
         /index$/,
