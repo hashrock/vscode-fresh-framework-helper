@@ -1,5 +1,6 @@
 import * as vscode from "vscode";
 import * as snippets from "./snippets";
+import { join } from "path";
 import {
   generateComponent,
   generateIsland,
@@ -8,7 +9,26 @@ import {
 } from "./generate";
 import { FreshRouteViewProvider } from "./webview";
 
+const getRootPath = () => vscode.workspace?.workspaceFolders?.[0]?.uri?.fsPath;
+
+function isFreshProject() {
+  const workspace = getRootPath();
+  if (!workspace) {
+    return false;
+  }
+  const freshGenPath = join(
+    workspace,
+    "fresh.gen.ts",
+  );
+  return vscode.workspace.fs.stat(vscode.Uri.file(freshGenPath));
+}
 export function activate(context: vscode.ExtensionContext) {
+  vscode.commands.executeCommand(
+    "setContext",
+    "is-fresh-project",
+    isFreshProject(),
+  );
+
   context.subscriptions.push(vscode.commands.registerCommand(
     "fresh-snippets.generateRoute",
     generateRoute,

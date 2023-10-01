@@ -4,7 +4,7 @@
   "description": "Deno Fresh Framework Snippets & Code generator",
   "repository": "https://github.com/hashrock/fresh-mini-codegen",
   "license": "MIT",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "publisher": "hashrock",
   "icon": "logo.png",
   "engines": {
@@ -27,7 +27,8 @@
         {
           "type": "webview",
           "id": "fresh-snippets.routeView",
-          "name": "Fresh Routes"
+          "name": "Fresh Routes",
+          "when": "is-fresh-project == true"
         }
       ]
     },
