@@ -7,12 +7,8 @@
   // @ts-ignore
   const vscode = acquireVsCodeApi();
 
-  const oldState = vscode.getState() || {
-    routes: [],
-  };
+  const oldRoutes = [];
 
-  /** @type {Array<{ route: string, file: string, pattern, string }>} */
-  let routes = oldState.routes;
   let urlFilter = "";
 
   let selectedRoute = null;
@@ -23,8 +19,12 @@
     switch (message.type) {
       case "setRoutes": {
         const routes = message.value;
+        if (JSON.stringify(routes) === JSON.stringify(oldRoutes)) {
+          return;
+        }
         updateRoutes(routes, urlFilter);
-        vscode.setState({ routes });
+        oldRoutes.length = 0;
+        oldRoutes.push(...routes);
         break;
       }
     }
@@ -41,7 +41,7 @@
       return;
     }
     urlFilter = input.value;
-    updateRoutes(routes, urlFilter);
+    updateRoutes(oldRoutes, urlFilter);
   });
 
   /**
@@ -225,6 +225,10 @@
   function createRouteIcon() {
     return createIcon("#icon-path");
   }
+
+  window.setInterval(() => {
+    vscode.postMessage({ type: "update" });
+  }, 10000);
 
   vscode.postMessage({ type: "update" });
 })();
