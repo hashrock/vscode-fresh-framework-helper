@@ -21,8 +21,8 @@ body {
   width: 100%;
   display: flex;
   flex-direction: column;
-  margin-bottom: 0.6em;
   align-content: center;
+  padding: 0.2em 0.4em;
 }
 
 .route-entry:hover {
@@ -30,6 +30,17 @@ body {
 }
 
 .route-entry.selected {
+  background-color: var(--vscode-list-activeSelectionBackground);
+}
+.route-entry a {
+  text-decoration: none;
+}
+
+.route-entry a:hover {
+  text-decoration: underline;
+}
+
+.route-entry.selected > a {
   background-color: var(--vscode-list-activeSelectionBackground);
 }
 
