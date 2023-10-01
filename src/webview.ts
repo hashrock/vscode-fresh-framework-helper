@@ -45,7 +45,7 @@ export class FreshRouteViewProvider implements vscode.WebviewViewProvider {
           if (!projectPath) {
             return;
           }
-          const uri = vscode.Uri.joinPath(projectPath, data.value);
+          const uri = vscode.Uri.joinPath(projectPath, "routes", data.value);
 
           const doc = await vscode.workspace.openTextDocument(uri);
           await vscode.window.showTextDocument(doc);
@@ -110,7 +110,7 @@ export class FreshRouteViewProvider implements vscode.WebviewViewProvider {
           </symbol>
         </svg>
 
-        <input type="text" class="path-input" placeholder="Enter a URL">
+        <input type="text" id="UrlMatcher" class="path-input" placeholder="Enter a URL (Example: /books/123 )">
 
         <ul class="route-list">
 				</ul>

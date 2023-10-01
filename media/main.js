@@ -7,10 +7,13 @@
   // @ts-ignore
   const vscode = acquireVsCodeApi();
 
-  const oldState = vscode.getState() || { colors: [] };
+  const oldState = vscode.getState() || {
+    routes: [],
+  };
 
-  /** @type {Array<{ value: string }>} */
-  let colors = oldState.colors;
+  /** @type {Array<{ route: string, file: string, pattern, string }>} */
+  let routes = oldState.routes;
+  let urlFilter = "";
 
   let selectedRoute = null;
 
@@ -20,23 +23,52 @@
     switch (message.type) {
       case "setRoutes": {
         const routes = message.value;
-        updateRoutes(routes);
+        updateRoutes(routes, urlFilter);
+        vscode.setState({ routes });
         break;
       }
     }
   });
 
+  // #UrlMatcher
+  const urlMatcher = document.getElementById("UrlMatcher");
+  if (!urlMatcher) {
+    return;
+  }
+  urlMatcher.addEventListener("input", (e) => {
+    const input = e.target;
+    if (!(input instanceof HTMLInputElement)) {
+      return;
+    }
+    urlFilter = input.value;
+    updateRoutes(routes, urlFilter);
+  });
+
   /**
    * @param {Array<{ route: string, file: string, pattern, string }>} routes
+   * @param {string} urlFilter
    */
-  function updateRoutes(routes) {
+  function updateRoutes(routes, urlFilter) {
     const ul = document.querySelector(".route-list");
     if (!ul) {
       return;
     }
     ul.textContent = "";
-    for (const route of routes) {
-      let cleanedRoute = route.route.replace(/^routes\//, "").replace(
+    const filteredRoutes = urlFilter.length > 0
+      ? routes.filter((route) => {
+        // @ts-ignore
+        const urlPattern = new URLPattern(
+          route.pattern,
+          "http://localhost:8000/",
+        );
+        const url = new URL(urlFilter, "http://localhost:8000/");
+        return urlPattern.test(url);
+      })
+      : routes;
+
+    for (const route of filteredRoutes) {
+      console.log(route);
+      let cleanedRoute = route.route.replace(
         /index$/,
         "",
       );

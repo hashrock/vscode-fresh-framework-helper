@@ -124,7 +124,12 @@ export async function getAllRoutes() {
     line.includes("./routes") && !line.includes("import")
   ).map((
     line: string,
-  ) => line.split(":")[0].trim().replace(/"/g, "").replace(/^\.\//g, "")).map(
+  ) =>
+    line.split(":")[0].trim().replace(/"/g, "").replace(/^\.\//g, "").replace(
+      /^routes\//,
+      "",
+    )
+  ).map(
     (item) => {
       return {
         file: item,
