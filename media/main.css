@@ -55,6 +55,25 @@ body {
   justify-content: flex-start;
 }
 
+.route-label {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  flex: 1;
+  white-space: nowrap;
+  overflow-x: hidden;
+  text-overflow: ellipsis;
+  justify-content: flex-start;
+  color: var(--vscode-descriptionForeground);
+}
+.route-label input {
+  width: 40px;
+  color: var(--vscode-input-foreground);
+  background-color: var(--vscode-input-background);
+  border: var(--vscode-input-border);
+  padding: 0.1em 0.2em;
+}
+
 .icon {
   flex: none;
   display: block;
@@ -76,7 +95,9 @@ body {
   justify-content: flex-end;
   gap: 2px;
 }
-
+input.route-param {
+  color: rgb(193, 255, 207);
+}
 @media screen and (min-width: 280px) {
   .route-entry {
     flex-direction: row;

@@ -67,7 +67,6 @@
       : routes;
 
     for (const route of filteredRoutes) {
-      console.log(route);
       let cleanedRoute = route.route.replace(
         /index$/,
         "",
@@ -146,10 +145,55 @@
         routeName.appendChild(createSpecialIcon());
       }
 
-      const routeNameLabel = document.createElement("div");
-      routeNameLabel.className = "route-label";
-      routeNameLabel.textContent = cleanedRoute || "/ (root)";
-      routeName.appendChild(routeNameLabel);
+      let extLinkHref = `http://localhost:8000/${cleanedRoute}`;
+      let extLink = null;
+
+      // Create placeholder for route name
+      if (cleanedRoute.indexOf("[") === -1) {
+        // plain text
+        const routeNameLabel = document.createElement("div");
+        routeNameLabel.className = "route-label";
+        routeNameLabel.textContent = cleanedRoute || "/ (root)";
+        routeName.appendChild(routeNameLabel);
+      } else {
+        // with param
+        const routeNameLabel = document.createElement("div");
+        routeNameLabel.className = "route-label";
+        const parts = parseBrackets(cleanedRoute);
+
+        for (const part of parts) {
+          if (part.type === "literal") {
+            const span = document.createElement("span");
+            span.textContent = part.value;
+            routeNameLabel.appendChild(span);
+          } else if (part.type === "param") {
+            const input = document.createElement("input");
+            input.className = "route-param";
+            input.value = part.value;
+            input.placeholder = part.value;
+            input.addEventListener("click", (e) => {
+              e.stopPropagation();
+            });
+
+            input.addEventListener("input", (e) => {
+              if (!extLink) {
+                return;
+              }
+              extLink.setAttribute(
+                "href",
+                `http://localhost:8000/${
+                  getTextContentChildren(routeNameLabel).join("")
+                }`,
+              );
+            });
+            routeNameLabel.appendChild(input);
+          }
+        }
+        extLinkHref = `http://localhost:8000/${
+          getTextContentChildren(routeNameLabel).join("")
+        }`;
+        routeName.appendChild(routeNameLabel);
+      }
 
       const routeAction = document.createElement("div");
       routeAction.className = "route-action";
@@ -161,8 +205,11 @@
       );
 
       if (matched.shortName === "Route") {
+        extLink = createExternalIcon(
+          extLinkHref,
+        );
         routeName.appendChild(
-          createExternalIcon(`http://localhost:8000/${cleanedRoute}`), // TODO: fix port
+          extLink, // TODO: fix port
         );
       }
 
@@ -224,6 +271,48 @@
 
   function createRouteIcon() {
     return createIcon("#icon-path");
+  }
+
+  function getTextContentChildren(element) {
+    const result = [];
+    for (const child of element.childNodes) {
+      if (child instanceof HTMLInputElement) {
+        result.push(child.value);
+      } else {
+        result.push(child.textContent);
+      }
+    }
+    return result;
+  }
+
+  // "/users/[id]/[name]" to
+  // { type: "literal", value: "/users/" }, { type: "param", value: "id" }, { type: "literal", value: "/" }, { type: "param", value: "name" }
+  function parseBrackets(input) {
+    const result = [];
+    let current = "";
+    let inBrackets = false;
+    for (let i = 0; i < input.length; i++) {
+      const char = input[i];
+      if (char === "[") {
+        if (current) {
+          result.push({ type: "literal", value: current });
+          current = "";
+        }
+        inBrackets = true;
+      } else if (char === "]") {
+        if (current) {
+          result.push({ type: "param", value: current });
+          current = "";
+        }
+        inBrackets = false;
+      } else {
+        current += char;
+      }
+    }
+    if (current) {
+      result.push({ type: "literal", value: current });
+    }
+    return result;
   }
 
   window.setInterval(() => {
