@@ -28,67 +28,71 @@
           "type": "webview",
           "id": "fresh-snippets.routeView",
           "name": "Fresh Routes",
-          "when": "is-fresh-project == true"
+          "when": "is-fresh-project"
         }
       ]
     },
     "commands": [
       {
         "command": "fresh-snippets.generateRoute",
-        "title": "New Route Component"
+        "title": "New Route Component",
+        "when": "is-fresh-project"
       },
       {
         "command": "fresh-snippets.generateLayout",
-        "title": "New Layout"
+        "title": "New Layout",
+        "when": "is-fresh-project"
       },
       {
         "command": "fresh-snippets.generateComponent",
-        "title": "New Component"
+        "title": "New Component",
+        "when": "is-fresh-project"
       },
       {
         "command": "fresh-snippets.generateIsland",
-        "title": "New Island Component"
+        "title": "New Island Component",
+        "when": "is-fresh-project"
       }
     ],
     "menus": {
       "explorer/context": [
         {
-          "when": "explorerResourceIsFolder && resourceFilename =~ /routes/",
+          "when": "is-fresh-project && explorerResourceIsFolder && resourceFilename =~ /routes/",
           "command": "fresh-snippets.generateRoute",
           "group": "Fresh"
         },
         {
-          "when": "explorerResourceIsFolder && resourceDirname =~ /routes/",
+          "when": "is-fresh-project && explorerResourceIsFolder && resourceDirname =~ /routes/",
           "command": "fresh-snippets.generateRoute",
           "group": "Fresh"
         },
         {
-          "when": "explorerResourceIsFolder && resourceFilename =~ /islands/",
+          "when": "is-fresh-project && explorerResourceIsFolder && resourceFilename =~ /islands/",
           "command": "fresh-snippets.generateIsland",
           "group": "Fresh"
         },
         {
-          "when": "explorerResourceIsFolder && resourceDirname =~ /islands/",
+          "when": "is-fresh-project && explorerResourceIsFolder && resourceDirname =~ /islands/",
           "command": "fresh-snippets.generateIsland",
           "group": "Fresh"
         },
         {
-          "when": "explorerResourceIsFolder && resourceFilename =~ /components/",
+          "when": "is-fresh-project && explorerResourceIsFolder && resourceFilename =~ /components/",
           "command": "fresh-snippets.generateComponent",
           "group": "Fresh"
         },
         {
-          "when": "explorerResourceIsFolder && resourceDirname =~ /components/",
+          "when": "is-fresh-project && explorerResourceIsFolder && resourceDirname =~ /components/",
           "command": "fresh-snippets.generateComponent",
           "group": "Fresh"
         },
         {
-          "when": "explorerResourceIsFolder && resourceFilename =~ /routes/",
+          "when": "is-fresh-project && explorerResourceIsFolder && resourceFilename =~ /routes/",
           "command": "fresh-snippets.generateLayout",
           "group": "Fresh"
         },
         {
-          "when": "explorerResourceIsFolder && resourceDirname =~ /routes/",
+          "when": "is-fresh-project && explorerResourceIsFolder && resourceDirname =~ /routes/",
           "command": "fresh-snippets.generateLayout",
           "group": "Fresh"
         }
