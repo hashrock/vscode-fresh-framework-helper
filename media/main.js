@@ -30,7 +30,6 @@
     }
   });
 
-  // #UrlMatcher
   const urlMatcher = document.getElementById("UrlMatcher");
   if (!urlMatcher) {
     return;
@@ -56,12 +55,18 @@
     ul.textContent = "";
     const filteredRoutes = urlFilter.length > 0
       ? routes.filter((route) => {
+        // Remove trailing slash
+        let f = urlFilter;
+        if (f.endsWith("/")) {
+          f = f.slice(0, -1);
+        }
+
         // @ts-ignore
         const urlPattern = new URLPattern(
           route.pattern,
           "http://localhost:8000/",
         );
-        const url = new URL(urlFilter, "http://localhost:8000/");
+        const url = new URL(f, "http://localhost:8000/");
         return urlPattern.test(url);
       })
       : routes;
@@ -96,12 +101,6 @@
       });
 
       // Special routes:
-      // _app
-      // _layout
-      // _middleware
-      // _404
-      // _500
-
       const routeTypeMatcher = [
         {
           fileName: "_app.tsx",
@@ -183,6 +182,7 @@
               e.stopPropagation();
             });
 
+            // Update external link href when input changes
             input.addEventListener("input", (e) => {
               if (!extLink) {
                 return;
@@ -217,13 +217,17 @@
           extLinkHref,
         );
         routeName.appendChild(
-          extLink, // TODO: fix port
+          extLink,
         );
       }
 
       ul.appendChild(li);
     }
 
+    /**
+     * @param {string} href
+     * @returns {HTMLAnchorElement}
+     */
     function createExternalIcon(href) {
       const link = document.createElement("a");
       link.className = "icon-link";
@@ -254,6 +258,11 @@
   function createSpecialIcon() {
     return createIcon("#icon-special");
   }
+
+  /**
+   * @param {string} id
+   * @returns {SVGElement}
+   */
   function createIcon(id) {
     const icon = document.createElementNS(
       "http://www.w3.org/2000/svg",
@@ -281,21 +290,33 @@
     return createIcon("#icon-path");
   }
 
+  /**
+   * @param {HTMLElement} element
+   * @returns {string[]}
+   * @description Get text content of all children including input.value
+   */
   function getTextContentChildren(element) {
     const result = [];
     for (const child of element.childNodes) {
       if (child instanceof HTMLInputElement) {
-        result.push(child.value);
+        result.push(child.value ?? "");
       } else {
-        result.push(child.textContent);
+        result.push(child.textContent ?? "");
       }
     }
     return result;
   }
 
-  // "/users/[id]/[name]" to
-  // { type: "literal", value: "/users/" }, { type: "param", value: "id" }, { type: "literal", value: "/" }, { type: "param", value: "name" }
+  /**
+   * parse brackets
+   * @param {string} input
+   * @returns
+   */
   function parseBrackets(input) {
+    // input:
+    // "/users/[id]/[name]"
+    // output:
+    // { type: "literal", value: "/users/" }, { type: "param", value: "id" }, { type: "literal", value: "/" }, { type: "param", value: "name" }
     const result = [];
     let current = "";
     let inBrackets = false;

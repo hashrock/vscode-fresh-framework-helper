@@ -110,7 +110,7 @@ export class FreshRouteViewProvider implements vscode.WebviewViewProvider {
           </symbol>
         </svg>
 
-        <input type="text" id="UrlMatcher" class="path-input" placeholder="Enter a URL (Example: /books/123 )">
+        <input type="text" id="UrlMatcher" class="path-input" placeholder="Test a URL (Example: /books/123 )">
 
         <ul class="route-list">
 				</ul>
