@@ -100,7 +100,7 @@ body {
 input.route-param {
   color: rgb(193, 255, 207);
 }
-@media screen and (min-width: 280px) {
+@media screen and (min-width: 220px) {
   .route-entry {
     flex-direction: row;
     align-items: center;
