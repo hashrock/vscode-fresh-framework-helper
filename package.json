@@ -26,7 +26,7 @@
       "explorer": [
         {
           "type": "webview",
-          "id": "deno.fresh.routeView",
+          "id": "hashrock.fresh.routeView",
           "name": "Fresh Routes",
           "when": "is-fresh-project"
         }
@@ -34,22 +34,22 @@
     },
     "commands": [
       {
-        "command": "deno.fresh.generateRoute",
+        "command": "hashrock.fresh.generateRoute",
         "title": "New Route Component",
         "when": "is-fresh-project"
       },
       {
-        "command": "deno.fresh.generateLayout",
+        "command": "hashrock.fresh.generateLayout",
         "title": "New Layout",
         "when": "is-fresh-project"
       },
       {
-        "command": "deno.fresh.generateComponent",
+        "command": "hashrock.fresh.generateComponent",
         "title": "New Component",
         "when": "is-fresh-project"
       },
       {
-        "command": "deno.fresh.generateIsland",
+        "command": "hashrock.fresh.generateIsland",
         "title": "New Island Component",
         "when": "is-fresh-project"
       }
@@ -58,42 +58,42 @@
       "explorer/context": [
         {
           "when": "is-fresh-project && explorerResourceIsFolder && resourceFilename =~ /routes/",
-          "command": "deno.fresh.generateRoute",
+          "command": "hashrock.fresh.generateRoute",
           "group": "Fresh"
         },
         {
           "when": "is-fresh-project && explorerResourceIsFolder && resourceDirname =~ /routes/",
-          "command": "deno.fresh.generateRoute",
+          "command": "hashrock.fresh.generateRoute",
           "group": "Fresh"
         },
         {
           "when": "is-fresh-project && explorerResourceIsFolder && resourceFilename =~ /islands/",
-          "command": "deno.fresh.generateIsland",
+          "command": "hashrock.fresh.generateIsland",
           "group": "Fresh"
         },
         {
           "when": "is-fresh-project && explorerResourceIsFolder && resourceDirname =~ /islands/",
-          "command": "deno.fresh.generateIsland",
+          "command": "hashrock.fresh.generateIsland",
           "group": "Fresh"
         },
         {
           "when": "is-fresh-project && explorerResourceIsFolder && resourceFilename =~ /components/",
-          "command": "deno.fresh.generateComponent",
+          "command": "hashrock.fresh.generateComponent",
           "group": "Fresh"
         },
         {
           "when": "is-fresh-project && explorerResourceIsFolder && resourceDirname =~ /components/",
-          "command": "deno.fresh.generateComponent",
+          "command": "hashrock.fresh.generateComponent",
           "group": "Fresh"
         },
         {
           "when": "is-fresh-project && explorerResourceIsFolder && resourceFilename =~ /routes/",
-          "command": "deno.fresh.generateLayout",
+          "command": "hashrock.fresh.generateLayout",
           "group": "Fresh"
         },
         {
           "when": "is-fresh-project && explorerResourceIsFolder && resourceDirname =~ /routes/",
-          "command": "deno.fresh.generateLayout",
+          "command": "hashrock.fresh.generateLayout",
           "group": "Fresh"
         }
       ]

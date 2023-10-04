@@ -24,7 +24,7 @@ async function isFreshProject() {
   );
   let fileExists = null;
   try {
-    fileExists = await vscode.workspace.fs.stat(vscode.Uri.file(freshGenPath))
+    fileExists = await vscode.workspace.fs.stat(vscode.Uri.file(freshGenPath));
   } catch (_error) {
     // do nothing
   }
@@ -38,7 +38,7 @@ export function activate(context: vscode.ExtensionContext) {
       isFresh,
     );
   });
-  
+
   context.subscriptions.push(vscode.commands.registerCommand(
     "deno.fresh.generateRoute",
     generateRoute,
@@ -84,7 +84,7 @@ export function activate(context: vscode.ExtensionContext) {
   const webviewProvider = new FreshRouteViewProvider(context.extensionUri);
   context.subscriptions.push(
     vscode.window.registerWebviewViewProvider(
-      "deno.fresh.routeView",
+      "hashrock.fresh.routeView",
       webviewProvider,
     ),
   );
