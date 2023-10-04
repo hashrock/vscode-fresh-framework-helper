@@ -86,7 +86,16 @@ export class KvViewProvider implements vscode.WebviewViewProvider {
 				<title>Fresh URL Matcher</title>
 			</head>
 			<body>
-        <div id="app">Hello</div>
+        <div id="app">
+          <div>
+            <button id="query">Query</button>
+          </div>
+          <div>
+            <textarea id="result">
+            OUTPUT
+            </textarea>
+          </div>
+        </div>
 
 				<script nonce="${nonce}" src="${scriptUri}"></script>
 			</body>
