@@ -23,12 +23,21 @@
   ],
   "contributes": {
     "views": {
-      "explorer": [
+      "hashrock-fresh-helper": [
         {
           "type": "webview",
           "id": "hashrock.fresh.routeView",
           "name": "Fresh Routes",
           "when": "is-fresh-project"
+        }
+      ]
+    },
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "hashrock-fresh-helper",
+          "title": "Fresh Helper",
+          "icon": "media/deno-sidebar.svg"
         }
       ]
     },
