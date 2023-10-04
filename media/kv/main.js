@@ -35,7 +35,7 @@
   };
 
   if (queryEl) {
-    queryEl.addEventListener("input", updateResult);
+    queryEl.addEventListener("click", updateResult);
   }
 
   // TODO

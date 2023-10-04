@@ -4,6 +4,8 @@ import * as vscode from "vscode";
 import { join } from "path";
 import { KvViewProvider } from "./webview";
 
+let process = null;
+
 export function activate(context: vscode.ExtensionContext) {
   const webviewProvider = new KvViewProvider(context.extensionUri);
   context.subscriptions.push(
@@ -12,4 +14,12 @@ export function activate(context: vscode.ExtensionContext) {
       webviewProvider,
     ),
   );
+
+  // process = require("child_process").spawn(
+  //   "deno",
+  //   ["run", "--allow-net", "--allow-env", join(__dirname, "server.ts")],
+  // );
+}
+
+export function deactivate() {
 }

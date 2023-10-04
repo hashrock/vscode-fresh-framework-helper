@@ -26,8 +26,11 @@ export class KvViewProvider implements vscode.WebviewViewProvider {
 
     webviewView.webview.onDidReceiveMessage(async (data) => {
       switch (data.type) {
-        case "open": {
-          // TODO
+        case "query": {
+          webviewView.webview.postMessage({
+            type: "setResult",
+            result: "RESULT",
+          });
           break;
         }
       }
