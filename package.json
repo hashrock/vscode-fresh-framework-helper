@@ -29,6 +29,11 @@
           "id": "hashrock.fresh.routeView",
           "name": "Fresh Routes",
           "when": "is-fresh-project"
+        },
+        {
+          "type": "webview",
+          "id": "hashrock.deno.kvView",
+          "name": "KV Viewer"
         }
       ]
     },
