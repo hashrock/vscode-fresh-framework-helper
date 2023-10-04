@@ -1,10 +1,10 @@
 {
-  "name": "fresh-mini-codegen",
-  "displayName": "Fresh mini codegen",
+  "name": "fresh-framework-helper",
+  "displayName": "Fresh framework helper",
   "description": "Deno Fresh Framework Snippets & Code generator",
   "repository": "https://github.com/hashrock/fresh-mini-codegen",
   "license": "MIT",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "publisher": "hashrock",
   "icon": "logo.png",
   "engines": {
@@ -26,7 +26,7 @@
       "explorer": [
         {
           "type": "webview",
-          "id": "fresh-snippets.routeView",
+          "id": "deno.fresh.routeView",
           "name": "Fresh Routes",
           "when": "is-fresh-project"
         }
@@ -34,22 +34,22 @@
     },
     "commands": [
       {
-        "command": "fresh-snippets.generateRoute",
+        "command": "deno.fresh.generateRoute",
         "title": "New Route Component",
         "when": "is-fresh-project"
       },
       {
-        "command": "fresh-snippets.generateLayout",
+        "command": "deno.fresh.generateLayout",
         "title": "New Layout",
         "when": "is-fresh-project"
       },
       {
-        "command": "fresh-snippets.generateComponent",
+        "command": "deno.fresh.generateComponent",
         "title": "New Component",
         "when": "is-fresh-project"
       },
       {
-        "command": "fresh-snippets.generateIsland",
+        "command": "deno.fresh.generateIsland",
         "title": "New Island Component",
         "when": "is-fresh-project"
       }
@@ -58,42 +58,42 @@
       "explorer/context": [
         {
           "when": "is-fresh-project && explorerResourceIsFolder && resourceFilename =~ /routes/",
-          "command": "fresh-snippets.generateRoute",
+          "command": "deno.fresh.generateRoute",
           "group": "Fresh"
         },
         {
           "when": "is-fresh-project && explorerResourceIsFolder && resourceDirname =~ /routes/",
-          "command": "fresh-snippets.generateRoute",
+          "command": "deno.fresh.generateRoute",
           "group": "Fresh"
         },
         {
           "when": "is-fresh-project && explorerResourceIsFolder && resourceFilename =~ /islands/",
-          "command": "fresh-snippets.generateIsland",
+          "command": "deno.fresh.generateIsland",
           "group": "Fresh"
         },
         {
           "when": "is-fresh-project && explorerResourceIsFolder && resourceDirname =~ /islands/",
-          "command": "fresh-snippets.generateIsland",
+          "command": "deno.fresh.generateIsland",
           "group": "Fresh"
         },
         {
           "when": "is-fresh-project && explorerResourceIsFolder && resourceFilename =~ /components/",
-          "command": "fresh-snippets.generateComponent",
+          "command": "deno.fresh.generateComponent",
           "group": "Fresh"
         },
         {
           "when": "is-fresh-project && explorerResourceIsFolder && resourceDirname =~ /components/",
-          "command": "fresh-snippets.generateComponent",
+          "command": "deno.fresh.generateComponent",
           "group": "Fresh"
         },
         {
           "when": "is-fresh-project && explorerResourceIsFolder && resourceFilename =~ /routes/",
-          "command": "fresh-snippets.generateLayout",
+          "command": "deno.fresh.generateLayout",
           "group": "Fresh"
         },
         {
           "when": "is-fresh-project && explorerResourceIsFolder && resourceDirname =~ /routes/",
-          "command": "fresh-snippets.generateLayout",
+          "command": "deno.fresh.generateLayout",
           "group": "Fresh"
         }
       ]

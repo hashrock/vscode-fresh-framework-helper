@@ -1,3 +1,5 @@
+// Copyright 2018-2022 the Deno authors. All rights reserved. MIT license.
+
 import * as vscode from "vscode";
 import { getAllRoutes } from "./getRoutes";
 
@@ -8,8 +10,8 @@ export class FreshRouteViewProvider implements vscode.WebviewViewProvider {
   ) {}
   resolveWebviewView(
     webviewView: vscode.WebviewView,
-    context: vscode.WebviewViewResolveContext<unknown>,
-    token: vscode.CancellationToken,
+    _context: vscode.WebviewViewResolveContext<unknown>,
+    _token: vscode.CancellationToken,
   ): void | Thenable<void> {
     this._view = webviewView;
 
@@ -58,19 +60,35 @@ export class FreshRouteViewProvider implements vscode.WebviewViewProvider {
 
   private _getHtmlForWebview(webview: vscode.Webview) {
     // Get the local path to main script run in the webview, then convert it to a uri we can use in the webview.
+    const freshSubFolder = "fresh";
     const scriptUri = webview.asWebviewUri(
-      vscode.Uri.joinPath(this._extensionUri, "media", "main.js"),
+      vscode.Uri.joinPath(
+        this._extensionUri,
+        "media",
+        freshSubFolder,
+        "main.js",
+      ),
     );
 
     // Do the same for the stylesheet.
     const styleVSCodeUri = webview.asWebviewUri(
-      vscode.Uri.joinPath(this._extensionUri, "media", "vscode.css"),
+      vscode.Uri.joinPath(
+        this._extensionUri,
+        "media",
+        freshSubFolder,
+        "vscode.css",
+      ),
     );
     const styleMainUri = webview.asWebviewUri(
-      vscode.Uri.joinPath(this._extensionUri, "media", "main.css"),
+      vscode.Uri.joinPath(
+        this._extensionUri,
+        "media",
+        freshSubFolder,
+        "main.css",
+      ),
     );
 
-    const nonce = "Hogehoge";
+    const nonce = getNonce();
 
     return `<!DOCTYPE html>
 			<html lang="en">
@@ -119,4 +137,14 @@ export class FreshRouteViewProvider implements vscode.WebviewViewProvider {
 			</body>
 			</html>`;
   }
+}
+
+function getNonce() {
+  let text = "";
+  const possible =
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+  for (let i = 0; i < 32; i++) {
+    text += possible.charAt(Math.floor(Math.random() * possible.length));
+  }
+  return text;
 }

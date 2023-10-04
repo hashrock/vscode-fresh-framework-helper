@@ -1,3 +1,5 @@
+// Copyright 2018-2022 the Deno authors. All rights reserved. MIT license.
+
 import * as vscode from "vscode";
 
 async function writeFile(newFile: string, body: string) {
@@ -7,7 +9,7 @@ async function writeFile(newFile: string, body: string) {
     fileExists = await vscode.workspace.fs.stat(
       vscode.Uri.file(newFile),
     );
-  } catch (error) {
+  } catch (_error) {
     // do nothing
   }
   if (fileExists) {

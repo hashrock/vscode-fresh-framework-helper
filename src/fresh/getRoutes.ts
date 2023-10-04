@@ -1,3 +1,5 @@
+// Copyright 2018-2022 the Deno authors. All rights reserved. MIT license.
+
 import * as vscode from "vscode";
 import * as fs from "fs";
 import { extname } from "path";
@@ -118,7 +120,12 @@ export async function getAllRoutes() {
 
   const filename = `${projectPath}/fresh.gen.ts`;
 
-  const input = await fs.promises.readFile(filename, "utf8");
+  let input = "";
+  try {
+    input = await fs.promises.readFile(filename, "utf8");
+  } catch (_error) {
+    return [];
+  }
 
   const routes: Routes[] = input.split("\n").filter((line: string) =>
     line.includes("./routes") && !line.includes("import")
