@@ -10,6 +10,7 @@
 
   const queryEl = document.getElementById("query");
   const resultEl = document.getElementById("result");
+  const setForm = document.getElementById("SetForm");
   if (!queryEl || !resultEl) {
     return;
   }
@@ -31,12 +32,24 @@
   });
 
   const updateResult = () => {
-    vscode.postMessage({ type: "query", query: "users" });
+    vscode.postMessage({ type: "list" });
   };
 
-  if (queryEl) {
-    queryEl.addEventListener("click", updateResult);
+  if (!(setForm instanceof HTMLFormElement)) {
+    return;
   }
+  setForm.addEventListener("submit", (e) => {
+    e.preventDefault();
+    if (!(e.target instanceof HTMLFormElement)) {
+      return;
+    }
+    const formData = new FormData(e.target);
+    const key = formData.get("key");
+    const value = formData.get("value");
+    if (typeof key === "string" && typeof value === "string") {
+      vscode.postMessage({ type: "set", key, value });
+    }
+  });
 
-  // TODO
+  queryEl.addEventListener("click", updateResult);
 })();

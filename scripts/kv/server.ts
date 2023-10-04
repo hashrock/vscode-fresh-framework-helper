@@ -28,7 +28,10 @@ const handler = async (request: Request): Promise<Response> => {
   // http://localhost:8080/?type=set&key=foo,bar&value=hello
   if (type === "set" && key && value) {
     await db.set(key.split(","), value);
-    return new Response("OK", { status: 200 });
+    const result = {
+      result: "OK",
+    };
+    return new Response(JSON.stringify(result), { status: 200 });
   }
 
   // http://localhost:8080/?type=get&key=foo,bar

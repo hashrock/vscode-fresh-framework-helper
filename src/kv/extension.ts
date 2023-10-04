@@ -3,27 +3,19 @@
 import * as vscode from "vscode";
 import { join } from "path";
 import { KvViewProvider } from "./webview";
-import { ChildProcess } from "child_process";
+import { ChildProcess, spawn } from "child_process";
 
 let process: ChildProcess | null = null;
 let outputChannel: vscode.OutputChannel | null = null;
 
 export function activate(context: vscode.ExtensionContext) {
-  const webviewProvider = new KvViewProvider(context.extensionUri);
-  context.subscriptions.push(
-    vscode.window.registerWebviewViewProvider(
-      "hashrock.deno.kvView",
-      webviewProvider,
-    ),
-  );
-
   // create output channel
   outputChannel = vscode.window.createOutputChannel("kvViewer");
   context.subscriptions.push(outputChannel);
   outputChannel.appendLine("kvViewer activate");
   console.log("kvViewer activate");
 
-  console.log(__dirname, "server.ts");
+  const workspaceRoute = vscode.workspace.workspaceFolders?.[0].uri.fsPath;
 
   const serverSrc = vscode.Uri.joinPath(
     context.extensionUri,
@@ -32,12 +24,31 @@ export function activate(context: vscode.ExtensionContext) {
     "server.ts",
   );
 
-  process = require("child_process").spawn(
+  process = spawn(
     "deno",
-    ["run", "-A", serverSrc.path],
+    ["run", "-A", "--unstable", serverSrc.path],
+    {
+      cwd: workspaceRoute,
+    },
   );
 
   process?.stdout?.on("data", (data) => {
+    // Example:
+    // Listening on port 57168
+    const text = data.toString();
+    const match = text.match(/Listening on port (\d+)/);
+    if (match) {
+      const port = match[1];
+      console.log("port", port);
+
+      const webviewProvider = new KvViewProvider(context.extensionUri, port);
+      context.subscriptions.push(
+        vscode.window.registerWebviewViewProvider(
+          "hashrock.deno.kvView",
+          webviewProvider,
+        ),
+      );
+    }
     console.log(`stdout: ${data}`);
   });
 

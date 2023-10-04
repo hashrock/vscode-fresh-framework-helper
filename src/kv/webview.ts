@@ -1,11 +1,13 @@
 // Copyright 2018-2022 the Deno authors. All rights reserved. MIT license.
 
 import * as vscode from "vscode";
+import fetch from "node-fetch";
 
 export class KvViewProvider implements vscode.WebviewViewProvider {
   private _view?: vscode.WebviewView;
   constructor(
     private readonly _extensionUri: vscode.Uri,
+    private readonly _port: string,
   ) {}
   resolveWebviewView(
     webviewView: vscode.WebviewView,
@@ -25,15 +27,29 @@ export class KvViewProvider implements vscode.WebviewViewProvider {
     webviewView.webview.html = this._getHtmlForWebview(webviewView.webview);
 
     webviewView.webview.onDidReceiveMessage(async (data) => {
-      switch (data.type) {
-        case "query": {
-          webviewView.webview.postMessage({
-            type: "setResult",
-            result: "RESULT",
-          });
-          break;
-        }
+      const type = data.type; // list, get, set, database
+      const key = data.key;
+      const value = data.value;
+
+      const url = `http://localhost:${this._port}/`;
+      const searchParams = new URLSearchParams("");
+      if (type) {
+        searchParams.set("type", type);
       }
+      if (key) {
+        searchParams.set("key", key);
+      }
+      if (value) {
+        searchParams.set("value", value);
+      }
+      const fetchUrl = url + "?" + searchParams.toString();
+      const response = await fetch(fetchUrl);
+      const result = await response.json();
+
+      webviewView.webview.postMessage({
+        type: "setResult",
+        result: JSON.stringify(result, null, 2),
+      });
     });
   }
 
@@ -97,6 +113,16 @@ export class KvViewProvider implements vscode.WebviewViewProvider {
             <textarea id="result">
             OUTPUT
             </textarea>
+          </div>
+          <div>
+            <form id="SetForm">
+              <label for="type">Key</label>
+              <input type="text" id="key" name="key" value="key">
+              <label for="type">Value</label>
+              <input type="text" id="value" name="value" value="value">
+              <input type="submit" value="Set">
+            </form>
+
           </div>
         </div>
 
