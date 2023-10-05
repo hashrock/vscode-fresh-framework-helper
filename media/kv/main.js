@@ -23,8 +23,31 @@
   function PageGet(props) {
     const selectedKey = props.selectedKey;
     const eventRef = React.useRef(null);
+    const eventUpdateRef = React.useRef(null);
     const [value, setValue] = React.useState(null);
     const [versionstamp, setVersionstamp] = React.useState(null);
+    const [message, setMessage] = React.useState(null);
+
+    React.useEffect(() => {
+      eventUpdateRef.current = (event) => {
+        const message = event.data; // The json data that the extension sent
+        switch (message.type) {
+          case "setResult": {
+            console.log("message", message);
+            if (message.result === "OK") {
+              setMessage("The item set successfully : " + new Date());
+              vscode.postMessage({ type: "get", key: selectedKey });
+            }
+            break;
+          }
+        }
+      };
+      window.addEventListener("message", eventUpdateRef.current);
+
+      return () => {
+        window.removeEventListener("message", eventUpdateRef.current);
+      };
+    }, []);
 
     React.useEffect(() => {
       if (selectedKey) {
@@ -53,9 +76,28 @@
       h("div", {
         className: "label",
       }, "Value"),
+      h(
+        "div",
+        {
+          className: "get__value__wrapper",
+        },
+        h("textarea", {
+          className: "get__value",
+          value,
+          onChange: (e) => {
+            setValue(e.target.value);
+          },
+        }),
+      ),
+      h("button", {
+        className: "get__update",
+        onClick: () => {
+          vscode.postMessage({ type: "set", key: selectedKey, value });
+        },
+      }, "Update"),
       h("div", {
-        className: "get__value",
-      }, value),
+        className: "label",
+      }, message),
       h("div", {
         className: "label",
       }, "VersionStamp"),

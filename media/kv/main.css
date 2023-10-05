@@ -59,3 +59,14 @@ html {
   margin-top: 0.75rem;
   margin-bottom: 0.25rem;
 }
+
+textarea.get__value {
+  height: 10rem;
+  flex: 1;
+}
+
+.get__value__wrapper {
+  display: flex;
+  flex-direction: row;
+  flex: 1;
+}
