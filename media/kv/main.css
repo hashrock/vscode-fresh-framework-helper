@@ -59,10 +59,23 @@ html {
 .result__item {
   border-bottom: 1px solid #666;
   padding: 0.5rem 0.25rem;
+  overflow-x: hidden;
 }
 .result__item:hover {
   background-color: var(--vscode-list-hoverBackground);
   cursor: pointer;
+}
+
+.result__item__key {
+  display: inline;
+}
+
+.result__item__value {
+  margin-left: 0.5rem;
+  display: inline;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: rgb(152, 166, 194);
 }
 
 .new__wrapper {

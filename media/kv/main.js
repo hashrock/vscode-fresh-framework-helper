@@ -151,8 +151,6 @@
         e.preventDefault();
         const key = keyRef.current.value;
         const value = valueRef.current.value;
-        console.log("key", key);
-        console.log("value", value);
         vscode.postMessage({ type: "set", key, value });
       },
     }, [
@@ -199,6 +197,24 @@
       }, props.isBusy ? "Searching..." : "Search"),
     ]);
   }
+
+  function PageListResultItem(props) {
+    const item = props.item;
+    return h("div", {
+      className: "result__item",
+      onClick: () => {
+        props.onChangeSelectedKey(item.key.join(","));
+      },
+    }, [
+      h("div", {
+        className: "result__item__key",
+      }, item.key.join(",")),
+      h("div", {
+        className: "result__item__value",
+      }, item.value),
+    ]);
+  }
+
   function PageListResult(props) {
     const items = props.items;
     return h(
@@ -209,14 +225,15 @@
       items.length === 0 && h("div", {
         className: "result__empty",
       }, "No items found"),
-      items.map((item) => {
-        return h("div", {
-          className: "result__item",
-          onClick: () => {
-            props.onChangeSelectedKey(item.key.join(","));
-          },
-        }, item.key.join(","));
-      }),
+      items.map(
+        (item) =>
+          h(PageListResultItem, {
+            item,
+            onChangeSelectedKey: (key) => {
+              props.onChangeSelectedKey(key);
+            },
+          }),
+      ),
     );
   }
 
