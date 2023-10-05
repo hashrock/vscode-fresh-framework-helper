@@ -134,7 +134,9 @@
       };
     }, []);
 
-    return h("div", {}, [
+    return h("div", {
+      className: "new__wrapper",
+    }, [
       PageNewForm(),
       message && h("div", {
         className: "message",

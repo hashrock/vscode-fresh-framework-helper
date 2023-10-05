@@ -65,6 +65,10 @@ html {
   cursor: pointer;
 }
 
+.new__wrapper {
+  overflow-x: hidden;
+}
+
 .newform__wrapper {
 }
 
