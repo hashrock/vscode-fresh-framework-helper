@@ -184,7 +184,7 @@
       onSubmit: (e) => {
         e.preventDefault();
         const searchKey = searchKeyRef.current.value;
-        vscode.postMessage({ type: "list", key: searchKey });
+        props.onSubmit(searchKey);
       },
     }, [
       h("input", {
@@ -196,7 +196,7 @@
       h("button", {
         className: "form__submit",
         type: "submit",
-      }, "Search"),
+      }, props.isBusy ? "Searching..." : "Search"),
     ]);
   }
   function PageListResult(props) {
@@ -223,6 +223,7 @@
   function PageList(props) {
     const eventRef = React.useRef(null);
     const [items, setItems] = React.useState([]);
+    const [isBusy, setIsBusy] = React.useState(false);
 
     React.useEffect(() => {
       eventRef.current = (event) => {
@@ -230,6 +231,7 @@
         switch (message.type) {
           case "listResult": {
             setItems(message.result);
+            setIsBusy(false);
             break;
           }
         }
@@ -238,6 +240,7 @@
 
       // inital load
       vscode.postMessage({ type: "list", key: "" });
+      setIsBusy(true);
 
       return () => {
         window.removeEventListener("message", eventRef.current);
@@ -251,7 +254,12 @@
     return h("div", {
       className: "result__wrapper",
     }, [
-      PageListForm(),
+      h(PageListForm, {
+        onSubmit: (key) => {
+          vscode.postMessage({ type: "list", key });
+        },
+        isBusy,
+      }),
       PageListResult({
         items,
         onChangeSelectedKey: (key) => {
