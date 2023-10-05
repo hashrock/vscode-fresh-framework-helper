@@ -108,9 +108,7 @@ export class KvViewProvider implements vscode.WebviewViewProvider {
         <div id="app">
           <div id="Nav">
             <button id="Nav__List">＜</button>
-            <div id="Nav__Title">
-              Create new item
-            </div>
+            <div id="Nav__Title"></div>
           </div>
 
 

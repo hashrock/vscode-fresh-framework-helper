@@ -4,6 +4,11 @@ body {
   background-color: transparent;
 }
 
+#app {
+  display: flex;
+  flex-direction: column;
+}
+
 #Nav {
   display: flex;
   align-items: center;
@@ -21,4 +26,7 @@ button#Nav__List:hover {
 div#Nav__Title {
   flex: 1;
   line-height: 2rem;
+  font-weight: 700;
+  font-size: 0.75rem;
+  text-align: center;
 }

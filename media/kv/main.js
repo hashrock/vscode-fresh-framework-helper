@@ -42,38 +42,36 @@
   const pageDatabaseEl = /** @type {HTMLDivElement} */ (document.getElementById(
     "PageDatabase",
   ));
+  const navEl = /** @type {HTMLDivElement} */ (document.getElementById("Nav"));
+  const navTitleEl =
+    /** @type {HTMLDivElement} */ (document.getElementById("Nav__Title"));
 
   function hideAllPage() {
     pageListEl.style.display = "none";
     pageUpdateEl.style.display = "none";
     pageNewEl.style.display = "none";
     pageDatabaseEl.style.display = "none";
+    navListButtonEl.style.display = "none";
   }
 
   function updateNav(page) {
-    const navEl =
-      /** @type {HTMLDivElement} */ (document.getElementById("Nav"));
-    const navTitleEl =
-      /** @type {HTMLDivElement} */ (document.getElementById("Nav__Title"));
-    navListButtonEl.style.display = "none";
-
     if (page === "list") {
-      navEl.style.display = "block";
+      navEl.style.display = "flex";
+      navListButtonEl.style.display = "none";
       navTitleEl.innerText = "List All Items";
     }
     if (page === "update") {
-      navEl.style.display = "block";
+      navEl.style.display = "flex";
       navListButtonEl.style.display = "block";
       navTitleEl.innerText = "Update Item";
     }
     if (page === "new") {
-      navEl.style.display = "block";
+      navEl.style.display = "flex";
       navListButtonEl.style.display = "block";
       navTitleEl.innerText = "New Item";
     }
     if (page === "database") {
-      navListButtonEl.style.display = "block";
-      navEl.style.display = "none";
+      // TODO
     }
   }
 
@@ -94,6 +92,8 @@
     }
     updateNav(pageName);
   }
+
+  navigateTo(page);
 
   window.addEventListener("message", (event) => {
     const message = event.data; // The json data that the extension sent
@@ -126,6 +126,4 @@
   });
 
   queryEl.addEventListener("click", updateResult);
-
-  navigateTo("list");
 })();
