@@ -243,7 +243,9 @@
       };
     }, []);
 
-    return h("div", {}, [
+    return h("div", {
+      className: "result__wrapper",
+    }, [
       PageListForm(),
       PageListResult({
         items,
@@ -317,7 +319,9 @@
     const [database, setDatabase] = React.useState(null);
     const [isEditingDatabase, setIsEditingDatabase] = React.useState(false);
 
-    return h("div", {}, [
+    return h("div", {
+      className: "page",
+    }, [
       isEditingDatabase
         ? h(ChangeDatabaseForm, {
           database,

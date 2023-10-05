@@ -13,6 +13,7 @@ html {
   flex: 1;
   flex-direction: column;
   height: 100%;
+  overflow-x: hidden;
 }
 
 .nav {
@@ -38,12 +39,23 @@ html {
 .form__submit {
   width: 4rem;
 }
+.page {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  padding: 0.5rem 0rem;
+}
+
+.result__wrapper {
+}
 
 .result {
+  flex: 1;
+  padding: 0.5rem 0rem;
 }
 .result__item {
   border-bottom: 1px solid #666;
-  padding: 0.5rem 0;
+  padding: 0.5rem 0.25rem;
 }
 .result__item:hover {
   background-color: var(--vscode-list-hoverBackground);
