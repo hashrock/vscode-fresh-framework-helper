@@ -72,6 +72,22 @@ export class KvViewProvider implements vscode.WebviewViewProvider {
         "main.js",
       ),
     );
+    const reactScriptUri = webview.asWebviewUri(
+      vscode.Uri.joinPath(
+        this._extensionUri,
+        "media",
+        subFolder,
+        "react.js",
+      ),
+    );
+    const reactDomScriptUri = webview.asWebviewUri(
+      vscode.Uri.joinPath(
+        this._extensionUri,
+        "media",
+        subFolder,
+        "react-dom.js",
+      ),
+    );
 
     // Do the same for the stylesheet.
     const styleVSCodeUri = webview.asWebviewUri(
@@ -140,7 +156,6 @@ export class KvViewProvider implements vscode.WebviewViewProvider {
           </div>
 
           <div id="PageNew">
-
             <form id="PageNew__SetForm">
               <label for="type">Key</label>
               <input type="text" id="key" name="key" value="key">
@@ -154,6 +169,8 @@ export class KvViewProvider implements vscode.WebviewViewProvider {
             TODO
           </div>
         </div>
+				<script nonce="${nonce}" src="${reactScriptUri}"></script>
+				<script nonce="${nonce}" src="${reactDomScriptUri}"></script>
 				<script nonce="${nonce}" src="${scriptUri}"></script>
 			</body>
 			</html>`;
