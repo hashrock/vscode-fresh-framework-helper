@@ -338,9 +338,6 @@
     return h("div", {
       className: "page",
     }, [
-      Database({
-        database,
-      }),
       h(Nav, {
         page,
         onChangePage: (page) => {
@@ -361,6 +358,9 @@
         onChangeSelectedKey: (key) => {
           setSelectedKey(key);
         },
+      }),
+      Database({
+        database,
       }),
     ]);
   }

@@ -69,13 +69,6 @@ html {
   overflow-x: hidden;
 }
 
-.database__wrapper {
-  color: #d199ff;
-  display: flex;
-  align-items: center;
-  gap: 0.25rem;
-}
-
 .icon {
   flex: none;
 }
@@ -101,17 +94,21 @@ textarea.get__value {
   flex: 1;
 }
 
-.database__form__wrapper {
-  display: flex;
-}
-
-.database__form__uri {
-  flex: 1;
-}
 .form__submit {
   width: 4rem;
 }
 
+.database__wrapper {
+  color: #d199ff;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  cursor: pointer;
+}
+
+.database__wrapper:hover {
+  background-color: var(--vscode-list-hoverBackground);
+}
 .database {
   padding: 0.5rem 0rem;
 }
