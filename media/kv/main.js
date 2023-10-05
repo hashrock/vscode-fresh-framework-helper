@@ -315,18 +315,28 @@
     ]);
   }
 
-  function Page() {
-    const [page, setPage] = React.useState("list");
-    const [selectedKey, setSelectedKey] = React.useState(null);
+  function Database(props) {
     const [database, setDatabase] = React.useState(null);
     const [isEditingDatabase, setIsEditingDatabase] = React.useState(false);
 
     return h("div", {
-      className: "page",
+      className: "database__wrapper",
     }, [
+      h("svg", {
+        width: "16",
+        height: "16",
+        viewBox: "0 0 24 24",
+        strokeWidth: 2,
+        fill: "transparent",
+        stroke: "#a074c4",
+      }, [
+        h("use", {
+          href: "#icon-database",
+        }),
+      ]),
       isEditingDatabase
         ? h(ChangeDatabaseForm, {
-          database,
+          database: props.database,
           onChangeDatabase: (database) => {
             setDatabase(database);
             setIsEditingDatabase(false);
@@ -337,7 +347,18 @@
           onClick: () => {
             setIsEditingDatabase(true);
           },
-        }, "DB: " + (database || "Default database")),
+        }, database || "Default database"),
+    ]);
+  }
+
+  function Page() {
+    const [page, setPage] = React.useState("list");
+    const [selectedKey, setSelectedKey] = React.useState(null);
+
+    return h("div", {
+      className: "page",
+    }, [
+      Database({}),
       h(Nav, {
         page,
         onChangePage: (page) => {
