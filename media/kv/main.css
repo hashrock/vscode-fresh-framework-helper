@@ -60,6 +60,7 @@ html {
   border-bottom: 1px solid #666;
   padding: 0.5rem 0.25rem;
   overflow-x: hidden;
+  white-space: nowrap;
 }
 .result__item:hover {
   background-color: var(--vscode-list-hoverBackground);

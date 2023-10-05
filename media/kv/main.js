@@ -55,7 +55,7 @@
         const message = event.data; // The json data that the extension sent
         switch (message.type) {
           case "getResult": {
-            setValue(message.result.value);
+            setValue(JSON.stringify(message.result.value, null, 2));
             setVersionstamp(message.result.versionstamp);
             break;
           }
@@ -72,7 +72,7 @@
       }, "Key"),
       h("div", {
         className: "get__key",
-      }, selectedKey),
+      }, JSON.stringify(selectedKey)),
       h("div", {
         className: "label",
       }, "Value"),
@@ -200,6 +200,7 @@
 
   function PageListResultItem(props) {
     const item = props.item;
+
     return h("div", {
       className: "result__item",
       onClick: () => {
@@ -208,10 +209,10 @@
     }, [
       h("div", {
         className: "result__item__key",
-      }, item.key.join(",")),
+      }, item.key.map((i) => JSON.stringify(i)).join(",")),
       h("div", {
         className: "result__item__value",
-      }, item.value),
+      }, JSON.stringify(item.value)),
     ]);
   }
 
