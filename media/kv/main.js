@@ -187,7 +187,6 @@
       onSubmit: (e) => {
         e.preventDefault();
         const searchKey = searchKeyRef.current.value;
-        console.log("searchKey", searchKey);
         vscode.postMessage({ type: "list", key: searchKey });
       },
     }, [
@@ -288,6 +287,23 @@
   function ChangeDatabaseForm(props) {
     const databaseRef = React.useRef(null);
     const [database, setDatabase] = React.useState(props.database);
+    const eventRef = React.useRef(null);
+
+    React.useEffect(() => {
+      eventRef.current = (event) => {
+        const message = event.data; // The json data that the extension sent
+        switch (message.type) {
+          case "changeDatabaseResult": {
+            break;
+          }
+        }
+      };
+      window.addEventListener("message", eventRef.current);
+
+      return () => {
+        window.removeEventListener("message", eventRef.current);
+      };
+    }, []);
 
     return h("form", {
       className: "database__form__wrapper",

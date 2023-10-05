@@ -49,6 +49,10 @@ export class KvViewProvider implements vscode.WebviewViewProvider {
 
       const fetchUrl = url + "?" + searchParams.toString();
       const response = await fetch(fetchUrl);
+      if (!response.ok) {
+        vscode.window.showErrorMessage(`KV Viewer: ${response.statusText}`);
+        return;
+      }
       const result = await response.json();
 
       if (type === "list") {

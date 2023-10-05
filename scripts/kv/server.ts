@@ -45,17 +45,27 @@ const handler = async (request: Request): Promise<Response> => {
     return new Response(JSON.stringify(value), { status: 200 });
   }
 
-  if (type === "changeDatabase" && database) {
-    db = await Deno.openKv(database);
+  if (type === "changeDatabase") {
+    try {
+      if (database) {
+        db = await Deno.openKv(database);
+      } else {
+        db = await Deno.openKv();
+      }
+    } catch (e) {
+      return new Response(
+        e.message,
+        { status: 500 },
+      );
+    }
+
     const result = {
       result: "OK",
     };
     return new Response(JSON.stringify(result), { status: 200 });
   }
 
-  const body = `Your user-agent is:\n\n${
-    request.headers.get("user-agent") ?? "Unknown"
-  }`;
+  const body = `KV Viewer Server`;
 
   return new Response(body, { status: 200 });
 };
