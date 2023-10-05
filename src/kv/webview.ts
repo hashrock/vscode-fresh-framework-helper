@@ -106,26 +106,48 @@ export class KvViewProvider implements vscode.WebviewViewProvider {
 			</head>
 			<body>
         <div id="app">
-          <div>
-            <button id="query">Query</button>
+          <div id="Nav">
+            <button id="Nav__List">＜</button>
+            <div id="Nav__Title">
+              Create new item
+            </div>
           </div>
-          <div>
-            <textarea id="result">
-            OUTPUT
-            </textarea>
+
+
+          <!-- *** Page *** --->
+          <div id="PageList">
+            <div>
+              <button id="Nav__New">New</button>
+            </div>
+            <div>
+              <button id="PageList__Query">Query</button>
+            </div>
+            <div>
+              <textarea id="result">
+              OUTPUT
+              </textarea>
+            </div>
           </div>
-          <div>
-            <form id="SetForm">
+
+          <div id="PageUpdate">
+            TODO
+          </div>
+
+          <div id="PageNew">
+
+            <form id="PageNew__SetForm">
               <label for="type">Key</label>
               <input type="text" id="key" name="key" value="key">
               <label for="type">Value</label>
               <input type="text" id="value" name="value" value="value">
               <input type="submit" value="Set">
             </form>
+          </div>
 
+          <div id="PageDatabase">
+            TODO
           </div>
         </div>
-
 				<script nonce="${nonce}" src="${scriptUri}"></script>
 			</body>
 			</html>`;
