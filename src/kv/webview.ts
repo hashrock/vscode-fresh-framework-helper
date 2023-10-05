@@ -30,6 +30,7 @@ export class KvViewProvider implements vscode.WebviewViewProvider {
       const type = data.type; // list, get, set, database
       const key = data.key;
       const value = data.value;
+      const database = data.database;
 
       const url = `http://localhost:${this._port}/`;
       const searchParams = new URLSearchParams("");
@@ -42,6 +43,10 @@ export class KvViewProvider implements vscode.WebviewViewProvider {
       if (value) {
         searchParams.set("value", value);
       }
+      if (database) {
+        searchParams.set("database", database);
+      }
+
       const fetchUrl = url + "?" + searchParams.toString();
       const response = await fetch(fetchUrl);
       const result = await response.json();
@@ -62,6 +67,12 @@ export class KvViewProvider implements vscode.WebviewViewProvider {
         webviewView.webview.postMessage({
           type: "getResult",
           result: result,
+        });
+      }
+      if (type === "changeDatabase") {
+        webviewView.webview.postMessage({
+          type: "changeDatabaseResult",
+          result: result.result,
         });
       }
     });

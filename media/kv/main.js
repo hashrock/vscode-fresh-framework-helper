@@ -7,6 +7,9 @@
 // It cannot access the main VS Code APIs directly.
 
 (function () {
+  const databaseIcon =
+    "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGNsYXNzPSJpY29uIGljb24tdGFibGVyIGljb24tdGFibGVyLWRhdGFiYXNlIiB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2U9ImN1cnJlbnRDb2xvciIgZmlsbD0ibm9uZSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIj48cGF0aCBzdHJva2U9Im5vbmUiIGQ9Ik0wIDBoMjR2MjRIMHoiIGZpbGw9Im5vbmUiPjwvcGF0aD48cGF0aCBkPSJNMTIgNm0tOCAwYTggMyAwIDEgMCAxNiAwYTggMyAwIDEgMCAtMTYgMCI+PC9wYXRoPjxwYXRoIGQ9Ik00IDZ2NmE4IDMgMCAwIDAgMTYgMHYtNiI+PC9wYXRoPjxwYXRoIGQ9Ik00IDEydjZhOCAzIDAgMCAwIDE2IDB2LTYiPjwvcGF0aD48L3N2Zz4=";
+
   let page = "list";
 
   // @ts-ignore
@@ -275,20 +278,60 @@
           props.onChangePage("new");
         },
       }, "New"),
-      h(NavItem, {
-        selected: page === "get",
-        onClick: () => {
-          props.onChangePage("get");
+    ]);
+  }
+
+  function ChangeDatabaseForm(props) {
+    const databaseRef = React.useRef(null);
+    const [database, setDatabase] = React.useState(props.database);
+
+    return h("form", {
+      className: "database__form__wrapper",
+      onSubmit: (e) => {
+        e.preventDefault();
+        const database = databaseRef.current.value;
+        vscode.postMessage({ type: "changeDatabase", database });
+        props.onChangeDatabase(database);
+      },
+    }, [
+      h("input", {
+        className: "database__form__uri",
+        ref: databaseRef,
+        value: database,
+        onChange: (e) => {
+          setDatabase(e.target.value);
         },
-      }, "Get"),
+        type: "text",
+        placeholder: "Database URI",
+      }),
+      h("button", {
+        className: "form__submit",
+        type: "submit",
+      }, "Change"),
     ]);
   }
 
   function Page() {
     const [page, setPage] = React.useState("list");
     const [selectedKey, setSelectedKey] = React.useState(null);
+    const [database, setDatabase] = React.useState(null);
+    const [isEditingDatabase, setIsEditingDatabase] = React.useState(false);
 
     return h("div", {}, [
+      isEditingDatabase
+        ? h(ChangeDatabaseForm, {
+          database,
+          onChangeDatabase: (database) => {
+            setDatabase(database);
+            setIsEditingDatabase(false);
+          },
+        })
+        : h("div", {
+          className: "database",
+          onClick: () => {
+            setIsEditingDatabase(true);
+          },
+        }, "DB: " + (database || "Default database")),
       h(Nav, {
         page,
         onChangePage: (page) => {

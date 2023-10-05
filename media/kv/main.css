@@ -70,3 +70,18 @@ textarea.get__value {
   flex-direction: row;
   flex: 1;
 }
+
+.database__form__wrapper {
+  display: flex;
+}
+
+.database__form__uri {
+  flex: 1;
+}
+.form__submit {
+  width: 4rem;
+}
+
+.database {
+  padding: 0.5rem 0rem;
+}

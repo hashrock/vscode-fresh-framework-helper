@@ -1,6 +1,11 @@
-const db = await Deno.openKv();
+import "https://deno.land/std@0.203.0/dotenv/load.ts";
 
-type MessageType = "list" | "database" | "get" | "set";
+let db = await Deno.openKv();
+
+// DB can take URL:
+// https://api.deno.com/databases/[UUID]/connect
+
+type MessageType = "list" | "changeDatabase" | "get" | "set";
 
 const handler = async (request: Request): Promise<Response> => {
   // get query
@@ -38,6 +43,14 @@ const handler = async (request: Request): Promise<Response> => {
   if (type === "get" && key) {
     const value = await db.get(key.split(","));
     return new Response(JSON.stringify(value), { status: 200 });
+  }
+
+  if (type === "changeDatabase" && database) {
+    db = await Deno.openKv(database);
+    const result = {
+      result: "OK",
+    };
+    return new Response(JSON.stringify(result), { status: 200 });
   }
 
   const body = `Your user-agent is:\n\n${
