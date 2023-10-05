@@ -77,7 +77,7 @@ export class KvViewProvider implements vscode.WebviewViewProvider {
         this._extensionUri,
         "media",
         subFolder,
-        "react.js",
+        "react.min.js",
       ),
     );
     const reactDomScriptUri = webview.asWebviewUri(
@@ -85,7 +85,15 @@ export class KvViewProvider implements vscode.WebviewViewProvider {
         this._extensionUri,
         "media",
         subFolder,
-        "react-dom.js",
+        "react-dom.min.js",
+      ),
+    );
+    const classNamesScriptUri = webview.asWebviewUri(
+      vscode.Uri.joinPath(
+        this._extensionUri,
+        "media",
+        subFolder,
+        "classnames.js",
       ),
     );
 
@@ -130,47 +138,10 @@ export class KvViewProvider implements vscode.WebviewViewProvider {
 			</head>
 			<body>
         <div id="app">
-          <div id="Nav">
-            <button id="Nav__List">＜</button>
-            <div id="Nav__Title"></div>
-          </div>
-
-
-          <!-- *** Page *** --->
-          <div id="PageList">
-            <form id="PageList__Search">
-              <input type="text" id="PageList__SearchKey" name="key" value="">
-              <button type="submit" id="PageList__UpdateList">Search</button>
-            </div>
-            <div id="PageList__Result">
-            </div>
-
-            <div>
-              <button id="Nav__New">New</button>
-            </div>
-
-          </div>
-
-          <div id="PageUpdate">
-            TODO
-          </div>
-
-          <div id="PageNew">
-            <form id="PageNew__SetForm">
-              <label for="type">Key</label>
-              <input type="text" id="key" name="key" value="key">
-              <label for="type">Value</label>
-              <input type="text" id="value" name="value" value="value">
-              <input type="submit" value="Set">
-            </form>
-          </div>
-
-          <div id="PageDatabase">
-            TODO
-          </div>
         </div>
 				<script nonce="${nonce}" src="${reactScriptUri}"></script>
 				<script nonce="${nonce}" src="${reactDomScriptUri}"></script>
+        <script nonce="${nonce}" src="${classNamesScriptUri}"></script>
 				<script nonce="${nonce}" src="${scriptUri}"></script>
 			</body>
 			</html>`;

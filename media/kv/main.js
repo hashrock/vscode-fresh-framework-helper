@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/naming-convention */
 // Copyright 2018-2022 the Deno authors. All rights reserved. MIT license.
 
 //@ts-check
@@ -10,6 +11,136 @@
 
   // @ts-ignore
   const vscode = acquireVsCodeApi();
+
+  // @ts-ignore
+  let React = window.React;
+  // @ts-ignore
+  let ReactDOM = window.ReactDOM;
+  const h = React.createElement;
+  // @ts-ignore
+  let cx = window.classNames;
+
+  function PageNew() {
+    return h("div", {}, "PageNew");
+  }
+
+  function PageListForm(props) {
+    const searchKeyRef = React.useRef(null);
+
+    return h("form", {
+      className: "form__wrapper",
+      onSubmit: (e) => {
+        e.preventDefault();
+        const searchKey = searchKeyRef.current.value;
+        console.log("searchKey", searchKey);
+        vscode.postMessage({ type: "list", key: searchKey });
+      },
+    }, [
+      h("input", {
+        className: "form__query",
+        ref: searchKeyRef,
+        type: "text",
+        placeholder: "Search",
+      }),
+      h("button", {
+        className: "form__submit",
+        type: "submit",
+      }, "Search"),
+    ]);
+  }
+  function PageListResult(props) {
+    const items = props.items;
+    return h(
+      "div",
+      {
+        className: "result",
+      },
+      items.map((item) => {
+        return h("div", {
+          className: "result__item",
+        }, item.key.join(","));
+      }),
+    );
+  }
+
+  function PageList() {
+    const eventRef = React.useRef(null);
+    const [items, setItems] = React.useState([]);
+
+    React.useEffect(() => {
+      eventRef.current = (event) => {
+        const message = event.data; // The json data that the extension sent
+        switch (message.type) {
+          case "listResult": {
+            setItems(JSON.parse(message.result));
+            break;
+          }
+        }
+      };
+      window.addEventListener("message", eventRef.current);
+
+      // inital load
+      vscode.postMessage({ type: "list", key: "" });
+
+      return () => {
+        window.removeEventListener("message", eventRef.current);
+      };
+    }, []);
+
+    return h("div", {}, [
+      PageListForm(),
+      PageListResult({
+        items,
+      }),
+    ]);
+  }
+
+  function NavItem(props) {
+    return h("button", {
+      className: cx("nav__item", props.selected && "nav__item--selected"),
+      onClick: props.onClick,
+    }, props.children);
+  }
+
+  function Nav(props) {
+    const { page } = props;
+    return h("div", {
+      className: "nav",
+    }, [
+      h(NavItem, {
+        selected: page === "list",
+        onClick: () => {
+          props.onChangePage("list");
+        },
+      }, "List"),
+      h(NavItem, {
+        selected: page === "new",
+        onClick: () => {
+          props.onChangePage("new");
+        },
+      }, "New"),
+    ]);
+  }
+
+  function Page() {
+    const [page, setPage] = React.useState("list");
+
+    return h("div", {}, [
+      h(Nav, {
+        page,
+        onChangePage: (page) => {
+          setPage(page);
+        },
+      }),
+      page === "list" && h(PageList, {}),
+      page === "new" && h(PageNew, {}),
+    ]);
+  }
+
+  ReactDOM.render(
+    h(Page, {}),
+    document.getElementById("app"),
+  );
 
   // PageList__Search
   const searchFormEl =
@@ -37,12 +168,12 @@
     /** @type {HTMLButtonElement} */
     (document.getElementById("Nav__List"));
 
-  navNewButtonEl.addEventListener("click", () => {
-    navigateTo("new");
-  });
-  navListButtonEl.addEventListener("click", () => {
-    navigateTo("list");
-  });
+  // navNewButtonEl.addEventListener("click", () => {
+  //   navigateTo("new");
+  // });
+  // navListButtonEl.addEventListener("click", () => {
+  //   navigateTo("list");
+  // });
 
   const pageListEl =
     /** @type {HTMLDivElement} */ (document.getElementById("PageList"));
@@ -122,42 +253,42 @@
     updateNav(pageName);
   }
 
-  searchFormEl.addEventListener("submit", updateListResult);
-  navigateTo(page);
+  // searchFormEl.addEventListener("submit", updateListResult);
+  // navigateTo(page);
 
-  window.addEventListener("message", (event) => {
-    const message = event.data; // The json data that the extension sent
-    switch (message.type) {
-      case "listResult": {
-        updateList(JSON.parse(message.result));
-        break;
-      }
-      case "setResult": {
-        resultEl.value = message.result;
-        break;
-      }
-    }
-  });
+  // window.addEventListener("message", (event) => {
+  //   const message = event.data; // The json data that the extension sent
+  //   switch (message.type) {
+  //     case "listResult": {
+  //       updateList(JSON.parse(message.result));
+  //       break;
+  //     }
+  //     case "setResult": {
+  //       resultEl.value = message.result;
+  //       break;
+  //     }
+  //   }
+  // });
 
-  function updateListResult(e) {
-    e.preventDefault();
-    const searchKey = searchKeyEl.value;
-    vscode.postMessage({ type: "list", key: searchKey });
-  }
+  // function updateListResult(e) {
+  //   e.preventDefault();
+  //   const searchKey = searchKeyEl.value;
+  //   vscode.postMessage({ type: "list", key: searchKey });
+  // }
 
-  if (!(setForm instanceof HTMLFormElement)) {
-    return;
-  }
-  setForm.addEventListener("submit", (e) => {
-    e.preventDefault();
-    if (!(e.target instanceof HTMLFormElement)) {
-      return;
-    }
-    const formData = new FormData(e.target);
-    const key = formData.get("key");
-    const value = formData.get("value");
-    if (typeof key === "string" && typeof value === "string") {
-      vscode.postMessage({ type: "set", key, value });
-    }
-  });
+  // if (!(setForm instanceof HTMLFormElement)) {
+  //   return;
+  // }
+  // setForm.addEventListener("submit", (e) => {
+  //   e.preventDefault();
+  //   if (!(e.target instanceof HTMLFormElement)) {
+  //     return;
+  //   }
+  //   const formData = new FormData(e.target);
+  //   const key = formData.get("key");
+  //   const value = formData.get("value");
+  //   if (typeof key === "string" && typeof value === "string") {
+  //     vscode.postMessage({ type: "set", key, value });
+  //   }
+  // });
 })();

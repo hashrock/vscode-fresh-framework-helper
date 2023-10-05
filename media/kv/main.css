@@ -15,53 +15,37 @@ html {
   height: 100%;
 }
 
-#Nav {
+.nav {
   display: flex;
-  align-items: center;
-  flex-direction: row;
-  height: 2rem;
 }
 
-button#Nav__List {
-  width: 1.5rem;
+.nav__item {
   background: transparent;
 }
-button#Nav__List:hover {
-  background: #666;
-}
-div#Nav__Title {
-  flex: 1;
-  line-height: 2rem;
-  font-weight: 700;
-  font-size: 0.75rem;
-  text-align: center;
+.nav__item--selected {
+  border-bottom: 2px solid #666;
 }
 
-.PageList__Result__Item {
-  padding: 0.5rem;
-  border-bottom: 1px solid #ccc;
-}
-
-#PageList__Search {
+.form__wrapper {
   display: flex;
-  flex-direction: row;
-  align-items: center;
+  flex: 1;
 }
 
-input#PageList__SearchKey {
+.form__query {
   flex: 1;
-  padding: 0.25rem;
-  font-size: 0.75rem;
 }
-#PageList__UpdateList {
+
+.form__submit {
   width: 4rem;
 }
 
-#PageList {
-  display: flex;
+.result {
 }
-
-#PageList__Result {
-  flex: 1;
-  overflow-y: auto;
+.result__item {
+  border-bottom: 1px solid #666;
+  padding: 0.5rem 0;
+}
+.result__item:hover {
+  background-color: var(--vscode-list-hoverBackground);
+  cursor: pointer;
 }
