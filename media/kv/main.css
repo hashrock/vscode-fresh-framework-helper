@@ -67,8 +67,12 @@ html {
 
 .new__wrapper {
   overflow-x: hidden;
+  flex: 1;
 }
 
+.get__wrapper {
+  flex: 1;
+}
 .icon {
   flex: none;
 }

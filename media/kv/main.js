@@ -64,7 +64,9 @@
       window.addEventListener("message", eventRef.current);
     }, []);
 
-    return h("div", {}, [
+    return h("div", {
+      className: "get__wrapper",
+    }, [
       h("div", {
         className: "label",
       }, "Key"),
