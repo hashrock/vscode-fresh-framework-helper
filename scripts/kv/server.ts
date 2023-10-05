@@ -1,5 +1,5 @@
 import "https://deno.land/std@0.203.0/dotenv/load.ts";
-
+import { load } from "https://deno.land/std@0.203.0/dotenv/mod.ts";
 let db = await Deno.openKv();
 
 // DB can take URL:
@@ -46,6 +46,9 @@ const handler = async (request: Request): Promise<Response> => {
   }
 
   if (type === "changeDatabase") {
+    // Reload .env to get latest DENO_KV_ACCESS_TOKEN
+    load();
+
     try {
       if (database) {
         db = await Deno.openKv(database);
@@ -61,6 +64,7 @@ const handler = async (request: Request): Promise<Response> => {
 
     const result = {
       result: "OK",
+      database: database,
     };
     return new Response(JSON.stringify(result), { status: 200 });
   }

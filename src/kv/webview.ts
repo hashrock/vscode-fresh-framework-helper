@@ -43,6 +43,19 @@ export class KvViewProvider implements vscode.WebviewViewProvider {
       if (value) {
         searchParams.set("value", value);
       }
+      if (type === "changeDatabase") {
+        const db = await vscode.window.showInputBox({
+          prompt:
+            "Enter KV database file path / URL / UUID (Empty to use default))",
+          value: database,
+        });
+        if (db === undefined) {
+          return;
+        } else {
+          searchParams.set("database", db);
+        }
+      }
+
       if (database) {
         searchParams.set("database", database);
       }
@@ -77,6 +90,7 @@ export class KvViewProvider implements vscode.WebviewViewProvider {
         webviewView.webview.postMessage({
           type: "changeDatabaseResult",
           result: result.result,
+          database: result.database,
         });
       }
     });

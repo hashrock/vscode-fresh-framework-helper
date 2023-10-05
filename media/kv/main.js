@@ -204,6 +204,9 @@
       {
         className: "result",
       },
+      items.length === 0 && h("div", {
+        className: "result__empty",
+      }, "No items found"),
       items.map((item) => {
         return h("div", {
           className: "result__item",
@@ -279,16 +282,15 @@
     ]);
   }
 
-  function ChangeDatabaseForm(props) {
-    const databaseRef = React.useRef(null);
-    const [database, setDatabase] = React.useState(props.database);
+  function Database(props) {
+    const [database, setDatabase] = React.useState(null);
     const eventRef = React.useRef(null);
-
     React.useEffect(() => {
       eventRef.current = (event) => {
         const message = event.data; // The json data that the extension sent
         switch (message.type) {
           case "changeDatabaseResult": {
+            setDatabase(message.database);
             break;
           }
         }
@@ -299,36 +301,6 @@
         window.removeEventListener("message", eventRef.current);
       };
     }, []);
-
-    return h("form", {
-      className: "database__form__wrapper",
-      onSubmit: (e) => {
-        e.preventDefault();
-        const database = databaseRef.current.value;
-        vscode.postMessage({ type: "changeDatabase", database });
-        props.onChangeDatabase(database);
-      },
-    }, [
-      h("input", {
-        className: "database__form__uri",
-        ref: databaseRef,
-        value: database,
-        onChange: (e) => {
-          setDatabase(e.target.value);
-        },
-        type: "text",
-        placeholder: "Database URI",
-      }),
-      h("button", {
-        className: "form__submit",
-        type: "submit",
-      }, "Change"),
-    ]);
-  }
-
-  function Database(props) {
-    const [database, setDatabase] = React.useState(null);
-    const [isEditingDatabase, setIsEditingDatabase] = React.useState(false);
 
     return h("div", {
       className: "database__wrapper",
@@ -345,20 +317,13 @@
           href: "#icon-database",
         }),
       ]),
-      isEditingDatabase
-        ? h(ChangeDatabaseForm, {
-          database: props.database,
-          onChangeDatabase: (database) => {
-            setDatabase(database);
-            setIsEditingDatabase(false);
-          },
-        })
-        : h("div", {
-          className: "database",
-          onClick: () => {
-            setIsEditingDatabase(true);
-          },
-        }, database || "Default database"),
+
+      h("div", {
+        className: "database",
+        onClick: () => {
+          vscode.postMessage({ type: "changeDatabase", database });
+        },
+      }, database || "Default database"),
     ]);
   }
 
