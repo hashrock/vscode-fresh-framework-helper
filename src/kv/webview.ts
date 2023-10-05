@@ -46,10 +46,18 @@ export class KvViewProvider implements vscode.WebviewViewProvider {
       const response = await fetch(fetchUrl);
       const result = await response.json();
 
-      webviewView.webview.postMessage({
-        type: "setResult",
-        result: JSON.stringify(result, null, 2),
-      });
+      if (type === "list") {
+        webviewView.webview.postMessage({
+          type: "listResult",
+          result: JSON.stringify(result, null, 2),
+        });
+      }
+      if (type === "set") {
+        webviewView.webview.postMessage({
+          type: "setResult",
+          result: JSON.stringify(result, null, 2),
+        });
+      }
     });
   }
 
@@ -114,17 +122,17 @@ export class KvViewProvider implements vscode.WebviewViewProvider {
 
           <!-- *** Page *** --->
           <div id="PageList">
+            <form id="PageList__Search">
+              <input type="text" id="PageList__SearchKey" name="key" value="">
+              <button type="submit" id="PageList__UpdateList">Search</button>
+            </div>
+            <div id="PageList__Result">
+            </div>
+
             <div>
               <button id="Nav__New">New</button>
             </div>
-            <div>
-              <button id="PageList__Query">Query</button>
-            </div>
-            <div>
-              <textarea id="result">
-              OUTPUT
-              </textarea>
-            </div>
+
           </div>
 
           <div id="PageUpdate">

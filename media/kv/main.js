@@ -4,15 +4,26 @@
 
 // This script will be run within the webview itself
 // It cannot access the main VS Code APIs directly.
+
 (function () {
   let page = "list";
 
   // @ts-ignore
   const vscode = acquireVsCodeApi();
 
-  const queryEl =
+  // PageList__Search
+  const searchFormEl =
+    /** @type {HTMLFormElement} */
+    (document.getElementById("PageList__Search"));
+
+  const updateListButtonEl =
     /** @type {HTMLButtonElement} */
-    (document.getElementById("PageList__Query"));
+    (document.getElementById("PageList__UpdateList"));
+
+  const searchKeyEl =
+    /** @type {HTMLInputElement} */
+    (document.getElementById("PageList__SearchKey"));
+
   const resultEl =
     /** @type {HTMLTextAreaElement} */ (document.getElementById("result"));
   const setForm =
@@ -35,6 +46,11 @@
 
   const pageListEl =
     /** @type {HTMLDivElement} */ (document.getElementById("PageList"));
+  const pageListResultEl =
+    /** @type {HTMLDivElement} */ (document.getElementById(
+      "PageList__Result",
+    ));
+
   const pageUpdateEl =
     /** @type {HTMLDivElement} */ (document.getElementById("PageUpdate"));
   const pageNewEl =
@@ -52,6 +68,19 @@
     pageNewEl.style.display = "none";
     pageDatabaseEl.style.display = "none";
     navListButtonEl.style.display = "none";
+  }
+
+  /**
+   * @param {Array} items
+   */
+  function updateList(items) {
+    pageListResultEl.innerText = "";
+    for (const item of items) {
+      const itemEl = document.createElement("div");
+      itemEl.setAttribute("class", "PageList__Result__Item");
+      itemEl.innerText = item.key.join(",");
+      pageListResultEl.appendChild(itemEl);
+    }
   }
 
   function updateNav(page) {
@@ -93,11 +122,16 @@
     updateNav(pageName);
   }
 
+  searchFormEl.addEventListener("submit", updateListResult);
   navigateTo(page);
 
   window.addEventListener("message", (event) => {
     const message = event.data; // The json data that the extension sent
     switch (message.type) {
+      case "listResult": {
+        updateList(JSON.parse(message.result));
+        break;
+      }
       case "setResult": {
         resultEl.value = message.result;
         break;
@@ -105,9 +139,11 @@
     }
   });
 
-  const updateResult = () => {
-    vscode.postMessage({ type: "list" });
-  };
+  function updateListResult(e) {
+    e.preventDefault();
+    const searchKey = searchKeyEl.value;
+    vscode.postMessage({ type: "list", key: searchKey });
+  }
 
   if (!(setForm instanceof HTMLFormElement)) {
     return;
@@ -124,6 +160,4 @@
       vscode.postMessage({ type: "set", key, value });
     }
   });
-
-  queryEl.addEventListener("click", updateResult);
 })();
