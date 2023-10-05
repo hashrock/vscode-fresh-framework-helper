@@ -58,6 +58,12 @@ export class KvViewProvider implements vscode.WebviewViewProvider {
           result: result.result,
         });
       }
+      if (type === "get") {
+        webviewView.webview.postMessage({
+          type: "getResult",
+          result: result,
+        });
+      }
     });
   }
 
