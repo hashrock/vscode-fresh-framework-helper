@@ -56,10 +56,6 @@ export class KvViewProvider implements vscode.WebviewViewProvider {
         }
       }
 
-      if (database) {
-        searchParams.set("database", database);
-      }
-
       const fetchUrl = url + "?" + searchParams.toString();
       const response = await fetch(fetchUrl);
       if (!response.ok) {
