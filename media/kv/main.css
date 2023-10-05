@@ -13,7 +13,7 @@ html {
   flex: 1;
   flex-direction: column;
   height: 100%;
-  overflow-x: hidden;
+  overflow-y: hidden;
 }
 
 .nav {
@@ -29,7 +29,6 @@ html {
 
 .form__wrapper {
   display: flex;
-  flex: 1;
 }
 
 .form__query {
@@ -43,15 +42,19 @@ html {
   display: flex;
   flex-direction: column;
   flex: 1;
-  padding: 0.5rem 0rem;
+  overflow-y: hidden;
 }
 
 .result__wrapper {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow-y: hidden;
 }
 
 .result {
   flex: 1;
-  padding: 0.5rem 0rem;
+  overflow-x: hidden;
 }
 .result__item {
   border-bottom: 1px solid #666;
