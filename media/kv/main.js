@@ -242,6 +242,10 @@
       };
     }, []);
 
+    React.useEffect(() => {
+      vscode.postMessage({ type: "list", key: "" });
+    }, [props.database]);
+
     return h("div", {
       className: "result__wrapper",
     }, [
@@ -283,25 +287,7 @@
   }
 
   function Database(props) {
-    const [database, setDatabase] = React.useState(null);
-    const eventRef = React.useRef(null);
-    React.useEffect(() => {
-      eventRef.current = (event) => {
-        const message = event.data; // The json data that the extension sent
-        switch (message.type) {
-          case "changeDatabaseResult": {
-            setDatabase(message.database);
-            break;
-          }
-        }
-      };
-      window.addEventListener("message", eventRef.current);
-
-      return () => {
-        window.removeEventListener("message", eventRef.current);
-      };
-    }, []);
-
+    const database = props.database;
     return h("div", {
       className: "database__wrapper",
     }, [
@@ -330,11 +316,31 @@
   function Page() {
     const [page, setPage] = React.useState("list");
     const [selectedKey, setSelectedKey] = React.useState(null);
+    const [database, setDatabase] = React.useState(null);
+    const eventRef = React.useRef(null);
+    React.useEffect(() => {
+      eventRef.current = (event) => {
+        const message = event.data; // The json data that the extension sent
+        switch (message.type) {
+          case "changeDatabaseResult": {
+            setDatabase(message.database);
+            break;
+          }
+        }
+      };
+      window.addEventListener("message", eventRef.current);
+
+      return () => {
+        window.removeEventListener("message", eventRef.current);
+      };
+    }, []);
 
     return h("div", {
       className: "page",
     }, [
-      Database({}),
+      Database({
+        database,
+      }),
       h(Nav, {
         page,
         onChangePage: (page) => {
@@ -343,6 +349,7 @@
       }),
       page === "list" && h(PageList, {
         selectedKey,
+        database,
         onChangeSelectedKey: (key) => {
           setSelectedKey(key);
           setPage("get");
