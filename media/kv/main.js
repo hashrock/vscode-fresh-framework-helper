@@ -21,7 +21,70 @@
   let cx = window.classNames;
 
   function PageNew() {
-    return h("div", {}, "PageNew");
+    const eventRef = React.useRef(null);
+    const [message, setMessage] = React.useState(null);
+
+    React.useEffect(() => {
+      eventRef.current = (event) => {
+        const message = event.data; // The json data that the extension sent
+        switch (message.type) {
+          case "setResult": {
+            console.log("message", message);
+            if (message.result === "OK") {
+              setMessage("The item set successfully : " + new Date());
+            }
+            break;
+          }
+        }
+      };
+      window.addEventListener("message", eventRef.current);
+
+      return () => {
+        window.removeEventListener("message", eventRef.current);
+      };
+    }, []);
+
+    return h("div", {}, [
+      PageNewForm(),
+      message && h("div", {
+        className: "message",
+      }, message),
+    ]);
+  }
+
+  function PageNewForm(props) {
+    const keyRef = React.useRef(null);
+    const valueRef = React.useRef(null);
+
+    return h("form", {
+      className: "newform__wrapper",
+      onSubmit: (e) => {
+        e.preventDefault();
+        const key = keyRef.current.value;
+        const value = valueRef.current.value;
+        console.log("key", key);
+        console.log("value", value);
+        vscode.postMessage({ type: "set", key, value });
+      },
+    }, [
+      h("input", {
+        className: "newform__key",
+        name: "key",
+        ref: keyRef,
+        type: "text",
+        placeholder: "Key",
+      }),
+      h("input", {
+        className: "newform__value",
+        ref: valueRef,
+        type: "text",
+        placeholder: "Value",
+      }),
+      h("button", {
+        className: "newform__submit",
+        type: "submit",
+      }, "Set"),
+    ]);
   }
 
   function PageListForm(props) {
@@ -72,7 +135,7 @@
         const message = event.data; // The json data that the extension sent
         switch (message.type) {
           case "listResult": {
-            setItems(JSON.parse(message.result));
+            setItems(message.result);
             break;
           }
         }

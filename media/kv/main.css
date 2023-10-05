@@ -49,3 +49,6 @@ html {
   background-color: var(--vscode-list-hoverBackground);
   cursor: pointer;
 }
+
+.newform__wrapper {
+}

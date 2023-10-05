@@ -49,13 +49,13 @@ export class KvViewProvider implements vscode.WebviewViewProvider {
       if (type === "list") {
         webviewView.webview.postMessage({
           type: "listResult",
-          result: JSON.stringify(result, null, 2),
+          result: result,
         });
       }
       if (type === "set") {
         webviewView.webview.postMessage({
           type: "setResult",
-          result: JSON.stringify(result, null, 2),
+          result: result.result,
         });
       }
     });
