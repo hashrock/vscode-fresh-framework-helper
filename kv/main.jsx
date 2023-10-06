@@ -16,16 +16,21 @@ import { PageList } from "./list.jsx";
 
   function PageGet(props) {
     const selectedKey = props.selectedKey;
+    /**
+     * @type {React.MutableRefObject<EventListener | null>}
+     */
     const eventRef = useRef(null);
-    // @ts-ignore
+    /**
+     * @type {React.MutableRefObject<EventListener | null>}
+     */
     const eventUpdateRef = useRef(null);
     const [value, setValue] = useState(null);
     const [versionstamp, setVersionstamp] = useState(null);
     const [message, setMessage] = useState(null);
 
     useEffect(() => {
-      // @ts-ignore
       eventUpdateRef.current = (event) => {
+        // @ts-ignore
         const message = event.data; // The json data that the extension sent
         switch (message.type) {
           case "setResult": {
@@ -39,12 +44,12 @@ import { PageList } from "./list.jsx";
           }
         }
       };
-      // @ts-ignore
       window.addEventListener("message", eventUpdateRef.current);
 
       return () => {
-        // @ts-ignore
-        window.removeEventListener("message", eventUpdateRef.current);
+        if (eventUpdateRef.current) {
+          window.removeEventListener("message", eventUpdateRef.current);
+        }
       };
     }, []);
 
@@ -52,8 +57,8 @@ import { PageList } from "./list.jsx";
       if (selectedKey) {
         vscode.postMessage({ type: "get", key: selectedKey });
       }
-      // @ts-ignore
       eventRef.current = (event) => {
+        // @ts-ignore
         const message = event.data; // The json data that the extension sent
         switch (message.type) {
           case "getResult": {
@@ -64,7 +69,6 @@ import { PageList } from "./list.jsx";
           }
         }
       };
-      // @ts-ignore
       window.addEventListener("message", eventRef.current);
     }, []);
 
@@ -77,8 +81,12 @@ import { PageList } from "./list.jsx";
           <textarea
             className="get__value"
             value={value || ""}
-            // @ts-ignore
-            onChange={(e) => setValue(e.target.value)}
+            onChange={(e) => {
+              if (e.target.value !== value) {
+                // @ts-ignore
+                return setValue(e.target.value);
+              }
+            }}
           />
         </div>
         <button
@@ -97,12 +105,15 @@ import { PageList } from "./list.jsx";
   }
 
   function PageNew() {
+    /**
+     * @type {React.MutableRefObject<EventListener | null>}
+     */
     const eventRef = useRef(null);
     const [message, setMessage] = useState(null);
 
     useEffect(() => {
-      // @ts-ignore
       eventRef.current = (event) => {
+        // @ts-ignore
         const message = event.data; // The json data that the extension sent
         switch (message.type) {
           case "setResult": {
@@ -115,12 +126,12 @@ import { PageList } from "./list.jsx";
           }
         }
       };
-      // @ts-ignore
       window.addEventListener("message", eventRef.current);
 
       return () => {
-        // @ts-ignore
-        window.removeEventListener("message", eventRef.current);
+        if (eventRef.current) {
+          window.removeEventListener("message", eventRef.current);
+        }
       };
     }, []);
 
@@ -133,7 +144,13 @@ import { PageList } from "./list.jsx";
   }
 
   function PageNewForm() {
+    /**
+     * @type {React.MutableRefObject<HTMLInputElement | null>}
+     */
     const keyRef = useRef(null);
+    /**
+     * @type {React.MutableRefObject<HTMLInputElement | null>}
+     */
     const valueRef = useRef(null);
 
     return (
@@ -141,9 +158,10 @@ import { PageList } from "./list.jsx";
         className="newform__wrapper"
         onSubmit={(e) => {
           e.preventDefault();
-          // @ts-ignore
+          if (!keyRef.current || !valueRef.current) {
+            return;
+          }
           const key = keyRef.current.value;
-          // @ts-ignore
           const value = valueRef.current.value;
           vscode.postMessage({ type: "set", key, value });
         }}
@@ -230,11 +248,14 @@ import { PageList } from "./list.jsx";
     const [page, setPage] = useState("list");
     const [selectedKey, setSelectedKey] = useState(null);
     const [database, setDatabase] = useState(null);
+    /**
+     * @type {React.MutableRefObject<EventListener | null>}
+     */
     const eventRef = useRef(null);
 
     useEffect(() => {
-      // @ts-ignore
       eventRef.current = (event) => {
+        // @ts-ignore
         const message = event.data; // The json data that the extension sent
         switch (message.type) {
           case "changeDatabaseResult": {
@@ -243,12 +264,12 @@ import { PageList } from "./list.jsx";
           }
         }
       };
-      // @ts-ignore
       window.addEventListener("message", eventRef.current);
 
       return () => {
-        // @ts-ignore
-        window.removeEventListener("message", eventRef.current);
+        if (eventRef.current) {
+          window.removeEventListener("message", eventRef.current);
+        }
       };
     }, []);
 
