@@ -12,11 +12,6 @@ import { PageGet } from "./get";
 // It cannot access the main VS Code APIs directly.
 
 (function () {
-  interface PageListFormProps {
-    selectedKey: string | null;
-    onChangeSelectedKey: (key: string) => void;
-  }
-
   function PageNew() {
     const [message, setMessage] = useState<string | null>(null);
 
