@@ -121,7 +121,8 @@
     "pretest": "npm run compile && npm run lint",
     "lint": "eslint src --ext ts",
     "test": "node ./out/test/runTest.js",
-    "changelog": "npx standard-version"
+    "changelog": "npx standard-version",
+    "kv:build": "esbuild kv/main.jsx --bundle --outfile=media/kv/main.js --minify"
   },
   "devDependencies": {
     "@types/mocha": "^10.0.1",
@@ -131,9 +132,13 @@
     "@typescript-eslint/eslint-plugin": "^6.4.1",
     "@typescript-eslint/parser": "^6.4.1",
     "@vscode/test-electron": "^2.3.4",
+    "classnames": "^2.3.2",
+    "esbuild": "0.19.4",
     "eslint": "^8.47.0",
     "glob": "^10.3.3",
     "mocha": "^10.2.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
     "typescript": "^5.1.6"
   },
   "dependencies": {

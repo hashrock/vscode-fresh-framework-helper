@@ -103,30 +103,6 @@ export class KvViewProvider implements vscode.WebviewViewProvider {
         "main.js",
       ),
     );
-    const reactScriptUri = webview.asWebviewUri(
-      vscode.Uri.joinPath(
-        this._extensionUri,
-        "media",
-        subFolder,
-        "react.min.js",
-      ),
-    );
-    const reactDomScriptUri = webview.asWebviewUri(
-      vscode.Uri.joinPath(
-        this._extensionUri,
-        "media",
-        subFolder,
-        "react-dom.min.js",
-      ),
-    );
-    const classNamesScriptUri = webview.asWebviewUri(
-      vscode.Uri.joinPath(
-        this._extensionUri,
-        "media",
-        subFolder,
-        "classnames.js",
-      ),
-    );
 
     // Do the same for the stylesheet.
     const styleVSCodeUri = webview.asWebviewUri(
@@ -179,9 +155,7 @@ export class KvViewProvider implements vscode.WebviewViewProvider {
 
         <div id="app">
         </div>
-				<script nonce="${nonce}" src="${reactScriptUri}"></script>
-				<script nonce="${nonce}" src="${reactDomScriptUri}"></script>
-        <script nonce="${nonce}" src="${classNamesScriptUri}"></script>
+
 				<script nonce="${nonce}" src="${scriptUri}"></script>
 			</body>
 			</html>`;
