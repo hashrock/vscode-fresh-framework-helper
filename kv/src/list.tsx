@@ -2,8 +2,7 @@
 // Copyright 2018-2022 the Deno authors. All rights reserved. MIT license.
 
 import React, { useEffect, useRef, useState } from "react";
-
-const vscode = acquireVsCodeApi();
+import { vscode } from "./api";
 
 interface PageListFormProps {
   onSubmit: (key: string) => void;

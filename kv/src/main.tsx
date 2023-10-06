@@ -5,13 +5,12 @@ import React, { useEffect, useRef, useState } from "react";
 import { render } from "react-dom";
 import cx from "classnames";
 import { PageList } from "./list";
+import { vscode } from "./api";
 
 // This script will be run within the webview itself
 // It cannot access the main VS Code APIs directly.
 
 (function () {
-  const vscode = acquireVsCodeApi();
-
   interface PageListFormProps {
     selectedKey: string | null;
     onChangeSelectedKey: (key: string) => void;
