@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 // Copyright 2018-2022 the Deno authors. All rights reserved. MIT license.
 
-import React, { useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { vscode } from "./api";
 
 interface PageListFormProps {
@@ -96,33 +96,30 @@ interface PageListProps {
 }
 
 export function PageList(props: PageListProps) {
-  const eventRef = useRef(null);
+  const eventRef = useRef<(event: MessageEvent) => void>(null);
   const [items, setItems] = useState([]);
   const [isBusy, setIsBusy] = useState<boolean>(false);
 
-  useEffect(() => {
-    // @ts-ignore
-    eventRef.current = (event) => {
-      // @ts-ignore
-      const message = event.data; // The json data that the extension sent
-      switch (message.type) {
-        case "listResult": {
-          setItems(message.result);
-          setIsBusy(false);
-          break;
-        }
+  const handleMessage = useCallback((event: MessageEvent) => {
+    const message = event.data; // The json data that the extension sent
+    switch (message.type) {
+      case "listResult": {
+        setItems(message.result);
+        setIsBusy(false);
+        break;
       }
-    };
-    // @ts-ignore
-    window.addEventListener("message", eventRef.current);
+    }
+  }, []);
+
+  useEffect(() => {
+    window.addEventListener("message", handleMessage);
 
     // initial lPd
     vscode.postMessage({ type: "list", key: "" });
     setIsBusy(true);
 
     return () => {
-      // @ts-ignore
-      window.removeEventListener("message", eventRef.current);
+      window.removeEventListener("message", handleMessage);
     };
   }, []);
 
