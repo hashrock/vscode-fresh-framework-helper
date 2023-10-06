@@ -1,11 +1,11 @@
+// @ts-check
+/* eslint-disable @typescript-eslint/naming-convention */
+// Copyright 2018-2022 the Deno authors. All rights reserved. MIT license.
+
 import React, { useRef, useEffect, useState } from "react";
 import { render } from "react-dom";
 import cx from "classnames";
-
-// @ts-check
-
-/* eslint-disable @typescript-eslint/naming-convention */
-// Copyright 2018-2022 the Deno authors. All rights reserved. MIT license.
+import { PageList } from "./list.jsx";
 
 // This script will be run within the webview itself
 // It cannot access the main VS Code APIs directly.
@@ -17,18 +17,21 @@ import cx from "classnames";
   function PageGet(props) {
     const selectedKey = props.selectedKey;
     const eventRef = useRef(null);
+    // @ts-ignore
     const eventUpdateRef = useRef(null);
     const [value, setValue] = useState(null);
     const [versionstamp, setVersionstamp] = useState(null);
     const [message, setMessage] = useState(null);
 
     useEffect(() => {
+      // @ts-ignore
       eventUpdateRef.current = (event) => {
         const message = event.data; // The json data that the extension sent
         switch (message.type) {
           case "setResult": {
             console.log("message", message);
             if (message.result === "OK") {
+              // @ts-ignore
               setMessage("The item set successfully : " + new Date());
               vscode.postMessage({ type: "get", key: selectedKey });
             }
@@ -36,9 +39,11 @@ import cx from "classnames";
           }
         }
       };
+      // @ts-ignore
       window.addEventListener("message", eventUpdateRef.current);
 
       return () => {
+        // @ts-ignore
         window.removeEventListener("message", eventUpdateRef.current);
       };
     }, []);
@@ -47,16 +52,19 @@ import cx from "classnames";
       if (selectedKey) {
         vscode.postMessage({ type: "get", key: selectedKey });
       }
+      // @ts-ignore
       eventRef.current = (event) => {
         const message = event.data; // The json data that the extension sent
         switch (message.type) {
           case "getResult": {
+            // @ts-ignore
             setValue(JSON.stringify(message.result.value, null, 2));
             setVersionstamp(message.result.versionstamp);
             break;
           }
         }
       };
+      // @ts-ignore
       window.addEventListener("message", eventRef.current);
     }, []);
 
@@ -68,7 +76,8 @@ import cx from "classnames";
         <div className="get__value__wrapper">
           <textarea
             className="get__value"
-            value={value}
+            value={value || ""}
+            // @ts-ignore
             onChange={(e) => setValue(e.target.value)}
           />
         </div>
@@ -92,21 +101,25 @@ import cx from "classnames";
     const [message, setMessage] = useState(null);
 
     useEffect(() => {
+      // @ts-ignore
       eventRef.current = (event) => {
         const message = event.data; // The json data that the extension sent
         switch (message.type) {
           case "setResult": {
             console.log("message", message);
             if (message.result === "OK") {
+              // @ts-ignore
               setMessage("The item set successfully : " + new Date());
             }
             break;
           }
         }
       };
+      // @ts-ignore
       window.addEventListener("message", eventRef.current);
 
       return () => {
+        // @ts-ignore
         window.removeEventListener("message", eventRef.current);
       };
     }, []);
@@ -128,7 +141,9 @@ import cx from "classnames";
         className="newform__wrapper"
         onSubmit={(e) => {
           e.preventDefault();
+          // @ts-ignore
           const key = keyRef.current.value;
+          // @ts-ignore
           const value = valueRef.current.value;
           vscode.postMessage({ type: "set", key, value });
         }}
@@ -150,114 +165,6 @@ import cx from "classnames";
           Set
         </button>
       </form>
-    );
-  }
-
-  function PageListForm(props) {
-    const searchKeyRef = useRef(null);
-
-    return (
-      <form
-        className="form__wrapper"
-        onSubmit={(e) => {
-          e.preventDefault();
-          const searchKey = searchKeyRef.current.value;
-          props.onSubmit(searchKey);
-        }}
-      >
-        <input
-          className="form__query"
-          ref={searchKeyRef}
-          type="text"
-          placeholder="Search"
-        />
-        <button className="form__submit" type="submit">
-          {props.isBusy ? "Searching..." : "Search"}
-        </button>
-      </form>
-    );
-  }
-
-  function PageListResultItem(props) {
-    const item = props.item;
-
-    return (
-      <div
-        className="result__item"
-        onClick={() => {
-          props.onChangeSelectedKey(item.key.join(","));
-        }}
-      >
-        <div className="result__item__key">
-          {item.key.map((i) => JSON.stringify(i)).join(",")}
-        </div>
-        <div className="result__item__value">{JSON.stringify(item.value)}</div>
-      </div>
-    );
-  }
-
-  function PageListResult(props) {
-    const items = props.items;
-
-    return (
-      <div className="result">
-        {items.length === 0 && (
-          <div className="result__empty">No items found</div>
-        )}
-        {items.map((item) => (
-          <PageListResultItem
-            item={item}
-            onChangeSelectedKey={(key) => props.onChangeSelectedKey(key)}
-          />
-        ))}
-      </div>
-    );
-  }
-
-  function PageList(props) {
-    const eventRef = useRef(null);
-    const [items, setItems] = useState([]);
-    const [isBusy, setIsBusy] = useState(false);
-
-    useEffect(() => {
-      eventRef.current = (event) => {
-        const message = event.data; // The json data that the extension sent
-        switch (message.type) {
-          case "listResult": {
-            setItems(message.result);
-            setIsBusy(false);
-            break;
-          }
-        }
-      };
-      window.addEventListener("message", eventRef.current);
-
-      // initial lPd
-      vscode.postMessage({ type: "list", key: "" });
-      setIsBusy(true);
-
-      return () => {
-        window.removeEventListener("message", eventRef.current);
-      };
-    }, []);
-
-    useEffect(() => {
-      vscode.postMessage({ type: "list", key: "" });
-    }, [props.database]);
-
-    return (
-      <div className="result__wrapper">
-        <PageListForm
-          onSubmit={(key) => {
-            vscode.postMessage({ type: "list", key });
-          }}
-          isBusy={isBusy}
-        />
-        <PageListResult
-          items={items}
-          onChangeSelectedKey={(key) => props.onChangeSelectedKey(key)}
-        />
-      </div>
     );
   }
 
@@ -326,6 +233,7 @@ import cx from "classnames";
     const eventRef = useRef(null);
 
     useEffect(() => {
+      // @ts-ignore
       eventRef.current = (event) => {
         const message = event.data; // The json data that the extension sent
         switch (message.type) {
@@ -335,9 +243,11 @@ import cx from "classnames";
           }
         }
       };
+      // @ts-ignore
       window.addEventListener("message", eventRef.current);
 
       return () => {
+        // @ts-ignore
         window.removeEventListener("message", eventRef.current);
       };
     }, []);
