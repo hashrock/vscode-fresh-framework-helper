@@ -96,7 +96,6 @@ interface PageListProps {
 }
 
 export function PageList(props: PageListProps) {
-  const eventRef = useRef<(event: MessageEvent) => void>(null);
   const [items, setItems] = useState([]);
   const [isBusy, setIsBusy] = useState<boolean>(false);
 

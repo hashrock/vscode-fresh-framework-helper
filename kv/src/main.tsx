@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 // Copyright 2018-2022 the Deno authors. All rights reserved. MIT license.
 
-import React, { useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { render } from "react-dom";
 import cx from "classnames";
 import { PageList } from "./list";
@@ -18,36 +18,40 @@ import { vscode } from "./api";
 
   function PageGet(props: PageListFormProps) {
     const selectedKey = props.selectedKey;
-    const eventRef = useRef(null);
-    const eventUpdateRef = useRef(null);
-    const [value, setValue] = useState(null);
-    const [versionstamp, setVersionstamp] = useState(null);
-    const [message, setMessage] = useState(null);
+    const [value, setValue] = useState<string | null>(null);
+    const [versionstamp, setVersionstamp] = useState<string | null>(null);
+    const [message, setMessage] = useState<string | null>(null);
+
+    const eventHandler = useCallback((event: MessageEvent) => {
+      const message = event.data; // The json data that the extension sent
+      switch (message.type) {
+        case "getResult": {
+          setValue(JSON.stringify(message.result.value, null, 2));
+          setVersionstamp(message.result.versionstamp);
+          break;
+        }
+      }
+    }, []);
+
+    const eventUpdateHandler = useCallback((event: MessageEvent) => {
+      const message = event.data; // The json data that the extension sent
+      switch (message.type) {
+        case "setResult": {
+          console.log("message", message);
+          if (message.result === "OK") {
+            setMessage("The item set successfully : " + new Date());
+            vscode.postMessage({ type: "get", key: selectedKey });
+          }
+          break;
+        }
+      }
+    }, [selectedKey]);
 
     useEffect(() => {
-      // @ts-ignore
-      eventUpdateRef.current = (event) => {
-        // @ts-ignore
-        const message = event.data; // The json data that the extension sent
-        switch (message.type) {
-          case "setResult": {
-            console.log("message", message);
-            if (message.result === "OK") {
-              // @ts-ignore
-              setMessage("The item set successfully : " + new Date());
-              vscode.postMessage({ type: "get", key: selectedKey });
-            }
-            break;
-          }
-        }
-      };
-      // @ts-ignore
-      window.addEventListener("message", eventUpdateRef.current);
+      window.addEventListener("message", eventUpdateHandler);
 
       return () => {
-        if (eventUpdateRef.current) {
-          window.removeEventListener("message", eventUpdateRef.current);
-        }
+        window.removeEventListener("message", eventUpdateHandler);
       };
     }, []);
 
@@ -55,21 +59,12 @@ import { vscode } from "./api";
       if (selectedKey) {
         vscode.postMessage({ type: "get", key: selectedKey });
       }
-      // @ts-ignore
-      eventRef.current = (event) => {
-        // @ts-ignore
-        const message = event.data; // The json data that the extension sent
-        switch (message.type) {
-          case "getResult": {
-            // @ts-ignore
-            setValue(JSON.stringify(message.result.value, null, 2));
-            setVersionstamp(message.result.versionstamp);
-            break;
-          }
-        }
+
+      window.addEventListener("message", eventHandler);
+
+      return () => {
+        window.removeEventListener("message", eventHandler);
       };
-      // @ts-ignore
-      window.addEventListener("message", eventRef.current);
     }, []);
 
     return (
@@ -83,7 +78,6 @@ import { vscode } from "./api";
             value={value || ""}
             onChange={(e) => {
               if (e.target.value !== value) {
-                // @ts-ignore
                 return setValue(e.target.value);
               }
             }}
@@ -104,30 +98,25 @@ import { vscode } from "./api";
   }
 
   function PageNew() {
-    const eventRef = useRef<EventListener | null>(null);
     const [message, setMessage] = useState<string | null>(null);
 
-    useEffect(() => {
-      eventRef.current = (event) => {
-        // @ts-ignore
-        const message = event.data; // The json data that the extension sent
-        switch (message.type) {
-          case "setResult": {
-            console.log("message", message);
-            if (message.result === "OK") {
-              // @ts-ignore
-              setMessage("The item set successfully : " + new Date());
-            }
-            break;
+    const eventHandler = useCallback((event: MessageEvent) => {
+      const message = event.data; // The json data that the extension sent
+      switch (message.type) {
+        case "setResult": {
+          if (message.result === "OK") {
+            setMessage("The item set successfully : " + new Date());
           }
+          break;
         }
-      };
-      window.addEventListener("message", eventRef.current);
+      }
+    }, []);
+
+    useEffect(() => {
+      window.addEventListener("message", eventHandler);
 
       return () => {
-        if (eventRef.current) {
-          window.removeEventListener("message", eventRef.current);
-        }
+        window.removeEventListener("message", eventHandler);
       };
     }, []);
 
@@ -254,30 +243,22 @@ import { vscode } from "./api";
     const [page, setPage] = useState<PageType>("list");
     const [selectedKey, setSelectedKey] = useState<string | null>(null);
     const [database, setDatabase] = useState<string | null>(null);
-    /**
-     * @type {React.MutableRefObject<EventListener | null>}
-     */
-    const eventRef = useRef(null);
+
+    const eventHandler = useCallback((event: MessageEvent) => {
+      const message = event.data; // The json data that the extension sent
+      switch (message.type) {
+        case "changeDatabaseResult": {
+          setDatabase(message.database);
+          break;
+        }
+      }
+    }, []);
 
     useEffect(() => {
-      // @ts-ignore
-      eventRef.current = (event) => {
-        // @ts-ignore
-        const message = event.data; // The json data that the extension sent
-        switch (message.type) {
-          case "changeDatabaseResult": {
-            setDatabase(message.database);
-            break;
-          }
-        }
-      };
-      // @ts-ignore
-      window.addEventListener("message", eventRef.current);
+      window.addEventListener("message", eventHandler);
 
       return () => {
-        if (eventRef.current) {
-          window.removeEventListener("message", eventRef.current);
-        }
+        window.removeEventListener("message", eventHandler);
       };
     }, []);
 
