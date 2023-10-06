@@ -1,11 +1,10 @@
-// @ts-check
 /* eslint-disable @typescript-eslint/naming-convention */
 // Copyright 2018-2022 the Deno authors. All rights reserved. MIT license.
 
-import React, { useRef, useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { render } from "react-dom";
 import cx from "classnames";
-import { PageList } from "./list.jsx";
+import { PageList } from "./list";
 
 // This script will be run within the webview itself
 // It cannot access the main VS Code APIs directly.
@@ -14,21 +13,21 @@ import { PageList } from "./list.jsx";
   // @ts-ignore
   const vscode = acquireVsCodeApi();
 
-  function PageGet(props) {
+  interface PageListFormProps {
+    selectedKey: string | null;
+    onChangeSelectedKey: (key: string) => void;
+  }
+
+  function PageGet(props: PageListFormProps) {
     const selectedKey = props.selectedKey;
-    /**
-     * @type {React.MutableRefObject<EventListener | null>}
-     */
     const eventRef = useRef(null);
-    /**
-     * @type {React.MutableRefObject<EventListener | null>}
-     */
     const eventUpdateRef = useRef(null);
     const [value, setValue] = useState(null);
     const [versionstamp, setVersionstamp] = useState(null);
     const [message, setMessage] = useState(null);
 
     useEffect(() => {
+      // @ts-ignore
       eventUpdateRef.current = (event) => {
         // @ts-ignore
         const message = event.data; // The json data that the extension sent
@@ -44,6 +43,7 @@ import { PageList } from "./list.jsx";
           }
         }
       };
+      // @ts-ignore
       window.addEventListener("message", eventUpdateRef.current);
 
       return () => {
@@ -57,6 +57,7 @@ import { PageList } from "./list.jsx";
       if (selectedKey) {
         vscode.postMessage({ type: "get", key: selectedKey });
       }
+      // @ts-ignore
       eventRef.current = (event) => {
         // @ts-ignore
         const message = event.data; // The json data that the extension sent
@@ -69,6 +70,7 @@ import { PageList } from "./list.jsx";
           }
         }
       };
+      // @ts-ignore
       window.addEventListener("message", eventRef.current);
     }, []);
 
@@ -92,8 +94,7 @@ import { PageList } from "./list.jsx";
         <button
           className="get__update"
           onClick={() =>
-            vscode.postMessage({ type: "set", key: selectedKey, value })
-          }
+            vscode.postMessage({ type: "set", key: selectedKey, value })}
         >
           Update
         </button>
@@ -105,11 +106,8 @@ import { PageList } from "./list.jsx";
   }
 
   function PageNew() {
-    /**
-     * @type {React.MutableRefObject<EventListener | null>}
-     */
-    const eventRef = useRef(null);
-    const [message, setMessage] = useState(null);
+    const eventRef = useRef<EventListener | null>(null);
+    const [message, setMessage] = useState<string | null>(null);
 
     useEffect(() => {
       eventRef.current = (event) => {
@@ -144,14 +142,8 @@ import { PageList } from "./list.jsx";
   }
 
   function PageNewForm() {
-    /**
-     * @type {React.MutableRefObject<HTMLInputElement | null>}
-     */
-    const keyRef = useRef(null);
-    /**
-     * @type {React.MutableRefObject<HTMLInputElement | null>}
-     */
-    const valueRef = useRef(null);
+    const keyRef = useRef<HTMLInputElement | null>(null);
+    const valueRef = useRef<HTMLInputElement | null>(null);
 
     return (
       <form
@@ -186,7 +178,12 @@ import { PageList } from "./list.jsx";
     );
   }
 
-  function NavItem(props) {
+  interface NavItemProps {
+    selected: boolean;
+    onClick: () => void;
+    children: React.ReactNode;
+  }
+  function NavItem(props: NavItemProps) {
     return (
       <button
         className={cx("nav__item", props.selected && "nav__item--selected")}
@@ -196,7 +193,12 @@ import { PageList } from "./list.jsx";
       </button>
     );
   }
-  function Nav(props) {
+
+  interface NavProps {
+    page: string;
+    onChangePage: (page: PageType) => void;
+  }
+  function Nav(props: NavProps) {
     const { page } = props;
 
     return (
@@ -217,7 +219,11 @@ import { PageList } from "./list.jsx";
     );
   }
 
-  function Database(props) {
+  interface DatabaseProps {
+    database: string | null;
+  }
+
+  function Database(props: DatabaseProps) {
     const { database } = props;
 
     return (
@@ -244,16 +250,19 @@ import { PageList } from "./list.jsx";
     );
   }
 
+  type PageType = "list" | "new" | "get";
+
   function Page() {
-    const [page, setPage] = useState("list");
-    const [selectedKey, setSelectedKey] = useState(null);
-    const [database, setDatabase] = useState(null);
+    const [page, setPage] = useState<PageType>("list");
+    const [selectedKey, setSelectedKey] = useState<string | null>(null);
+    const [database, setDatabase] = useState<string | null>(null);
     /**
      * @type {React.MutableRefObject<EventListener | null>}
      */
     const eventRef = useRef(null);
 
     useEffect(() => {
+      // @ts-ignore
       eventRef.current = (event) => {
         // @ts-ignore
         const message = event.data; // The json data that the extension sent
@@ -264,6 +273,7 @@ import { PageList } from "./list.jsx";
           }
         }
       };
+      // @ts-ignore
       window.addEventListener("message", eventRef.current);
 
       return () => {
@@ -277,7 +287,7 @@ import { PageList } from "./list.jsx";
       <div className="page">
         <Nav
           page={page}
-          onChangePage={(page) => {
+          onChangePage={(page: PageType) => {
             setPage(page);
           }}
         />

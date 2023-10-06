@@ -122,12 +122,14 @@
     "lint": "eslint src --ext ts",
     "test": "node ./out/test/runTest.js",
     "changelog": "npx standard-version",
-    "kv:build": "esbuild kv/main.jsx --bundle --outfile=media/kv/main.js --minify"
+    "kv:build": "esbuild kv/src/main.tsx --bundle --outfile=media/kv/main.js --minify"
   },
   "devDependencies": {
     "@types/mocha": "^10.0.1",
     "@types/node": "16.x",
     "@types/node-fetch": "^2.6.6",
+    "@types/react": "^18.2.25",
+    "@types/react-dom": "^18.2.10",
     "@types/vscode": "^1.81.0",
     "@typescript-eslint/eslint-plugin": "^6.4.1",
     "@typescript-eslint/parser": "^6.4.1",

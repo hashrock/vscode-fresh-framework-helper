@@ -1,17 +1,18 @@
-// @ts-check
 /* eslint-disable @typescript-eslint/naming-convention */
 // Copyright 2018-2022 the Deno authors. All rights reserved. MIT license.
 
-import React, { useRef, useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 // @ts-ignore
 const vscode = acquireVsCodeApi();
 
-function PageListForm(props) {
-  /**
-   * @type {React.MutableRefObject<HTMLInputElement | null>}
-   */
-  const searchKeyRef = useRef(null);
+interface PageListFormProps {
+  onSubmit: (key: string) => void;
+  isBusy: boolean;
+}
+
+function PageListForm(props: PageListFormProps) {
+  const searchKeyRef = useRef<HTMLInputElement | null>(null);
 
   return (
     <form
@@ -38,7 +39,14 @@ function PageListForm(props) {
   );
 }
 
-function PageListResultItem(props) {
+interface PageListResultItemProps {
+  item: {
+    key: string[];
+    value: string;
+  };
+  onChangeSelectedKey: (key: string) => void;
+}
+function PageListResultItem(props: PageListResultItemProps) {
   const item = props.item;
 
   return (
@@ -56,13 +64,22 @@ function PageListResultItem(props) {
   );
 }
 
-function PageListResult(props) {
+interface PageListResultProps {
+  items: {
+    key: string[];
+    value: string;
+  }[];
+  onChangeSelectedKey: (key: string) => void;
+}
+function PageListResult(props: PageListResultProps) {
   const items = props.items;
 
   return (
     <div className="result">
       {items.length === 0 && (
-        <div className="result__empty">No items found</div>
+        <div className="result__empty">
+          No items found
+        </div>
       )}
       {items.map((item) => (
         <PageListResultItem
@@ -74,13 +91,19 @@ function PageListResult(props) {
   );
 }
 
-export function PageList(props) {
-  /** @type {React.MutableRefObject<EventListener | null>} */
+interface PageListProps {
+  database: string | null;
+  onChangeSelectedKey: (key: string) => void;
+  selectedKey: string | null;
+}
+
+export function PageList(props: PageListProps) {
   const eventRef = useRef(null);
   const [items, setItems] = useState([]);
-  const [isBusy, setIsBusy] = useState(false);
+  const [isBusy, setIsBusy] = useState<boolean>(false);
 
   useEffect(() => {
+    // @ts-ignore
     eventRef.current = (event) => {
       // @ts-ignore
       const message = event.data; // The json data that the extension sent
