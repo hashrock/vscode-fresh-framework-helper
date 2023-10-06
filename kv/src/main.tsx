@@ -7,6 +7,7 @@ import cx from "classnames";
 import { PageList } from "./list";
 import { vscode } from "./api";
 import { PageGet } from "./get";
+import { IconDatabase } from "./icons";
 
 // This script will be run within the webview itself
 // It cannot access the main VS Code APIs directly.
@@ -130,16 +131,7 @@ import { PageGet } from "./get";
 
     return (
       <div className="database__wrapper">
-        <svg
-          width="16"
-          height="16"
-          viewBox="0 0 24 24"
-          strokeWidth={2}
-          fill="transparent"
-          stroke="#a074c4"
-        >
-          <use href="#icon-database" />
-        </svg>
+        <IconDatabase width={16} height={16} />
         <div
           className="database"
           onClick={() => {
