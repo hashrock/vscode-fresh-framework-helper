@@ -14,8 +14,6 @@ import cx from "classnames";
   // @ts-ignore
   const vscode = acquireVsCodeApi();
 
-  const h = React.createElement;
-
   function PageGet(props) {
     const selectedKey = props.selectedKey;
     const eventRef = React.useRef(null);
@@ -264,84 +262,60 @@ import cx from "classnames";
   }
 
   function NavItem(props) {
-    return h(
-      "button",
-      {
-        className: cx("nav__item", props.selected && "nav__item--selected"),
-        onClick: props.onClick,
-      },
-      props.children
+    return (
+      <button
+        className={cx("nav__item", props.selected && "nav__item--selected")}
+        onClick={props.onClick}
+      >
+        {props.children}
+      </button>
     );
   }
-
   function Nav(props) {
     const { page } = props;
-    return h(
-      "div",
-      {
-        className: "nav",
-      },
-      [
-        h(
-          NavItem,
-          {
-            selected: page === "list",
-            onClick: () => {
-              props.onChangePage("list");
-            },
-          },
-          "List"
-        ),
-        h(
-          NavItem,
-          {
-            selected: page === "new",
-            onClick: () => {
-              props.onChangePage("new");
-            },
-          },
-          "New"
-        ),
-      ]
+
+    return (
+      <div className="nav">
+        <NavItem
+          selected={page === "list"}
+          onClick={() => props.onChangePage("list")}
+        >
+          List
+        </NavItem>
+        <NavItem
+          selected={page === "new"}
+          onClick={() => props.onChangePage("new")}
+        >
+          New
+        </NavItem>
+      </div>
     );
   }
 
   function Database(props) {
-    const database = props.database;
-    return h(
-      "div",
-      {
-        className: "database__wrapper",
-      },
-      [
-        h(
-          "svg",
-          {
-            width: "16",
-            height: "16",
-            viewBox: "0 0 24 24",
-            strokeWidth: 2,
-            fill: "transparent",
-            stroke: "#a074c4",
-          },
-          [
-            h("use", {
-              href: "#icon-database",
-            }),
-          ]
-        ),
+    const { database } = props;
 
-        h(
-          "div",
-          {
-            className: "database",
-            onClick: () => {
-              vscode.postMessage({ type: "changeDatabase", database });
-            },
-          },
-          database || "Default database"
-        ),
-      ]
+    return (
+      <div className="database__wrapper">
+        <svg
+          width="16"
+          height="16"
+          viewBox="0 0 24 24"
+          strokeWidth={2}
+          fill="transparent"
+          stroke="#a074c4"
+        >
+          <use href="#icon-database" />
+        </svg>
+        <div
+          className="database"
+          onClick={() => {
+            vscode.postMessage({ type: "changeDatabase", database });
+          }}
+        >
+          {database || "Default database"}
+        </div>
+      </div>
     );
   }
 
@@ -350,6 +324,7 @@ import cx from "classnames";
     const [selectedKey, setSelectedKey] = React.useState(null);
     const [database, setDatabase] = React.useState(null);
     const eventRef = React.useRef(null);
+
     React.useEffect(() => {
       eventRef.current = (event) => {
         const message = event.data; // The json data that the extension sent
@@ -367,39 +342,35 @@ import cx from "classnames";
       };
     }, []);
 
-    return h(
-      "div",
-      {
-        className: "page",
-      },
-      [
-        h(Nav, {
-          page,
-          onChangePage: (page) => {
+    return (
+      <div className="page">
+        <Nav
+          page={page}
+          onChangePage={(page) => {
             setPage(page);
-          },
-        }),
-        page === "list" &&
-          h(PageList, {
-            selectedKey,
-            database,
-            onChangeSelectedKey: (key) => {
+          }}
+        />
+        {page === "list" && (
+          <PageList
+            selectedKey={selectedKey}
+            database={database}
+            onChangeSelectedKey={(key) => {
               setSelectedKey(key);
               setPage("get");
-            },
-          }),
-        page === "new" && h(PageNew, {}),
-        page === "get" &&
-          h(PageGet, {
-            selectedKey,
-            onChangeSelectedKey: (key) => {
+            }}
+          />
+        )}
+        {page === "new" && <PageNew />}
+        {page === "get" && (
+          <PageGet
+            selectedKey={selectedKey}
+            onChangeSelectedKey={(key) => {
               setSelectedKey(key);
-            },
-          }),
-        Database({
-          database,
-        }),
-      ]
+            }}
+          />
+        )}
+        <Database database={database} />
+      </div>
     );
   }
 
