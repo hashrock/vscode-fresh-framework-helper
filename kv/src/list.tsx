@@ -3,7 +3,6 @@
 
 import React, { useEffect, useRef, useState } from "react";
 
-// @ts-ignore
 const vscode = acquireVsCodeApi();
 
 interface PageListFormProps {

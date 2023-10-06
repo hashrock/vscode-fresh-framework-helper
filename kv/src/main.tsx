@@ -10,7 +10,6 @@ import { PageList } from "./list";
 // It cannot access the main VS Code APIs directly.
 
 (function () {
-  // @ts-ignore
   const vscode = acquireVsCodeApi();
 
   interface PageListFormProps {
