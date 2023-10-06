@@ -1,5 +1,5 @@
-import * as React from "react";
-import * as ReactDOM from "react-dom";
+import React, { useRef, useEffect, useState } from "react";
+import { render } from "react-dom";
 import cx from "classnames";
 
 // @ts-check
@@ -16,13 +16,13 @@ import cx from "classnames";
 
   function PageGet(props) {
     const selectedKey = props.selectedKey;
-    const eventRef = React.useRef(null);
-    const eventUpdateRef = React.useRef(null);
-    const [value, setValue] = React.useState(null);
-    const [versionstamp, setVersionstamp] = React.useState(null);
-    const [message, setMessage] = React.useState(null);
+    const eventRef = useRef(null);
+    const eventUpdateRef = useRef(null);
+    const [value, setValue] = useState(null);
+    const [versionstamp, setVersionstamp] = useState(null);
+    const [message, setMessage] = useState(null);
 
-    React.useEffect(() => {
+    useEffect(() => {
       eventUpdateRef.current = (event) => {
         const message = event.data; // The json data that the extension sent
         switch (message.type) {
@@ -43,7 +43,7 @@ import cx from "classnames";
       };
     }, []);
 
-    React.useEffect(() => {
+    useEffect(() => {
       if (selectedKey) {
         vscode.postMessage({ type: "get", key: selectedKey });
       }
@@ -88,10 +88,10 @@ import cx from "classnames";
   }
 
   function PageNew() {
-    const eventRef = React.useRef(null);
-    const [message, setMessage] = React.useState(null);
+    const eventRef = useRef(null);
+    const [message, setMessage] = useState(null);
 
-    React.useEffect(() => {
+    useEffect(() => {
       eventRef.current = (event) => {
         const message = event.data; // The json data that the extension sent
         switch (message.type) {
@@ -120,8 +120,8 @@ import cx from "classnames";
   }
 
   function PageNewForm() {
-    const keyRef = React.useRef(null);
-    const valueRef = React.useRef(null);
+    const keyRef = useRef(null);
+    const valueRef = useRef(null);
 
     return (
       <form
@@ -154,7 +154,7 @@ import cx from "classnames";
   }
 
   function PageListForm(props) {
-    const searchKeyRef = React.useRef(null);
+    const searchKeyRef = useRef(null);
 
     return (
       <form
@@ -215,11 +215,11 @@ import cx from "classnames";
   }
 
   function PageList(props) {
-    const eventRef = React.useRef(null);
-    const [items, setItems] = React.useState([]);
-    const [isBusy, setIsBusy] = React.useState(false);
+    const eventRef = useRef(null);
+    const [items, setItems] = useState([]);
+    const [isBusy, setIsBusy] = useState(false);
 
-    React.useEffect(() => {
+    useEffect(() => {
       eventRef.current = (event) => {
         const message = event.data; // The json data that the extension sent
         switch (message.type) {
@@ -241,7 +241,7 @@ import cx from "classnames";
       };
     }, []);
 
-    React.useEffect(() => {
+    useEffect(() => {
       vscode.postMessage({ type: "list", key: "" });
     }, [props.database]);
 
@@ -320,12 +320,12 @@ import cx from "classnames";
   }
 
   function Page() {
-    const [page, setPage] = React.useState("list");
-    const [selectedKey, setSelectedKey] = React.useState(null);
-    const [database, setDatabase] = React.useState(null);
-    const eventRef = React.useRef(null);
+    const [page, setPage] = useState("list");
+    const [selectedKey, setSelectedKey] = useState(null);
+    const [database, setDatabase] = useState(null);
+    const eventRef = useRef(null);
 
-    React.useEffect(() => {
+    useEffect(() => {
       eventRef.current = (event) => {
         const message = event.data; // The json data that the extension sent
         switch (message.type) {
@@ -374,5 +374,5 @@ import cx from "classnames";
     );
   }
 
-  ReactDOM.render(h(Page, {}), document.getElementById("app"));
+  render(<Page />, document.getElementById("app"));
 })();
