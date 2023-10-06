@@ -1,6 +1,8 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom";
-import classNames from "classnames";
+import cx from "classnames";
+
+// @ts-check
 
 /* eslint-disable @typescript-eslint/naming-convention */
 // Copyright 2018-2022 the Deno authors. All rights reserved. MIT license.
@@ -13,8 +15,6 @@ import classNames from "classnames";
   const vscode = acquireVsCodeApi();
 
   const h = React.createElement;
-  // @ts-ignore
-  let cx = classNames;
 
   function PageGet(props) {
     const selectedKey = props.selectedKey;
@@ -62,78 +62,30 @@ import classNames from "classnames";
       window.addEventListener("message", eventRef.current);
     }, []);
 
-    return h(
-      "div",
-      {
-        className: "get__wrapper",
-      },
-      [
-        h(
-          "div",
-          {
-            className: "label",
-          },
-          "Key"
-        ),
-        h(
-          "div",
-          {
-            className: "get__key",
-          },
-          JSON.stringify(selectedKey)
-        ),
-        h(
-          "div",
-          {
-            className: "label",
-          },
-          "Value"
-        ),
-        h(
-          "div",
-          {
-            className: "get__value__wrapper",
-          },
-          h("textarea", {
-            className: "get__value",
-            value,
-            onChange: (e) => {
-              setValue(e.target.value);
-            },
-          })
-        ),
-        h(
-          "button",
-          {
-            className: "get__update",
-            onClick: () => {
-              vscode.postMessage({ type: "set", key: selectedKey, value });
-            },
-          },
-          "Update"
-        ),
-        h(
-          "div",
-          {
-            className: "label",
-          },
-          message
-        ),
-        h(
-          "div",
-          {
-            className: "label",
-          },
-          "VersionStamp"
-        ),
-        h(
-          "div",
-          {
-            className: "get__versionstamp",
-          },
-          versionstamp
-        ),
-      ]
+    return (
+      <div className="get__wrapper">
+        <div className="label">Key</div>
+        <div className="get__key">{JSON.stringify(selectedKey)}</div>
+        <div className="label">Value</div>
+        <div className="get__value__wrapper">
+          <textarea
+            className="get__value"
+            value={value}
+            onChange={(e) => setValue(e.target.value)}
+          />
+        </div>
+        <button
+          className="get__update"
+          onClick={() =>
+            vscode.postMessage({ type: "set", key: selectedKey, value })
+          }
+        >
+          Update
+        </button>
+        <div className="label">{message}</div>
+        <div className="label">VersionStamp</div>
+        <div className="get__versionstamp">{versionstamp}</div>
+      </div>
     );
   }
 
@@ -161,151 +113,106 @@ import classNames from "classnames";
       };
     }, []);
 
-    return h(
-      "div",
-      {
-        className: "new__wrapper",
-      },
-      [
-        PageNewForm(),
-        message &&
-          h(
-            "div",
-            {
-              className: "message",
-            },
-            message
-          ),
-      ]
+    return (
+      <div className="new__wrapper">
+        {PageNewForm()}
+        {message && <div className="message">{message}</div>}
+      </div>
     );
   }
 
-  function PageNewForm(props) {
+  function PageNewForm() {
     const keyRef = React.useRef(null);
     const valueRef = React.useRef(null);
 
-    return h(
-      "form",
-      {
-        className: "newform__wrapper",
-        onSubmit: (e) => {
+    return (
+      <form
+        className="newform__wrapper"
+        onSubmit={(e) => {
           e.preventDefault();
           const key = keyRef.current.value;
           const value = valueRef.current.value;
           vscode.postMessage({ type: "set", key, value });
-        },
-      },
-      [
-        h("input", {
-          className: "newform__key",
-          name: "key",
-          ref: keyRef,
-          type: "text",
-          placeholder: "Key",
-        }),
-        h("input", {
-          className: "newform__value",
-          ref: valueRef,
-          type: "text",
-          placeholder: "Value",
-        }),
-        h(
-          "button",
-          {
-            className: "newform__submit",
-            type: "submit",
-          },
-          "Set"
-        ),
-      ]
+        }}
+      >
+        <input
+          className="newform__key"
+          name="key"
+          ref={keyRef}
+          type="text"
+          placeholder="Key"
+        />
+        <input
+          className="newform__value"
+          ref={valueRef}
+          type="text"
+          placeholder="Value"
+        />
+        <button className="newform__submit" type="submit">
+          Set
+        </button>
+      </form>
     );
   }
 
   function PageListForm(props) {
     const searchKeyRef = React.useRef(null);
 
-    return h(
-      "form",
-      {
-        className: "form__wrapper",
-        onSubmit: (e) => {
+    return (
+      <form
+        className="form__wrapper"
+        onSubmit={(e) => {
           e.preventDefault();
           const searchKey = searchKeyRef.current.value;
           props.onSubmit(searchKey);
-        },
-      },
-      [
-        h("input", {
-          className: "form__query",
-          ref: searchKeyRef,
-          type: "text",
-          placeholder: "Search",
-        }),
-        h(
-          "button",
-          {
-            className: "form__submit",
-            type: "submit",
-          },
-          props.isBusy ? "Searching..." : "Search"
-        ),
-      ]
+        }}
+      >
+        <input
+          className="form__query"
+          ref={searchKeyRef}
+          type="text"
+          placeholder="Search"
+        />
+        <button className="form__submit" type="submit">
+          {props.isBusy ? "Searching..." : "Search"}
+        </button>
+      </form>
     );
   }
 
   function PageListResultItem(props) {
     const item = props.item;
 
-    return h(
-      "div",
-      {
-        className: "result__item",
-        onClick: () => {
+    return (
+      <div
+        className="result__item"
+        onClick={() => {
           props.onChangeSelectedKey(item.key.join(","));
-        },
-      },
-      [
-        h(
-          "div",
-          {
-            className: "result__item__key",
-          },
-          item.key.map((i) => JSON.stringify(i)).join(",")
-        ),
-        h(
-          "div",
-          {
-            className: "result__item__value",
-          },
-          JSON.stringify(item.value)
-        ),
-      ]
+        }}
+      >
+        <div className="result__item__key">
+          {item.key.map((i) => JSON.stringify(i)).join(",")}
+        </div>
+        <div className="result__item__value">{JSON.stringify(item.value)}</div>
+      </div>
     );
   }
 
   function PageListResult(props) {
     const items = props.items;
-    return h(
-      "div",
-      {
-        className: "result",
-      },
-      items.length === 0 &&
-        h(
-          "div",
-          {
-            className: "result__empty",
-          },
-          "No items found"
-        ),
-      items.map((item) =>
-        h(PageListResultItem, {
-          item,
-          onChangeSelectedKey: (key) => {
-            props.onChangeSelectedKey(key);
-          },
-        })
-      )
+
+    return (
+      <div className="result">
+        {items.length === 0 && (
+          <div className="result__empty">No items found</div>
+        )}
+        {items.map((item) => (
+          <PageListResultItem
+            item={item}
+            onChangeSelectedKey={(key) => props.onChangeSelectedKey(key)}
+          />
+        ))}
+      </div>
     );
   }
 
@@ -327,7 +234,7 @@ import classNames from "classnames";
       };
       window.addEventListener("message", eventRef.current);
 
-      // inital load
+      // initial lPd
       vscode.postMessage({ type: "list", key: "" });
       setIsBusy(true);
 
@@ -340,25 +247,19 @@ import classNames from "classnames";
       vscode.postMessage({ type: "list", key: "" });
     }, [props.database]);
 
-    return h(
-      "div",
-      {
-        className: "result__wrapper",
-      },
-      [
-        h(PageListForm, {
-          onSubmit: (key) => {
+    return (
+      <div className="result__wrapper">
+        <PageListForm
+          onSubmit={(key) => {
             vscode.postMessage({ type: "list", key });
-          },
-          isBusy,
-        }),
-        PageListResult({
-          items,
-          onChangeSelectedKey: (key) => {
-            props.onChangeSelectedKey(key);
-          },
-        }),
-      ]
+          }}
+          isBusy={isBusy}
+        />
+        <PageListResult
+          items={items}
+          onChangeSelectedKey={(key) => props.onChangeSelectedKey(key)}
+        />
+      </div>
     );
   }
 
