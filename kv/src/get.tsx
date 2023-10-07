@@ -3,21 +3,37 @@
 
 import React, { useCallback, useEffect, useState } from "react";
 import { vscode } from "./api";
+import { kvGet, KvKey, kvSet } from "./main";
+import superjson from "superjson";
+
+type ValueType = "string" | "json" | "number";
 
 interface PageGetProps {
-  selectedKey: string | null;
+  selectedKey: KvKey;
 }
 export function PageGet(props: PageGetProps) {
   const selectedKey = props.selectedKey;
   const [value, setValue] = useState<string | null>(null);
   const [versionstamp, setVersionstamp] = useState<string | null>(null);
   const [message, setMessage] = useState<string | null>(null);
+  const [valueType, setValueType] = useState<ValueType>("string");
 
   const eventHandler = useCallback((event: MessageEvent) => {
     const message = event.data; // The json data that the extension sent
     switch (message.type) {
       case "getResult": {
-        setValue(JSON.stringify(message.result.value, null, 2));
+        const value = message.result.value;
+        let valueType: ValueType = "string";
+        if (typeof value === "object") {
+          valueType = "json";
+          setValue(JSON.stringify(value, null, 2));
+        } else if (typeof value === "number") {
+          valueType = "number";
+          setValue(String(value));
+        } else {
+          setValue(value);
+        }
+        setValueType(valueType);
         setVersionstamp(message.result.versionstamp);
         break;
       }
@@ -31,7 +47,9 @@ export function PageGet(props: PageGetProps) {
         console.log("message", message);
         if (message.result === "OK") {
           setMessage("The item set successfully : " + new Date());
-          vscode.postMessage({ type: "get", key: selectedKey });
+          if (selectedKey) {
+            kvGet(selectedKey);
+          }
         }
         break;
       }
@@ -48,7 +66,7 @@ export function PageGet(props: PageGetProps) {
 
   useEffect(() => {
     if (selectedKey) {
-      vscode.postMessage({ type: "get", key: selectedKey });
+      kvGet(selectedKey);
     }
 
     window.addEventListener("message", eventHandler);
@@ -62,7 +80,20 @@ export function PageGet(props: PageGetProps) {
     <div className="get__wrapper">
       <div className="label">Key</div>
       <div className="get__key">{JSON.stringify(selectedKey)}</div>
-      <div className="label">Value</div>
+      <div className="value-column">
+        <div className="label">Value</div>
+        <select
+          className="get__value__type"
+          onChange={(e) => {
+            setValueType(e.target.value as ValueType);
+          }}
+          value={valueType}
+        >
+          <option value="string">string</option>
+          <option value="json">json</option>
+          <option value="number">number</option>
+        </select>
+      </div>
       <div className="get__value__wrapper">
         <textarea
           className="get__value"
@@ -76,8 +107,15 @@ export function PageGet(props: PageGetProps) {
       </div>
       <button
         className="get__update"
-        onClick={() =>
-          vscode.postMessage({ type: "set", key: selectedKey, value })}
+        onClick={() => {
+          if (valueType === "string") {
+            kvSet(selectedKey, value);
+          } else if (valueType === "number") {
+            kvSet(selectedKey, Number(value));
+          } else if (valueType === "json" && value) {
+            kvSet(selectedKey, JSON.parse(value));
+          }
+        }}
       >
         Update
       </button>

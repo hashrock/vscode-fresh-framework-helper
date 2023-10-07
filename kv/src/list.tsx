@@ -3,6 +3,7 @@
 
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { vscode } from "./api";
+import { KvKey, kvList } from "./main";
 
 interface PageListFormProps {
   onSubmit: (key: string) => void;
@@ -39,10 +40,10 @@ function PageListForm(props: PageListFormProps) {
 
 interface PageListResultItemProps {
   item: {
-    key: string[];
+    key: KvKey;
     value: string;
   };
-  onChangeSelectedKey: (key: string) => void;
+  onChangeSelectedKey: (key: KvKey) => void;
 }
 function PageListResultItem(props: PageListResultItemProps) {
   const item = props.item;
@@ -51,7 +52,7 @@ function PageListResultItem(props: PageListResultItemProps) {
     <div
       className="result__item"
       onClick={() => {
-        props.onChangeSelectedKey(item.key.join(","));
+        props.onChangeSelectedKey(item.key);
       }}
     >
       <div className="result__item__key">
@@ -64,10 +65,10 @@ function PageListResultItem(props: PageListResultItemProps) {
 
 interface PageListResultProps {
   items: {
-    key: string[];
+    key: KvKey;
     value: string;
   }[];
-  onChangeSelectedKey: (key: string) => void;
+  onChangeSelectedKey: (key: KvKey) => void;
 }
 function PageListResult(props: PageListResultProps) {
   const items = props.items;
@@ -91,8 +92,8 @@ function PageListResult(props: PageListResultProps) {
 
 interface PageListProps {
   database: string | null;
-  onChangeSelectedKey: (key: string) => void;
-  selectedKey: string | null;
+  onChangeSelectedKey: (key: KvKey) => void;
+  selectedKey: KvKey;
 }
 
 export function PageList(props: PageListProps) {
@@ -114,7 +115,8 @@ export function PageList(props: PageListProps) {
     window.addEventListener("message", handleMessage);
 
     // initial lPd
-    vscode.postMessage({ type: "list", key: "" });
+    kvList([]);
+
     setIsBusy(true);
 
     return () => {
@@ -123,14 +125,18 @@ export function PageList(props: PageListProps) {
   }, []);
 
   useEffect(() => {
-    vscode.postMessage({ type: "list", key: "" });
+    kvList([]);
   }, [props.database]);
 
   return (
     <div className="result__wrapper">
       <PageListForm
         onSubmit={(key) => {
-          vscode.postMessage({ type: "list", key });
+          if (key === "") {
+            kvList([]);
+          } else {
+            kvList(key.split(",")); // TODO: support array
+          }
         }}
         isBusy={isBusy}
       />

@@ -2,6 +2,18 @@
 
 import * as vscode from "vscode";
 import fetch from "node-fetch";
+import superjson from "superjson";
+
+export type KvKeyPart = Uint8Array | string | number | bigint | boolean;
+export type KvKey = KvKeyPart[];
+
+type MessageType = "list" | "changeDatabase" | "get" | "set";
+
+interface ResponseJson {
+  type: MessageType;
+  result: unknown;
+  database?: string;
+}
 
 export class KvViewProvider implements vscode.WebviewViewProvider {
   private _view?: vscode.WebviewView;
@@ -33,16 +45,14 @@ export class KvViewProvider implements vscode.WebviewViewProvider {
       const database = data.database;
 
       const url = `http://localhost:${this._port}/`;
-      const searchParams = new URLSearchParams("");
-      if (type) {
-        searchParams.set("type", type);
-      }
-      if (key) {
-        searchParams.set("key", key);
-      }
-      if (value) {
-        searchParams.set("value", value);
-      }
+
+      const requestJson = {
+        type,
+        key,
+        value,
+        database,
+      };
+
       if (type === "changeDatabase") {
         const db = await vscode.window.showInputBox({
           prompt:
@@ -52,17 +62,23 @@ export class KvViewProvider implements vscode.WebviewViewProvider {
         if (db === undefined) {
           return;
         } else {
-          searchParams.set("database", db);
+          requestJson.database = db;
         }
       }
 
-      const fetchUrl = url + "?" + searchParams.toString();
-      const response = await fetch(fetchUrl);
+      const response = await fetch(url, {
+        method: "POST",
+        body: superjson.stringify(requestJson),
+        headers: {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          "Content-Type": "application/json",
+        },
+      });
       if (!response.ok) {
         vscode.window.showErrorMessage(`KV Viewer: ${response.statusText}`);
         return;
       }
-      const result = await response.json();
+      const result = superjson.parse<ResponseJson>(await response.text());
 
       if (type === "list") {
         webviewView.webview.postMessage({
@@ -85,8 +101,6 @@ export class KvViewProvider implements vscode.WebviewViewProvider {
       if (type === "changeDatabase") {
         webviewView.webview.postMessage({
           type: "changeDatabaseResult",
-          result: result.result,
-          database: result.database,
         });
       }
     });

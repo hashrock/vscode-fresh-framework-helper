@@ -12,6 +12,33 @@ import { IconDatabase } from "./icons";
 // This script will be run within the webview itself
 // It cannot access the main VS Code APIs directly.
 
+export type KvKeyPart = Uint8Array | string | number | bigint | boolean;
+export type KvKey = KvKeyPart[];
+export type KvValue = unknown;
+
+type MessageType = "list" | "changeDatabase" | "get" | "set";
+
+export function kvSet(key: KvKey, value: KvValue) {
+  vscode.postMessage({ type: "set", key, value });
+}
+
+export function kvGet(key: KvKey) {
+  vscode.postMessage({ type: "get", key });
+}
+
+// TODO
+export function kvDelete(key: KvKey) {
+  vscode.postMessage({ type: "delete", key });
+}
+
+export function kvList(key: KvKey) {
+  vscode.postMessage({ type: "list", key });
+}
+
+export function kvChangeDatabase(database: string | null) {
+  vscode.postMessage({ type: "changeDatabase", database });
+}
+
 (function () {
   function PageNew() {
     const [message, setMessage] = useState<string | null>(null);
@@ -56,9 +83,10 @@ import { IconDatabase } from "./icons";
           if (!keyRef.current || !valueRef.current) {
             return;
           }
-          const key = keyRef.current.value;
+          const key = keyRef.current.value.split(","); //TODO: support array
           const value = valueRef.current.value;
-          vscode.postMessage({ type: "set", key, value });
+
+          kvSet(key, value);
         }}
       >
         <input
@@ -135,7 +163,7 @@ import { IconDatabase } from "./icons";
         <div
           className="database"
           onClick={() => {
-            vscode.postMessage({ type: "changeDatabase", database });
+            kvChangeDatabase(database);
           }}
         >
           {database || "Default database"}
@@ -148,7 +176,7 @@ import { IconDatabase } from "./icons";
 
   function Page() {
     const [page, setPage] = useState<PageType>("list");
-    const [selectedKey, setSelectedKey] = useState<string | null>(null);
+    const [selectedKey, setSelectedKey] = useState<KvKey>([]);
     const [database, setDatabase] = useState<string | null>(null);
 
     const eventHandler = useCallback((event: MessageEvent) => {

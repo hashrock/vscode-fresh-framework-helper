@@ -1,5 +1,7 @@
 import "https://deno.land/std@0.203.0/dotenv/load.ts";
 import { load } from "https://deno.land/std@0.203.0/dotenv/mod.ts";
+import superjson from "npm:superjson";
+
 let db = await Deno.openKv();
 
 // DB can take URL:
@@ -7,42 +9,61 @@ let db = await Deno.openKv();
 
 type MessageType = "list" | "changeDatabase" | "get" | "set";
 
+interface RequestJson {
+  type: MessageType;
+  key?: Deno.KvKey;
+  value?: unknown;
+  database?: string;
+}
+
 const handler = async (request: Request): Promise<Response> => {
-  // get query
+  const method = request.method;
+
+  if (method === "OPTIONS") {
+    return new Response("", {
+      headers: {
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Headers": "Content-Type",
+        "Access-Control-Allow-Methods": "POST, OPTIONS",
+      },
+    });
+  }
+
+  if (method !== "POST") {
+    return new Response("Only POST is supported", { status: 400 });
+  }
+
   const url = new URL(request.url);
-  const type = url.searchParams.get("type") as MessageType;
-  const key = url.searchParams.get("key");
-  const database = url.searchParams.get("database");
-  const value = url.searchParams.get("value");
+  const body = await request.text();
 
-  // http://localhost:8080/?type=list&key=
+  const { type, key, value, database } = superjson.parse<RequestJson>(body);
+
   if (type === "list") {
-    const prefix = key === null ? [] : key.split(",");
-
     const keys = db.list({
-      prefix,
+      prefix: key ?? [],
     });
 
     const result = [];
     for await (const key of keys) {
       result.push(key);
     }
-    return new Response(JSON.stringify(result), { status: 200 });
+
+    return new Response(superjson.stringify(result), { status: 200 });
   }
 
   // http://localhost:8080/?type=set&key=foo,bar&value=hello
-  if (type === "set" && key && value) {
-    await db.set(key.split(","), value);
+  if (type === "set" && key) {
+    await db.set(key, value);
     const result = {
       result: "OK",
     };
-    return new Response(JSON.stringify(result), { status: 200 });
+    return new Response(superjson.stringify(result), { status: 200 });
   }
 
   // http://localhost:8080/?type=get&key=foo,bar
   if (type === "get" && key) {
-    const value = await db.get(key.split(","));
-    return new Response(JSON.stringify(value), { status: 200 });
+    const value = await db.get(key);
+    return new Response(superjson.stringify(value), { status: 200 });
   }
 
   if (type === "changeDatabase") {
@@ -69,9 +90,7 @@ const handler = async (request: Request): Promise<Response> => {
     return new Response(JSON.stringify(result), { status: 200 });
   }
 
-  const body = `KV Viewer Server`;
-
-  return new Response(body, { status: 200 });
+  return new Response(`KV Viewer Server`, { status: 200 });
 };
 
 Deno.serve({
