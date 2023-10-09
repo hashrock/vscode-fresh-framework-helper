@@ -1,3 +1,6 @@
+/* eslint-disable @typescript-eslint/naming-convention */
+// @ts-nocheck
+
 import "https://deno.land/std@0.203.0/dotenv/load.ts";
 import { load } from "https://deno.land/std@0.203.0/dotenv/mod.ts";
 import superjson from "npm:superjson";
@@ -64,6 +67,14 @@ const handler = async (request: Request): Promise<Response> => {
   if (type === "get" && key) {
     const value = await db.get(key);
     return new Response(superjson.stringify(value), { status: 200 });
+  }
+
+  if (type === "delete" && key) {
+    await db.delete(key);
+    const result = {
+      result: "OK",
+    };
+    return new Response(superjson.stringify(result), { status: 200 });
   }
 
   if (type === "changeDatabase") {

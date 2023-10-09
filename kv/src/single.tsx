@@ -2,7 +2,7 @@
 // Copyright 2018-2022 the Deno authors. All rights reserved. MIT license.
 
 import React, { useCallback, useContext, useEffect, useState } from "react";
-import { kvGet, KvKey, kvSet } from "./api";
+import { kvDelete, kvGet, KvKey, kvSet } from "./api";
 import { MenuContext } from "./context";
 
 type ValueType = "string" | "json" | "number";
@@ -108,6 +108,15 @@ export function PageSingle(props: PageSingleProps) {
         setVersionstamp(message.result.versionstamp);
         break;
       }
+      case "deleteResult": {
+        if (message.result === "OK") {
+          setMessage({
+            message: "The item deleted successfully : " + new Date(),
+            level: "success",
+          });
+        }
+        break;
+      }
     }
   }, [selectedKey]);
 
@@ -149,13 +158,24 @@ export function PageSingle(props: PageSingleProps) {
   const context = useContext(MenuContext);
 
   useEffect(() => {
-    context.setMenuItems([{
-      title: "Copy code with kv.get",
-      onClick: () => {
-        navigator.clipboard.writeText("kv.get");
-        console.log("copy code with kv.get");
+    context.setMenuItems([
+      {
+        title: "Delete this item",
+        onClick: () => {
+          if (!selectedKey) {
+            return;
+          }
+          kvDelete(selectedKey);
+        },
       },
-    }]);
+      {
+        title: "Copy code with kv.get",
+        onClick: () => {
+          navigator.clipboard.writeText("kv.get");
+          console.log("copy code with kv.get");
+        },
+      },
+    ]);
   }, [context]);
 
   return (

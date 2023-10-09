@@ -103,6 +103,12 @@ export class KvViewProvider implements vscode.WebviewViewProvider {
           result: result,
         });
       }
+      if (type === "delete") {
+        webviewView.webview.postMessage({
+          type: "deleteResult",
+          result: result.result,
+        });
+      }
       if (type === "changeDatabase") {
         webviewView.webview.postMessage({
           type: "changeDatabaseResult",
