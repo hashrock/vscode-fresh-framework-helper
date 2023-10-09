@@ -290,7 +290,9 @@ console.log(res.versionstamp);`;
           }
           setSelectedKey(newKey);
           try {
-            kvSetWithType(newKey, value);
+            if (value !== null) {
+              kvSetWithType(newKey, value, valueType);
+            }
           } catch (e) {
             if (e instanceof Error) {
               setMessage({ message: e.message, level: "error" });
@@ -308,13 +310,13 @@ console.log(res.versionstamp);`;
     </div>
   );
 
-  function kvSetWithType(key: KvKey, value: unknown) {
-    if (typeof value === "string") {
-      return kvSet(key, value);
-    } else if (typeof value === "number") {
-      return kvSet(key, value);
-    } else if (typeof value === "object") {
-      return kvSet(key, value);
+  function kvSetWithType(key: KvKey, value: string, valueType: ValueType) {
+    if (valueType === "string") {
+      kvSet(key, value);
+    } else if (valueType === "number") {
+      kvSet(key, Number(value));
+    } else if (valueType === "json" && value) {
+      kvSet(key, JSON.parse(value));
     }
     throw new Error("unknown type");
   }
