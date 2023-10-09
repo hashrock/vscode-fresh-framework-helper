@@ -22,6 +22,7 @@ html {
   align-items: center;
   gap: 0.25rem;
   padding: 0.25rem;
+  position: relative;
 }
 
 .nav__button {
@@ -48,7 +49,7 @@ html {
 }
 .nav__new-item {
 }
-.nav__menu {
+.nav__openmenu {
 }
 
 .nav__title {
@@ -244,4 +245,30 @@ span.doc {
 
 span.doc a {
   font-weight: normal;
+}
+
+.nav__menu {
+  position: absolute;
+  display: none;
+  top: 100%;
+  right: 0;
+  background-color: var(--vscode-editor-background);
+  border: 1px solid var(--vscode-editorWidget-border);
+  border-radius: 0.25rem;
+  padding: 0.25rem;
+}
+.nav__menu--open {
+  display: block;
+}
+.nav__menu__item {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin-bottom: 0.25rem;
+  padding: 0.25rem;
+  cursor: pointer;
+}
+.nav__menu__item:hover {
+  background-color: var(--vscode-list-hoverBackground);
+  border-radius: 0.25rem;
 }

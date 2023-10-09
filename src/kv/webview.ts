@@ -44,6 +44,11 @@ export class KvViewProvider implements vscode.WebviewViewProvider {
       const value = data.value;
       const database = data.database;
 
+      if (type === "message") {
+        vscode.window.showInformationMessage(data.message);
+        return;
+      }
+
       const url = `http://localhost:${this._port}/`;
 
       const requestJson = {

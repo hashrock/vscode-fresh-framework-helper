@@ -1,8 +1,9 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 // Copyright 2018-2022 the Deno authors. All rights reserved. MIT license.
 
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useContext, useEffect, useState } from "react";
 import { kvGet, KvKey, kvSet } from "./api";
+import { MenuContext } from "./context";
 
 type ValueType = "string" | "json" | "number";
 
@@ -144,6 +145,18 @@ export function PageSingle(props: PageSingleProps) {
       window.removeEventListener("message", eventUpdateHandler);
     };
   }, [selectedKey]);
+
+  const context = useContext(MenuContext);
+
+  useEffect(() => {
+    context.setMenuItems([{
+      title: "Copy code with kv.get",
+      onClick: () => {
+        navigator.clipboard.writeText("kv.get");
+        console.log("copy code with kv.get");
+      },
+    }]);
+  }, [context]);
 
   return (
     <div className="single__wrapper">

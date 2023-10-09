@@ -1,10 +1,11 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 // Copyright 2018-2022 the Deno authors. All rights reserved. MIT license.
 
-import React from "react";
+import React, { useCallback, useContext, useEffect, useState } from "react";
 import { PageType } from "./main";
 import cx from "classnames";
 import { IconChevronLeft, IconDots, IconPlus } from "./icons";
+import { MenuContext, MenuItemProps } from "./context";
 
 function BackHome(props: React.ButtonHTMLAttributes<HTMLButtonElement>) {
   return (
@@ -31,7 +32,7 @@ function NewItem(props: React.ButtonHTMLAttributes<HTMLButtonElement>) {
 function Menu(props: React.ButtonHTMLAttributes<HTMLButtonElement>) {
   return (
     <button
-      className="nav__button nav__menu"
+      className="nav__button nav__openmenu"
       {...props}
     >
       <IconDots width={16} height={16} />
@@ -46,6 +47,37 @@ interface NavProps {
 
 export function Nav(props: NavProps) {
   const { page } = props;
+
+  const [isMenuOpen, setIsMenuOpen] = React.useState(false);
+  const context = useContext(MenuContext);
+  const [menuItems, setMenuItems] = useState<MenuItemProps[]>([]);
+  context.setMenuItems = setMenuItems;
+  context.menuItems = menuItems;
+
+  const clickOutside = useCallback((ev: MouseEvent) => {
+    if (ev.target instanceof HTMLElement && ev.target.closest(".nav__menu")) {
+      return;
+    }
+    setIsMenuOpen(false);
+  }, [page]);
+
+  const onKeydown = useCallback((ev: KeyboardEvent) => {
+    if (ev.key === "Escape") {
+      setIsMenuOpen(false);
+    }
+  }, [page]);
+
+  useEffect(() => {
+    document.addEventListener("click", clickOutside);
+    document.addEventListener("keydown", onKeydown);
+    document.addEventListener("visibilitychange", () => {
+      setIsMenuOpen(false);
+    });
+    return () => {
+      document.removeEventListener("click", clickOutside);
+      document.removeEventListener("keydown", onKeydown);
+    };
+  }, []);
 
   return (
     <div className="nav">
@@ -85,7 +117,25 @@ export function Nav(props: NavProps) {
         </>
       )}
 
-      <Menu />
+      <Menu
+        onClick={(ev) => {
+          ev.stopPropagation();
+          setIsMenuOpen(!isMenuOpen);
+        }}
+      />
+      <div className={"nav__menu" + (isMenuOpen ? " nav__menu--open" : "")}>
+        {context.menuItems.map((item) => (
+          <div
+            className="nav__menu__item"
+            onClick={() => {
+              item.onClick();
+              setIsMenuOpen(false);
+            }}
+          >
+            {item.title}
+          </div>
+        ))}
+      </div>
     </div>
   );
 }

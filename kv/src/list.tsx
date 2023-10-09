@@ -1,9 +1,16 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 // Copyright 2018-2022 the Deno authors. All rights reserved. MIT license.
 
-import React, { useCallback, useEffect, useRef, useState } from "react";
-import { KvKey, kvList } from "./api";
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
+import { KvKey, kvList, showMessage } from "./api";
 import { IconSearch } from "./icons";
+import { MenuContext } from "./context";
 
 interface PageListFormProps {
   onSubmit: (key: string) => void;
@@ -99,6 +106,40 @@ interface PageListProps {
 export function PageList(props: PageListProps) {
   const [items, setItems] = useState([]);
   const [isBusy, setIsBusy] = useState<boolean>(false);
+  const context = useContext(MenuContext);
+  const [selectedKey, setSelectedKey] = useState<KvKey | undefined>(
+    props.selectedKey,
+  );
+
+  useEffect(() => {
+    const codeExampleList = `const kv = await Deno.openKv();
+    
+kv.list({ prefix: ${JSON.stringify(selectedKey)}});
+for await (const entry of entries) {
+  console.log(entry.key); // ["preferences", "ada"]
+  console.log(entry.value); // { ... }
+  console.log(entry.versionstamp); // "00000000000000010000"
+}`;
+    context.setMenuItems([{
+      title: "Copy code with kv.list",
+      onClick: () => {
+        navigator.clipboard.writeText(codeExampleList);
+        showMessage("Copied!");
+      },
+    }, {
+      title: "Export JSON",
+      onClick: () => {
+        const blob = new Blob([JSON.stringify(items, null, 2)], {
+          type: "application/json",
+        });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = "kv.json";
+        a.click();
+      },
+    }]);
+  }, [context, selectedKey, items]);
 
   const handleMessage = useCallback((event: MessageEvent) => {
     const message = event.data; // The json data that the extension sent
@@ -137,12 +178,15 @@ export function PageList(props: PageListProps) {
           } else {
             kvList(key.split(",")); // TODO: support array
           }
+          setSelectedKey(key.split(","));
         }}
         isBusy={isBusy}
       />
       <PageListResult
         items={items}
-        onChangeSelectedKey={(key) => props.onChangeSelectedKey(key)}
+        onChangeSelectedKey={(key) => {
+          props.onChangeSelectedKey(key);
+        }}
       />
     </div>
   );
