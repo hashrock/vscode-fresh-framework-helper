@@ -317,7 +317,8 @@ console.log(res.versionstamp);`;
       kvSet(key, Number(value));
     } else if (valueType === "json" && value) {
       kvSet(key, JSON.parse(value));
+    } else {
+      throw new Error("unknown type");
     }
-    throw new Error("unknown type");
   }
 }
