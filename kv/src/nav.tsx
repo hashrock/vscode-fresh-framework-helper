@@ -41,7 +41,7 @@ function Menu(props: React.ButtonHTMLAttributes<HTMLButtonElement>) {
 }
 
 interface NavProps {
-  page: string;
+  page: PageType;
   onChangePage: (page: PageType) => void;
 }
 
@@ -50,7 +50,7 @@ export function Nav(props: NavProps) {
 
   return (
     <div className="nav">
-      {page === "get" && (
+      {page === "single" && (
         <>
           <BackHome
             onClick={() => props.onChangePage("list")}
@@ -87,21 +87,6 @@ export function Nav(props: NavProps) {
       )}
 
       <Menu />
-
-      {
-        /* <NavItem
-        selected={page === "list"}
-        onClick={() => props.onChangePage("list")}
-      >
-        List
-      </NavItem>
-      <NavItem
-        selected={page === "new"}
-        onClick={() => props.onChangePage("new")}
-      >
-        New
-      </NavItem> */
-      }
     </div>
   );
 }

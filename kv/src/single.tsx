@@ -6,12 +6,12 @@ import { kvGet, KvKey, kvSet } from "./main";
 
 type ValueType = "string" | "json" | "number";
 
-interface PageGetProps {
+interface PageSingleProps {
   selectedKey?: KvKey;
   isNewItem?: boolean;
   onSaveNewItem?: (key: KvKey, value: unknown) => void;
 }
-export function PageGet(props: PageGetProps) {
+export function PageSingle(props: PageSingleProps) {
   const [selectedKey, setSelectedKey] = useState<KvKey | undefined>(
     props.selectedKey,
   );

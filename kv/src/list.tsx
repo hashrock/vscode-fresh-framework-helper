@@ -2,7 +2,6 @@
 // Copyright 2018-2022 the Deno authors. All rights reserved. MIT license.
 
 import React, { useCallback, useEffect, useRef, useState } from "react";
-import { vscode } from "./api";
 import { KvKey, kvList } from "./main";
 import { IconSearch } from "./icons";
 

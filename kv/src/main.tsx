@@ -5,7 +5,7 @@ import React, { useCallback, useEffect, useRef, useState } from "react";
 import { render } from "react-dom";
 import { PageList } from "./list";
 import { vscode } from "./api";
-import { PageGet } from "./get";
+import { PageSingle } from "./single";
 import { IconDatabase } from "./icons";
 import { Nav } from "./nav";
 
@@ -15,9 +15,7 @@ import { Nav } from "./nav";
 export type KvKeyPart = Uint8Array | string | number | bigint | boolean;
 export type KvKey = KvKeyPart[];
 export type KvValue = unknown;
-export type PageType = "list" | "new" | "get";
-
-type MessageType = "list" | "changeDatabase" | "get" | "set";
+export type PageType = "list" | "new" | "single";
 
 export function kvSet(key: KvKey, value: KvValue) {
   vscode.postMessage({ type: "set", key, value });
@@ -100,21 +98,21 @@ export function kvChangeDatabase(database: string | null) {
             database={database}
             onChangeSelectedKey={(key) => {
               setSelectedKey(key);
-              setPage("get");
+              setPage("single");
             }}
           />
         )}
         {page === "new" && (
-          <PageGet
+          <PageSingle
             isNewItem
             onSaveNewItem={(key, value) => {
               setSelectedKey(key);
-              setPage("get");
+              setPage("single");
             }}
           />
         )}
-        {page === "get" && (
-          <PageGet
+        {page === "single" && (
+          <PageSingle
             selectedKey={selectedKey}
           />
         )}
