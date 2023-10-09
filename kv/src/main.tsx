@@ -9,6 +9,7 @@ import { IconDatabase } from "./icons";
 import { Nav } from "./nav";
 import { kvChangeDatabase, KvKey } from "./api";
 import { CSSTransition } from "react-transition-group";
+import { AppContext } from "./context";
 
 // This script will be run within the webview itself
 // It cannot access the main VS Code APIs directly.
@@ -60,6 +61,8 @@ export type PageType = "list" | "new" | "single";
       }
     }, []);
 
+    const [isBusy, setIsBusy] = useState<boolean>(false);
+
     useEffect(() => {
       window.addEventListener("message", eventHandler);
 
@@ -70,44 +73,49 @@ export type PageType = "list" | "new" | "single";
 
     return (
       <div className="page">
-        <Nav
-          page={page}
-          onChangePage={(page: PageType) => {
-            setPage(page);
-          }}
-        />
-        {page === "list" && (
-          <PageList
-            selectedKey={selectedKey}
-            database={database}
-            onChangeSelectedKey={(key) => {
-              setSelectedKey(key);
-              setPage("single");
+        <AppContext.Provider value={{ isBusy, setIsBusy }}>
+          <Nav
+            page={page}
+            onChangePage={(page: PageType) => {
+              setPage(page);
             }}
           />
-        )}
-        <CSSTransition in={showModal} timeout={300} classNames="modal">
-          <div className="modal">
-            {page === "new" && (
-              <PageSingle
-                isNewItem
-                onSaveNewItem={(key, value) => {
-                  setSelectedKey(key);
-                  setPage("single");
-                }}
-              />
-            )}
-            {page === "single" && (
-              <PageSingle
-                selectedKey={selectedKey}
-              />
-            )}
-          </div>
-        </CSSTransition>
-        <Database database={database} />
+          {page === "list" && (
+            <PageList
+              selectedKey={selectedKey}
+              database={database}
+              onChangeSelectedKey={(key) => {
+                setSelectedKey(key);
+                setPage("single");
+              }}
+            />
+          )}
+          <CSSTransition in={showModal} timeout={300} classNames="modal">
+            <div className="modal">
+              {page === "new" && (
+                <PageSingle
+                  isNewItem
+                  onSaveNewItem={(key, value) => {
+                    setSelectedKey(key);
+                    setPage("single");
+                  }}
+                />
+              )}
+              {page === "single" && (
+                <PageSingle
+                  selectedKey={selectedKey}
+                />
+              )}
+            </div>
+          </CSSTransition>
+          <Database database={database} />
+        </AppContext.Provider>
       </div>
     );
   }
 
-  render(<Page />, document.getElementById("app"));
+  render(
+    <Page />,
+    document.getElementById("app"),
+  );
 })();

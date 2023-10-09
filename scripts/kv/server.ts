@@ -45,6 +45,8 @@ const handler = async (request: Request): Promise<Response> => {
     try {
       const keys = db.list({
         prefix: key ?? [],
+      }, {
+        limit: 100,
       });
 
       const result = [];

@@ -9,17 +9,25 @@ import React, {
   useState,
 } from "react";
 import { KvKey, kvList, showMessage } from "./api";
-import { IconSearch } from "./icons";
-import { MenuContext } from "./context";
+import { IconSearch, Spinner } from "./icons";
+import { AppContext, MenuContext } from "./context";
 import { queryToKvPrefix } from "./utils";
 
 interface PageListFormProps {
   onSubmit: (key: string) => void;
-  isBusy: boolean;
 }
 
 function PageListForm(props: PageListFormProps) {
   const searchKeyRef = useRef<HTMLInputElement | null>(null);
+
+  const appContext = useContext(AppContext);
+
+  useEffect(() => {
+    if (searchKeyRef.current === null) {
+      return;
+    }
+    searchKeyRef.current.focus();
+  }, []);
 
   return (
     <form
@@ -40,7 +48,9 @@ function PageListForm(props: PageListFormProps) {
         placeholder="Search"
       />
       <button className="form__submit" type="submit">
-        <IconSearch width={16} height={16} />
+        {appContext.isBusy
+          ? <Spinner width={16} height={16} stroke="white" />
+          : <IconSearch width={16} height={16} />}
       </button>
     </form>
   );
@@ -117,7 +127,7 @@ for await (const entry of entries) {
 
 export function PageList(props: PageListProps) {
   const [items, setItems] = useState([]);
-  const [isBusy, setIsBusy] = useState<boolean>(false);
+  const appContext = useContext(AppContext);
   const context = useContext(MenuContext);
   const [selectedKey, setSelectedKey] = useState<KvKey | undefined>(
     props.selectedKey,
@@ -150,7 +160,7 @@ export function PageList(props: PageListProps) {
     switch (message.type) {
       case "listResult": {
         setItems(message.result);
-        setIsBusy(false);
+        appContext.setIsBusy(false);
         break;
       }
     }
@@ -159,10 +169,8 @@ export function PageList(props: PageListProps) {
   useEffect(() => {
     window.addEventListener("message", handleMessage);
 
-    // initial lPd
+    appContext.setIsBusy(true);
     kvList([]);
-
-    setIsBusy(true);
 
     return () => {
       window.removeEventListener("message", handleMessage);
@@ -170,7 +178,7 @@ export function PageList(props: PageListProps) {
   }, []);
 
   useEffect(() => {
-    console.log("props.database", props.database);
+    appContext.setIsBusy(true);
     kvList(selectedKey ?? []);
   }, [props.database]);
 
@@ -179,10 +187,10 @@ export function PageList(props: PageListProps) {
       <PageListForm
         onSubmit={(key) => {
           const parsed = queryToKvPrefix(key);
-          kvList(parsed); // TODO: support array
+          appContext.setIsBusy(true);
+          kvList(parsed);
           setSelectedKey(parsed);
         }}
-        isBusy={isBusy}
       />
       <PageListResult
         items={items}
