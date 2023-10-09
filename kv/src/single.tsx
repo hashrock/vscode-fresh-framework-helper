@@ -268,10 +268,6 @@ export function PageSingle(props: PageSingleProps) {
             setMessage({ message: "Key is empty", level: "error" });
             return;
           }
-          if (!value) {
-            setMessage({ message: "Value is empty", level: "error" });
-            return;
-          }
           if (!isValidValueType(value).isValid) {
             setMessage({
               message: isValidValueType(value).reason,
