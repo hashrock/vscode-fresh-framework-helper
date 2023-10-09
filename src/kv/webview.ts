@@ -117,6 +117,7 @@ export class KvViewProvider implements vscode.WebviewViewProvider {
       if (type === "changeDatabase") {
         webviewView.webview.postMessage({
           type: "changeDatabaseResult",
+          result: requestJson.database,
         });
       }
     });

@@ -139,19 +139,3 @@ export function Nav(props: NavProps) {
     </div>
   );
 }
-
-interface NavItemProps {
-  selected: boolean;
-  onClick: () => void;
-  children: React.ReactNode;
-}
-function NavItem(props: NavItemProps) {
-  return (
-    <button
-      className={cx("nav__item", props.selected && "nav__item--selected")}
-      onClick={props.onClick}
-    >
-      {props.children}
-    </button>
-  );
-}

@@ -21,8 +21,8 @@ export function kvList(key: KvKey) {
   vscode.postMessage({ type: "list", key });
 }
 
-export function kvChangeDatabase(database: string | null) {
-  vscode.postMessage({ type: "changeDatabase", database });
+export function kvChangeDatabase() {
+  vscode.postMessage({ type: "changeDatabase" });
 }
 
 export function showMessage(message: string) {

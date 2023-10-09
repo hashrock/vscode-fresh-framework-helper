@@ -17,7 +17,7 @@ export type PageType = "list" | "new" | "single";
 
 (function () {
   interface DatabaseProps {
-    database: string | null;
+    database: string;
   }
 
   function Database(props: DatabaseProps) {
@@ -27,7 +27,7 @@ export type PageType = "list" | "new" | "single";
       <div
         className="database__wrapper"
         onClick={() => {
-          kvChangeDatabase(database);
+          kvChangeDatabase();
         }}
       >
         <IconDatabase width={16} height={16} />
@@ -41,7 +41,7 @@ export type PageType = "list" | "new" | "single";
   function Page() {
     const [page, setPage] = useState<PageType>("list");
     const [selectedKey, setSelectedKey] = useState<KvKey>([]);
-    const [database, setDatabase] = useState<string | null>(null);
+    const [database, setDatabase] = useState<string>("");
 
     const showModal = page === "new" || page === "single";
 
@@ -49,7 +49,7 @@ export type PageType = "list" | "new" | "single";
       const message = event.data; // The json data that the extension sent
       switch (message.type) {
         case "changeDatabaseResult": {
-          setDatabase(message.database);
+          setDatabase(message.result);
           break;
         }
       }

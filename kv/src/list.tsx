@@ -99,7 +99,7 @@ function PageListResult(props: PageListResultProps) {
 }
 
 interface PageListProps {
-  database: string | null;
+  database: string;
   onChangeSelectedKey: (key: KvKey) => void;
   selectedKey: KvKey;
 }
@@ -170,7 +170,8 @@ export function PageList(props: PageListProps) {
   }, []);
 
   useEffect(() => {
-    kvList([]);
+    console.log("props.database", props.database);
+    kvList(selectedKey ?? []);
   }, [props.database]);
 
   return (
