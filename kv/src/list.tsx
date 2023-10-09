@@ -184,7 +184,7 @@ export function PageList(props: PageListProps) {
   useEffect(() => {
     appContext.setIsBusy(true);
     kvList(props.prefix ?? []);
-  }, [props.database]);
+  }, [props.database, props.prefix]);
 
   return (
     <div className="result__wrapper">
@@ -192,8 +192,6 @@ export function PageList(props: PageListProps) {
         prefix={props.prefix}
         onSubmit={(key) => {
           const parsed = queryToKvPrefix(key);
-          appContext.setIsBusy(true);
-          kvList(parsed);
           props.onChangePrefix(parsed);
         }}
       />
