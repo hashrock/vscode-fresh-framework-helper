@@ -18,6 +18,23 @@ html {
 
 .nav {
   display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.nav__button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.25rem;
+  max-width: max-content;
+  cursor: pointer;
+  background: transparent;
+}
+.nav__button:hover {
+  background-color: var(--vscode-list-hoverBackground);
+  border-radius: 0.25rem;
 }
 
 .nav__item {
@@ -25,6 +42,18 @@ html {
 }
 .nav__item--selected {
   border-bottom: 2px solid #666;
+}
+.nav__back-home {
+}
+.nav__new-item {
+}
+.nav__menu {
+}
+
+.nav__title {
+  font-size: 1em;
+  font-weight: bold;
+  flex: 1;
 }
 
 .form__wrapper {

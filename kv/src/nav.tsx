@@ -5,17 +5,88 @@ import React, { useCallback, useEffect, useState } from "react";
 import { vscode } from "./api";
 import { kvGet, KvKey, kvSet, PageType } from "./main";
 import cx from "classnames";
+import { IconChevronLeft, IconChevronRight, IconDots, IconPlus } from "./icons";
+
+function BackHome(props: React.ButtonHTMLAttributes<HTMLButtonElement>) {
+  return (
+    <button
+      className="nav__button nav__back-home"
+      {...props}
+    >
+      <IconChevronLeft width={16} height={16} />
+    </button>
+  );
+}
+
+function NewItem(props: React.ButtonHTMLAttributes<HTMLButtonElement>) {
+  return (
+    <button
+      className="nav__button nav__new-item"
+      {...props}
+    >
+      <IconPlus width={16} height={16} />
+    </button>
+  );
+}
+
+function Menu(props: React.ButtonHTMLAttributes<HTMLButtonElement>) {
+  return (
+    <button
+      className="nav__button nav__menu"
+      {...props}
+    >
+      <IconDots width={16} height={16} />
+    </button>
+  );
+}
 
 interface NavProps {
   page: string;
   onChangePage: (page: PageType) => void;
 }
+
 export function Nav(props: NavProps) {
   const { page } = props;
 
   return (
     <div className="nav">
-      <NavItem
+      {page === "get" && (
+        <>
+          <BackHome
+            onClick={() => props.onChangePage("list")}
+          />
+          <div className="nav__title">
+            Edit Item
+          </div>
+        </>
+      )}
+
+      {page === "list" && (
+        <>
+          <div className="nav__title">
+            Items
+          </div>
+          <NewItem
+            onClick={() => props.onChangePage("new")}
+          />
+        </>
+      )}
+
+      {page === "new" && (
+        <>
+          <BackHome
+            onClick={() => props.onChangePage("list")}
+          />
+          <div className="nav__title">
+            New Item
+          </div>
+        </>
+      )}
+
+      <Menu />
+
+      {
+        /* <NavItem
         selected={page === "list"}
         onClick={() => props.onChangePage("list")}
       >
@@ -26,7 +97,8 @@ export function Nav(props: NavProps) {
         onClick={() => props.onChangePage("new")}
       >
         New
-      </NavItem>
+      </NavItem> */
+      }
     </div>
   );
 }
