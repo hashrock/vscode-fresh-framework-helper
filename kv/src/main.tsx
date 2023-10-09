@@ -25,7 +25,7 @@ export type PageType = "list" | "new" | "single";
     const { database } = props;
     let databaseName = "Default database";
 
-    if (database.startsWith("https://")) {
+    if (database.startsWith("https://api.deno.com/databases/")) {
       databaseName = "Remote database";
     }
 
