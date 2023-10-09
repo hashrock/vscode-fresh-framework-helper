@@ -3,11 +3,11 @@
 
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { render } from "react-dom";
-import cx from "classnames";
 import { PageList } from "./list";
 import { vscode } from "./api";
 import { PageGet } from "./get";
 import { IconDatabase } from "./icons";
+import { Nav } from "./nav";
 
 // This script will be run within the webview itself
 // It cannot access the main VS Code APIs directly.
@@ -15,6 +15,7 @@ import { IconDatabase } from "./icons";
 export type KvKeyPart = Uint8Array | string | number | bigint | boolean;
 export type KvKey = KvKeyPart[];
 export type KvValue = unknown;
+export type PageType = "list" | "new" | "get";
 
 type MessageType = "list" | "changeDatabase" | "get" | "set";
 
@@ -109,47 +110,6 @@ export function kvChangeDatabase(database: string | null) {
     );
   }
 
-  interface NavItemProps {
-    selected: boolean;
-    onClick: () => void;
-    children: React.ReactNode;
-  }
-  function NavItem(props: NavItemProps) {
-    return (
-      <button
-        className={cx("nav__item", props.selected && "nav__item--selected")}
-        onClick={props.onClick}
-      >
-        {props.children}
-      </button>
-    );
-  }
-
-  interface NavProps {
-    page: string;
-    onChangePage: (page: PageType) => void;
-  }
-  function Nav(props: NavProps) {
-    const { page } = props;
-
-    return (
-      <div className="nav">
-        <NavItem
-          selected={page === "list"}
-          onClick={() => props.onChangePage("list")}
-        >
-          List
-        </NavItem>
-        <NavItem
-          selected={page === "new"}
-          onClick={() => props.onChangePage("new")}
-        >
-          New
-        </NavItem>
-      </div>
-    );
-  }
-
   interface DatabaseProps {
     database: string | null;
   }
@@ -171,8 +131,6 @@ export function kvChangeDatabase(database: string | null) {
       </div>
     );
   }
-
-  type PageType = "list" | "new" | "get";
 
   function Page() {
     const [page, setPage] = useState<PageType>("list");
