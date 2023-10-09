@@ -70,6 +70,7 @@ export type PageType = "list" | "new" | "single";
     const [menuItems, setMenuItems] = useState<MenuItemProps[]>([]);
     useEffect(() => {
       window.addEventListener("message", changeDatabaseResultHandler);
+      console.log("Sending message to extension");
 
       return () => {
         window.removeEventListener("message", changeDatabaseResultHandler);

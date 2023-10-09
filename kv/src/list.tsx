@@ -28,7 +28,7 @@ function PageListForm(props: PageListFormProps) {
       return;
     }
     searchKeyRef.current.focus();
-  }, []);
+  }, [searchKeyRef]);
 
   const keyString = kvKeyToString(props.prefix);
 

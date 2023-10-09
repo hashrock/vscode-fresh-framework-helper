@@ -83,9 +83,11 @@ export function PageSingle(props: PageSingleProps) {
       isValid: false,
       reason: "unknown valueType",
     };
-  }, [valueType]);
+  }, []);
 
   const eventHandler = useCallback((event: MessageEvent) => {
+    console.log("eventHandler");
+
     const message = event.data; // The json data that the extension sent
 
     if (!selectedKey) {
@@ -119,9 +121,11 @@ export function PageSingle(props: PageSingleProps) {
         break;
       }
     }
-  }, [selectedKey]);
+  }, []);
 
   const eventUpdateHandler = useCallback((event: MessageEvent) => {
+    console.log("eventUpdateHandler");
+
     const message = event.data; // The json data that the extension sent
     switch (message.type) {
       case "setResult": {
@@ -195,7 +199,7 @@ console.log(res.versionstamp);`;
         },
       },
     ]);
-  }, [context, newKey, value, selectedKey]);
+  }, [newKey, value, selectedKey]);
 
   return (
     <div className="single__wrapper">

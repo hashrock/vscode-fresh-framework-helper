@@ -1,7 +1,6 @@
 // Copyright 2018-2022 the Deno authors. All rights reserved. MIT license.
 
 import * as vscode from "vscode";
-import { join } from "path";
 import { KvViewProvider } from "./webview";
 import { ChildProcess, spawn } from "child_process";
 
