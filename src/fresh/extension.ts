@@ -40,22 +40,22 @@ export function activate(context: vscode.ExtensionContext) {
   });
 
   context.subscriptions.push(vscode.commands.registerCommand(
-    "deno.fresh.generateRoute",
+    "hashrock.fresh.generateRoute",
     generateRoute,
   ));
 
   context.subscriptions.push(vscode.commands.registerCommand(
-    "deno.fresh.generateLayout",
+    "hashrock.fresh.generateLayout",
     generateLayout,
   ));
 
   context.subscriptions.push(vscode.commands.registerCommand(
-    "deno.fresh.generateComponent",
+    "hashrock.fresh.generateComponent",
     generateComponent,
   ));
 
   context.subscriptions.push(vscode.commands.registerCommand(
-    "deno.fresh.generateIsland",
+    "hashrock.fresh.generateIsland",
     generateIsland,
   ));
 
