@@ -4,6 +4,7 @@
 import React, { useCallback, useContext, useEffect, useState } from "react";
 import { kvDelete, kvGet, KvKey, kvSet } from "./api";
 import { MenuContext } from "./context";
+import { queryToKvPrefix } from "./utils";
 
 type ValueType = "string" | "json" | "number";
 
@@ -195,13 +196,7 @@ export function PageSingle(props: PageSingleProps) {
           value={JSON.stringify(selectedKey)}
           onChange={(e) => {
             const value = e.target.value;
-            if (
-              value.charAt(0) === "[" && value.charAt(value.length - 1) === "]"
-            ) {
-              return setNewKey(JSON.parse(value));
-            }
-
-            return setNewKey(e.target.value.split(","));
+            return setNewKey(queryToKvPrefix(value));
           }}
           readOnly={!isNewItem}
         />

@@ -11,6 +11,7 @@ import React, {
 import { KvKey, kvList, showMessage } from "./api";
 import { IconSearch } from "./icons";
 import { MenuContext } from "./context";
+import { queryToKvPrefix } from "./utils";
 
 interface PageListFormProps {
   onSubmit: (key: string) => void;
@@ -103,6 +104,17 @@ interface PageListProps {
   selectedKey: KvKey;
 }
 
+function getExampleCode(selectedKey: KvKey) {
+  return `const kv = await Deno.openKv();
+
+kv.list({ prefix: ${JSON.stringify(selectedKey)}});
+for await (const entry of entries) {
+  console.log(entry.key); // ["preferences", "ada"]
+  console.log(entry.value); // { ... }
+  console.log(entry.versionstamp); // "00000000000000010000"
+}`;
+}
+
 export function PageList(props: PageListProps) {
   const [items, setItems] = useState([]);
   const [isBusy, setIsBusy] = useState<boolean>(false);
@@ -112,18 +124,10 @@ export function PageList(props: PageListProps) {
   );
 
   useEffect(() => {
-    const codeExampleList = `const kv = await Deno.openKv();
-    
-kv.list({ prefix: ${JSON.stringify(selectedKey)}});
-for await (const entry of entries) {
-  console.log(entry.key); // ["preferences", "ada"]
-  console.log(entry.value); // { ... }
-  console.log(entry.versionstamp); // "00000000000000010000"
-}`;
     context.setMenuItems([{
       title: "Copy code with kv.list",
       onClick: () => {
-        navigator.clipboard.writeText(codeExampleList);
+        navigator.clipboard.writeText(getExampleCode(selectedKey ?? []));
         showMessage("Copied!");
       },
     }, {
@@ -173,12 +177,9 @@ for await (const entry of entries) {
     <div className="result__wrapper">
       <PageListForm
         onSubmit={(key) => {
-          if (key === "") {
-            kvList([]);
-          } else {
-            kvList(key.split(",")); // TODO: support array
-          }
-          setSelectedKey(key.split(","));
+          const parsed = queryToKvPrefix(key);
+          kvList(parsed); // TODO: support array
+          setSelectedKey(parsed);
         }}
         isBusy={isBusy}
       />
