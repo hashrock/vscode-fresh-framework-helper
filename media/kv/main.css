@@ -36,7 +36,10 @@ html {
 }
 
 .form__submit {
-  width: 4rem;
+  width: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 .page {
   display: flex;
@@ -110,10 +113,6 @@ textarea.get__value {
   display: flex;
   flex-direction: row;
   flex: 1;
-}
-
-.form__submit {
-  width: 4rem;
 }
 
 .database__wrapper {

@@ -4,6 +4,7 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { vscode } from "./api";
 import { KvKey, kvList } from "./main";
+import { IconSearch } from "./icons";
 
 interface PageListFormProps {
   onSubmit: (key: string) => void;
@@ -32,7 +33,7 @@ function PageListForm(props: PageListFormProps) {
         placeholder="Search"
       />
       <button className="form__submit" type="submit">
-        {props.isBusy ? "Searching..." : "Search"}
+        <IconSearch width={16} height={16} />
       </button>
     </form>
   );
