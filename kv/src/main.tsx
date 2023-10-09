@@ -52,11 +52,15 @@ export type PageType = "list" | "new" | "single";
 
     const showModal = page === "new" || page === "single";
 
-    const eventHandler = useCallback((event: MessageEvent) => {
+    const changeDatabaseResultHandler = useCallback((event: MessageEvent) => {
       const message = event.data; // The json data that the extension sent
       switch (message.type) {
         case "changeDatabaseResult": {
           setDatabase(message.result);
+          break;
+        }
+        default: {
+          // Do nothing
           break;
         }
       }
@@ -65,10 +69,10 @@ export type PageType = "list" | "new" | "single";
     const [isBusy, setIsBusy] = useState<boolean>(false);
     const [menuItems, setMenuItems] = useState<MenuItemProps[]>([]);
     useEffect(() => {
-      window.addEventListener("message", eventHandler);
+      window.addEventListener("message", changeDatabaseResultHandler);
 
       return () => {
-        window.removeEventListener("message", eventHandler);
+        window.removeEventListener("message", changeDatabaseResultHandler);
       };
     }, []);
 
