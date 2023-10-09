@@ -7,7 +7,7 @@ import { PageList } from "./list";
 import { PageSingle } from "./single";
 import { IconDatabase } from "./icons";
 import { Nav } from "./nav";
-import { kvChangeDatabase, KvKey } from "./api";
+import { KvKey, kvRequestChangeDatabase } from "./api";
 import { CSSTransition } from "react-transition-group";
 import { AppContext, MenuContext, MenuItemProps } from "./context";
 
@@ -33,7 +33,7 @@ export type PageType = "list" | "new" | "single";
       <div
         className="database__wrapper"
         onClick={() => {
-          kvChangeDatabase();
+          kvRequestChangeDatabase();
         }}
       >
         <IconDatabase width={16} height={16} />
