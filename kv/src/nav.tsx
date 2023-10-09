@@ -5,7 +5,7 @@ import React, { useCallback, useContext, useEffect, useState } from "react";
 import { PageType } from "./main";
 import { IconChevronLeft, IconDots, IconPlus } from "./icons";
 import { MenuContext, MenuItemProps } from "./context";
-
+import classnames from "classnames";
 function BackHome(props: React.ButtonHTMLAttributes<HTMLButtonElement>) {
   return (
     <button
@@ -49,22 +49,19 @@ export function Nav(props: NavProps) {
 
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
   const context = useContext(MenuContext);
-  const [menuItems, setMenuItems] = useState<MenuItemProps[]>([]);
-  context.setMenuItems = setMenuItems;
-  context.menuItems = menuItems;
 
   const clickOutside = useCallback((ev: MouseEvent) => {
     if (ev.target instanceof HTMLElement && ev.target.closest(".nav__menu")) {
       return;
     }
     setIsMenuOpen(false);
-  }, [page]);
+  }, []);
 
   const onKeydown = useCallback((ev: KeyboardEvent) => {
     if (ev.key === "Escape") {
       setIsMenuOpen(false);
     }
-  }, [page]);
+  }, []);
 
   useEffect(() => {
     document.addEventListener("click", clickOutside);
@@ -122,7 +119,10 @@ export function Nav(props: NavProps) {
           setIsMenuOpen(!isMenuOpen);
         }}
       />
-      <div className={"nav__menu" + (isMenuOpen ? " nav__menu--open" : "")}>
+
+      <div
+        className={classnames("nav__menu", isMenuOpen && "nav__menu--open")}
+      >
         {context.menuItems.map((item) => (
           <div
             className="nav__menu__item"
