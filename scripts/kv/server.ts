@@ -10,7 +10,7 @@ let db = await Deno.openKv();
 // DB can take URL:
 // https://api.deno.com/databases/[UUID]/connect
 
-type MessageType = "list" | "changeDatabase" | "get" | "set";
+type MessageType = "list" | "changeDatabase" | "get" | "set" | "delete";
 
 interface RequestJson {
   type: MessageType;
@@ -42,39 +42,66 @@ const handler = async (request: Request): Promise<Response> => {
   const { type, key, value, database } = superjson.parse<RequestJson>(body);
 
   if (type === "list") {
-    const keys = db.list({
-      prefix: key ?? [],
-    });
+    try {
+      const keys = db.list({
+        prefix: key ?? [],
+      });
 
-    const result = [];
-    for await (const key of keys) {
-      result.push(key);
+      const result = [];
+      for await (const key of keys) {
+        result.push(key);
+      }
+
+      return new Response(superjson.stringify(result), { status: 200 });
+    } catch (e) {
+      return new Response(
+        "Failed to list items: " + e.message,
+        { status: 500 },
+      );
     }
-
-    return new Response(superjson.stringify(result), { status: 200 });
   }
-
   // http://localhost:8080/?type=set&key=foo,bar&value=hello
   if (type === "set" && key) {
-    await db.set(key, value);
-    const result = {
-      result: "OK",
-    };
-    return new Response(superjson.stringify(result), { status: 200 });
+    try {
+      await db.set(key, value);
+      const result = {
+        result: "OK",
+      };
+      return new Response(superjson.stringify(result), { status: 200 });
+    } catch (e) {
+      return new Response(
+        "Failed to set item: " + e.message,
+        { status: 500 },
+      );
+    }
   }
 
   // http://localhost:8080/?type=get&key=foo,bar
   if (type === "get" && key) {
-    const value = await db.get(key);
-    return new Response(superjson.stringify(value), { status: 200 });
+    try {
+      const value = await db.get(key);
+      return new Response(superjson.stringify(value), { status: 200 });
+    } catch (e) {
+      return new Response(
+        "Failed to get item: " + e.message,
+        { status: 500 },
+      );
+    }
   }
 
   if (type === "delete" && key) {
-    await db.delete(key);
-    const result = {
-      result: "OK",
-    };
-    return new Response(superjson.stringify(result), { status: 200 });
+    try {
+      await db.delete(key);
+      const result = {
+        result: "OK",
+      };
+      return new Response(superjson.stringify(result), { status: 200 });
+    } catch (e) {
+      return new Response(
+        "Failed to delete item: " + e.message,
+        { status: 500 },
+      );
+    }
   }
 
   if (type === "changeDatabase") {
@@ -89,7 +116,7 @@ const handler = async (request: Request): Promise<Response> => {
       }
     } catch (e) {
       return new Response(
-        e.message,
+        "Failed to change database: " + e.message,
         { status: 500 },
       );
     }

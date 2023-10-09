@@ -1,4 +1,5 @@
 // Copyright 2018-2022 the Deno authors. All rights reserved. MIT license.
+/* eslint-disable @typescript-eslint/naming-convention */
 
 import * as vscode from "vscode";
 import fetch from "node-fetch";
@@ -7,7 +8,12 @@ import superjson from "superjson";
 export type KvKeyPart = Uint8Array | string | number | bigint | boolean;
 export type KvKey = KvKeyPart[];
 
-type MessageType = "list" | "changeDatabase" | "get" | "set";
+type MessageType =
+  | "list"
+  | "changeDatabase"
+  | "get"
+  | "set"
+  | "delete";
 
 interface ResponseJson {
   type: MessageType;
@@ -39,7 +45,7 @@ export class KvViewProvider implements vscode.WebviewViewProvider {
     webviewView.webview.html = this._getHtmlForWebview(webviewView.webview);
 
     webviewView.webview.onDidReceiveMessage(async (data) => {
-      const type = data.type; // list, get, set, database
+      const type = data.type; // list, get, set, delete/ database
       const key = data.key;
       const value = data.value;
       const database = data.database;
@@ -75,7 +81,6 @@ export class KvViewProvider implements vscode.WebviewViewProvider {
         method: "POST",
         body: superjson.stringify(requestJson),
         headers: {
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           "Content-Type": "application/json",
         },
       });
