@@ -147,6 +147,9 @@ export function PageSingle(props: PageSingleProps) {
     if (selectedKey) {
       kvGet(selectedKey);
     }
+  }, [selectedKey]);
+
+  useEffect(() => {
     window.addEventListener("message", eventUpdateHandler);
     window.addEventListener("message", eventHandler);
 
@@ -154,7 +157,7 @@ export function PageSingle(props: PageSingleProps) {
       window.removeEventListener("message", eventHandler);
       window.removeEventListener("message", eventUpdateHandler);
     };
-  }, [selectedKey]);
+  }, []);
 
   const context = useContext(MenuContext);
 
