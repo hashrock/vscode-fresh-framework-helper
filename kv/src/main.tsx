@@ -24,14 +24,14 @@ export type PageType = "list" | "new" | "single";
     const { database } = props;
 
     return (
-      <div className="database__wrapper">
+      <div
+        className="database__wrapper"
+        onClick={() => {
+          kvChangeDatabase(database);
+        }}
+      >
         <IconDatabase width={16} height={16} />
-        <div
-          className="database"
-          onClick={() => {
-            kvChangeDatabase(database);
-          }}
-        >
+        <div className="database">
           {database || "Default database"}
         </div>
       </div>
