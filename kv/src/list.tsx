@@ -14,6 +14,7 @@ import { AppContext, MenuContext } from "./context";
 import { queryToKvPrefix } from "./utils";
 
 interface PageListFormProps {
+  prefix: KvKey;
   onSubmit: (key: string) => void;
 }
 
@@ -28,6 +29,11 @@ function PageListForm(props: PageListFormProps) {
     }
     searchKeyRef.current.focus();
   }, []);
+
+  const keyToString = (key: KvKey) => {
+    return key.map((i) => i.toString()).join(",");
+  };
+  const keyString = keyToString(props.prefix);
 
   return (
     <form
@@ -46,6 +52,7 @@ function PageListForm(props: PageListFormProps) {
         ref={searchKeyRef}
         type="text"
         placeholder="Search"
+        defaultValue={keyString}
       />
       <button className="form__submit" type="submit">
         {appContext.isBusy
@@ -111,7 +118,8 @@ function PageListResult(props: PageListResultProps) {
 interface PageListProps {
   database: string;
   onChangeSelectedKey: (key: KvKey) => void;
-  selectedKey: KvKey;
+  prefix: KvKey;
+  onChangePrefix: (prefix: KvKey) => void;
 }
 
 function getExampleCode(selectedKey: KvKey) {
@@ -129,15 +137,12 @@ export function PageList(props: PageListProps) {
   const [items, setItems] = useState([]);
   const appContext = useContext(AppContext);
   const context = useContext(MenuContext);
-  const [selectedKey, setSelectedKey] = useState<KvKey | undefined>(
-    props.selectedKey,
-  );
 
   useEffect(() => {
     context.setMenuItems([{
       title: "Copy code with kv.list",
       onClick: () => {
-        navigator.clipboard.writeText(getExampleCode(selectedKey ?? []));
+        navigator.clipboard.writeText(getExampleCode(props.prefix ?? []));
         showMessage("Copied!");
       },
     }, {
@@ -153,7 +158,7 @@ export function PageList(props: PageListProps) {
         a.click();
       },
     }]);
-  }, [context, selectedKey, items]);
+  }, [context, props.prefix, items]);
 
   const handleMessage = useCallback((event: MessageEvent) => {
     const message = event.data; // The json data that the extension sent
@@ -179,17 +184,18 @@ export function PageList(props: PageListProps) {
 
   useEffect(() => {
     appContext.setIsBusy(true);
-    kvList(selectedKey ?? []);
+    kvList(props.prefix ?? []);
   }, [props.database]);
 
   return (
     <div className="result__wrapper">
       <PageListForm
+        prefix={props.prefix}
         onSubmit={(key) => {
           const parsed = queryToKvPrefix(key);
           appContext.setIsBusy(true);
           kvList(parsed);
-          setSelectedKey(parsed);
+          props.onChangePrefix(parsed);
         }}
       />
       <PageListResult

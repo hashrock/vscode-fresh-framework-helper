@@ -46,6 +46,7 @@ export type PageType = "list" | "new" | "single";
 
   function Page() {
     const [page, setPage] = useState<PageType>("list");
+    const [prefix, setPrefix] = useState<KvKey>([]);
     const [selectedKey, setSelectedKey] = useState<KvKey>([]);
     const [database, setDatabase] = useState<string>("");
 
@@ -82,11 +83,14 @@ export type PageType = "list" | "new" | "single";
           />
           {page === "list" && (
             <PageList
-              selectedKey={selectedKey}
+              prefix={prefix}
               database={database}
               onChangeSelectedKey={(key) => {
                 setSelectedKey(key);
                 setPage("single");
+              }}
+              onChangePrefix={(prefix) => {
+                setPrefix(prefix);
               }}
             />
           )}
