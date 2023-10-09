@@ -73,7 +73,16 @@ export class KvViewProvider implements vscode.WebviewViewProvider {
         if (db === undefined) {
           return;
         } else {
-          requestJson.database = db;
+          // URL form is :
+          // https://api.deno.com/databases/[UUID]/connect
+
+          const uuidRegex = /^[0-9a-f]{8}-([0-9a-f]{4}-){3}[0-9a-f]{12}$/i;
+          if (uuidRegex.test(db)) {
+            requestJson.database =
+              `https://api.deno.com/databases/${db}/connect`;
+          } else {
+            requestJson.database = db;
+          }
         }
       }
 
