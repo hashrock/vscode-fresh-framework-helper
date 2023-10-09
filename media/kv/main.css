@@ -21,6 +21,7 @@ html {
   flex-direction: row;
   align-items: center;
   gap: 0.25rem;
+  padding: 0.25rem;
 }
 
 .nav__button {
@@ -134,9 +135,38 @@ html {
   margin-bottom: 0.25rem;
 }
 
+.single__value {
+  display: flex;
+  gap: 0.25rem;
+  align-items: center;
+  justify-content: center;
+  padding: 0.25rem 0;
+}
+
+.single__value__type {
+  background-color: transparent;
+  color: white;
+  padding: 0.25rem;
+}
+
+.single__value-checker {
+  flex: 1;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.message--error {
+  color: #eb3e3e;
+}
+.message--success {
+  color: #87e587;
+}
+
 textarea.single__value {
   height: 10rem;
   flex: 1;
+  padding: 0.25rem;
 }
 
 .single__value__wrapper {

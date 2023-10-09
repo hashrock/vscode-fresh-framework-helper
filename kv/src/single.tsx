@@ -6,6 +6,11 @@ import { kvGet, KvKey, kvSet } from "./api";
 
 type ValueType = "string" | "json" | "number";
 
+interface valueCheckResult {
+  isValid: boolean;
+  reason: string;
+}
+
 interface PageSingleProps {
   selectedKey?: KvKey;
   isNewItem?: boolean;
@@ -19,8 +24,64 @@ export function PageSingle(props: PageSingleProps) {
   const [isNewItem, setIsNewItem] = useState<boolean>(props.isNewItem || false);
   const [newKey, setNewKey] = useState<KvKey | undefined>(props.selectedKey);
   const [versionstamp, setVersionstamp] = useState<string | null>(null);
-  const [message, setMessage] = useState<string | null>(null);
+  interface Message {
+    message: string;
+    level: "success" | "info" | "error";
+  }
+
+  const [message, setMessage] = useState<Message | null>(null);
   const [valueType, setValueType] = useState<ValueType>("string");
+
+  const isValidValueType = useCallback((value: unknown): valueCheckResult => {
+    if (valueType === "string") {
+      return {
+        isValid: true,
+        reason: "string is always valid",
+      };
+    }
+    if (valueType === "number") {
+      if (value === null || value === undefined) {
+        return {
+          isValid: false,
+          reason: "number cannot be null",
+        };
+      }
+      if (Number.isNaN(parseFloat(value as string))) {
+        return {
+          isValid: false,
+          reason: "invalid number",
+        };
+      }
+      return {
+        isValid: true,
+        reason: "OK",
+      };
+    }
+    if (valueType === "json") {
+      if (value === null) {
+        return {
+          isValid: false,
+          reason: "json cannot be null",
+        };
+      }
+      try {
+        JSON.parse(value as string);
+      } catch (e) {
+        return {
+          isValid: false,
+          reason: "invalid json",
+        };
+      }
+      return {
+        isValid: true,
+        reason: "OK",
+      };
+    }
+    return {
+      isValid: false,
+      reason: "unknown valueType",
+    };
+  }, [valueType]);
 
   const eventHandler = useCallback((event: MessageEvent) => {
     const message = event.data; // The json data that the extension sent
@@ -55,7 +116,10 @@ export function PageSingle(props: PageSingleProps) {
       case "setResult": {
         if (message.result === "OK") {
           setIsNewItem(false);
-          setMessage("The item set successfully : " + new Date());
+          setMessage({
+            message: "The item set successfully : " + new Date(),
+            level: "success",
+          });
           if (newKey) {
             kvGet(newKey);
           }
@@ -104,17 +168,6 @@ export function PageSingle(props: PageSingleProps) {
       </div>
       <div className="value-column">
         <div className="label">Value</div>
-        <select
-          className="single__value__type"
-          onChange={(e) => {
-            setValueType(e.target.value as ValueType);
-          }}
-          value={valueType}
-        >
-          <option value="string">string</option>
-          <option value="json">json</option>
-          <option value="number">number</option>
-        </select>
       </div>
       <div className="single__value__wrapper">
         <textarea
@@ -127,12 +180,45 @@ export function PageSingle(props: PageSingleProps) {
           }}
         />
       </div>
+
+      <div className="single__value">
+        <select
+          className="single__value__type"
+          onChange={(e) => {
+            setValueType(e.target.value as ValueType);
+          }}
+          value={valueType}
+        >
+          <option value="string">string</option>
+          <option value="json">json</option>
+          <option value="number">number</option>
+        </select>
+
+        <div className="single__value-checker">
+          {isValidValueType(value).isValid ? "Valid" : (
+            `❌ ${isValidValueType(value).reason}`
+          )}
+        </div>
+      </div>
       <button
         className="single__update"
         onClick={() => {
           if (!newKey) {
+            setMessage({ message: "Key is empty", level: "error" });
             return;
           }
+          if (!value) {
+            setMessage({ message: "Value is empty", level: "error" });
+            return;
+          }
+          if (!isValidValueType(value).isValid) {
+            setMessage({
+              message: isValidValueType(value).reason,
+              level: "error",
+            });
+            return;
+          }
+
           setSelectedKey(newKey);
           if (valueType === "string") {
             kvSet(newKey, value);
@@ -145,8 +231,11 @@ export function PageSingle(props: PageSingleProps) {
       >
         {isNewItem ? "Create" : "Update"}
       </button>
-      <div className="label">{message}</div>
-
+      {message && (
+        <div className={`message message--${message.level}`}>
+          <div className="label">{message?.message}</div>
+        </div>
+      )}
       {versionstamp && (
         <>
           <div className="label">VersionStamp</div>
