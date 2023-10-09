@@ -288,14 +288,13 @@ console.log(res.versionstamp);`;
             });
             return;
           }
-
           setSelectedKey(newKey);
-          if (valueType === "string") {
-            kvSet(newKey, value);
-          } else if (valueType === "number") {
-            kvSet(newKey, Number(value));
-          } else if (valueType === "json" && value) {
-            kvSet(newKey, JSON.parse(value));
+          try {
+            kvSetWithType(newKey, value);
+          } catch (e) {
+            if (e instanceof Error) {
+              setMessage({ message: e.message, level: "error" });
+            }
           }
         }}
       >
@@ -308,4 +307,15 @@ console.log(res.versionstamp);`;
       )}
     </div>
   );
+
+  function kvSetWithType(key: KvKey, value: unknown) {
+    if (typeof value === "string") {
+      return kvSet(key, value);
+    } else if (typeof value === "number") {
+      return kvSet(key, value);
+    } else if (typeof value === "object") {
+      return kvSet(key, value);
+    }
+    throw new Error("unknown type");
+  }
 }
