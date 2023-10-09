@@ -152,6 +152,7 @@ export function PageSingle(props: PageSingleProps) {
       <div className="single__key">
         <textarea
           className="single__key__textarea"
+          rows={1}
           value={JSON.stringify(selectedKey)}
           onChange={(e) => {
             const value = e.target.value;
@@ -166,36 +167,42 @@ export function PageSingle(props: PageSingleProps) {
           readOnly={!isNewItem}
         />
       </div>
-      <div className="value-column">
-        <div className="label">Value</div>
-      </div>
-      <div className="single__value__wrapper">
-        <textarea
-          className="single__value"
-          value={value || ""}
-          onChange={(e) => {
-            if (e.target.value !== value) {
-              return setValue(e.target.value);
-            }
-          }}
-        />
-      </div>
+      {versionstamp && (
+        <div>
+          <div className="label">VersionStamp</div>
+          <div className="single__versionstamp">{versionstamp}</div>
+        </div>
+      )}
 
       <div className="single__value">
-        <select
-          className="single__value__type"
-          onChange={(e) => {
-            setValueType(e.target.value as ValueType);
-          }}
-          value={valueType}
-        >
-          <option value="string">string</option>
-          <option value="json">json</option>
-          <option value="number">number</option>
-        </select>
+        <div className="value-column">
+          <div className="label">Value</div>
+          <select
+            className="single__value__type"
+            onChange={(e) => {
+              setValueType(e.target.value as ValueType);
+            }}
+            value={valueType}
+          >
+            <option value="string">string</option>
+            <option value="json">json</option>
+            <option value="number">number</option>
+          </select>
+        </div>
+        <div className="single__value__wrapper">
+          <textarea
+            className="single__value__textarea"
+            value={value || ""}
+            onChange={(e) => {
+              if (e.target.value !== value) {
+                return setValue(e.target.value);
+              }
+            }}
+          />
+        </div>
 
         <div className="single__value-checker">
-          {isValidValueType(value).isValid ? "Valid" : (
+          {isValidValueType(value).isValid ? "" : (
             `❌ ${isValidValueType(value).reason}`
           )}
         </div>
@@ -235,12 +242,6 @@ export function PageSingle(props: PageSingleProps) {
         <div className={`message message--${message.level}`}>
           <div className="label">{message?.message}</div>
         </div>
-      )}
-      {versionstamp && (
-        <>
-          <div className="label">VersionStamp</div>
-          <div className="single__versionstamp">{versionstamp}</div>
-        </>
       )}
     </div>
   );

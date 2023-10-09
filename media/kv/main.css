@@ -136,11 +136,7 @@ html {
 }
 
 .single__value {
-  display: flex;
-  gap: 0.25rem;
-  align-items: center;
-  justify-content: center;
-  padding: 0.25rem 0;
+  margin-top: 1rem;
 }
 
 .single__value__type {
@@ -163,7 +159,7 @@ html {
   color: #87e587;
 }
 
-textarea.single__value {
+textarea.single__value__textarea {
   height: 10rem;
   flex: 1;
   padding: 0.25rem;
@@ -182,6 +178,17 @@ textarea.single__value {
 }
 
 .single__key__textarea {
+  flex: 1;
+  font-size: 110%;
+}
+
+.value-column {
+  display: flex;
+  flex-direction: row;
+  flex: 1;
+}
+
+.value-column .label {
   flex: 1;
 }
 
@@ -223,4 +230,10 @@ textarea.single__value {
 }
 .modal-enter-done {
   flex: 1;
+}
+
+.single__versionstamp {
+  font-family: monospace;
+  font-size: 90%;
+  opacity: 0.8;
 }
