@@ -1,11 +1,10 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 // Copyright 2018-2022 the Deno authors. All rights reserved. MIT license.
 
-import React, { useCallback, useEffect, useState } from "react";
-import { vscode } from "./api";
-import { kvGet, KvKey, kvSet, PageType } from "./main";
+import React from "react";
+import { PageType } from "./main";
 import cx from "classnames";
-import { IconChevronLeft, IconChevronRight, IconDots, IconPlus } from "./icons";
+import { IconChevronLeft, IconDots, IconPlus } from "./icons";
 
 function BackHome(props: React.ButtonHTMLAttributes<HTMLButtonElement>) {
   return (

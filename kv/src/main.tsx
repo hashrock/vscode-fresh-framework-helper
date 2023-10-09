@@ -1,42 +1,18 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 // Copyright 2018-2022 the Deno authors. All rights reserved. MIT license.
 
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { render } from "react-dom";
 import { PageList } from "./list";
-import { vscode } from "./api";
 import { PageSingle } from "./single";
 import { IconDatabase } from "./icons";
 import { Nav } from "./nav";
+import { kvChangeDatabase, KvKey } from "./api";
 
 // This script will be run within the webview itself
 // It cannot access the main VS Code APIs directly.
 
-export type KvKeyPart = Uint8Array | string | number | bigint | boolean;
-export type KvKey = KvKeyPart[];
-export type KvValue = unknown;
 export type PageType = "list" | "new" | "single";
-
-export function kvSet(key: KvKey, value: KvValue) {
-  vscode.postMessage({ type: "set", key, value });
-}
-
-export function kvGet(key: KvKey) {
-  vscode.postMessage({ type: "get", key });
-}
-
-// TODO
-export function kvDelete(key: KvKey) {
-  vscode.postMessage({ type: "delete", key });
-}
-
-export function kvList(key: KvKey) {
-  vscode.postMessage({ type: "list", key });
-}
-
-export function kvChangeDatabase(database: string | null) {
-  vscode.postMessage({ type: "changeDatabase", database });
-}
 
 (function () {
   interface DatabaseProps {

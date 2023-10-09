@@ -2,7 +2,7 @@
 // Copyright 2018-2022 the Deno authors. All rights reserved. MIT license.
 
 import React, { useCallback, useEffect, useRef, useState } from "react";
-import { KvKey, kvList } from "./main";
+import { KvKey, kvList } from "./api";
 import { IconSearch } from "./icons";
 
 interface PageListFormProps {

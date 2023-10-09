@@ -2,7 +2,7 @@
 // Copyright 2018-2022 the Deno authors. All rights reserved. MIT license.
 
 import React, { useCallback, useEffect, useState } from "react";
-import { kvGet, KvKey, kvSet } from "./main";
+import { kvGet, KvKey, kvSet } from "./api";
 
 type ValueType = "string" | "json" | "number";
 
