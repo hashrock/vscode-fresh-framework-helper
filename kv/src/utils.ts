@@ -24,10 +24,9 @@ function evalSinglePart(part: string): KvKeyPart {
     return true;
   } else if (part === "false") {
     return false;
+  } else {
+    return part;
   }
-
-  // just string
-  return part;
 }
 
 export function queryToKvPrefix(input: string): KvKey {
@@ -37,7 +36,12 @@ export function queryToKvPrefix(input: string): KvKey {
 
   // Raw JSON input
   if (input.startsWith("[") && input.endsWith("]")) {
-    return JSON.parse(input) as KvKey;
+    try {
+      return JSON.parse(input) as KvKey;
+    } catch (e) {
+      console.error(e);
+      return [];
+    }
   }
 
   const result = [] as KvKeyPart[];
