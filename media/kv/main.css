@@ -144,6 +144,23 @@ textarea.get__value {
   flex: 1;
 }
 
+.get__key {
+  display: flex;
+  flex-direction: row;
+  flex: 1;
+}
+
+.get__key__textarea {
+  flex: 1;
+}
+
+.get__key__textarea:read-only {
+  background-color: transparent;
+}
+.get__key__textarea:focus {
+  background-color: var(--vscode-inputValidation-infoBackground);
+}
+
 .database__wrapper {
   color: #d199ff;
   display: flex;

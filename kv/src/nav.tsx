@@ -58,6 +58,9 @@ export function Nav(props: NavProps) {
           <div className="nav__title">
             Edit Item
           </div>
+          <NewItem
+            onClick={() => props.onChangePage("new")}
+          />
         </>
       )}
 

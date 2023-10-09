@@ -41,75 +41,6 @@ export function kvChangeDatabase(database: string | null) {
 }
 
 (function () {
-  function PageNew() {
-    const [message, setMessage] = useState<string | null>(null);
-
-    const eventHandler = useCallback((event: MessageEvent) => {
-      const message = event.data; // The json data that the extension sent
-      switch (message.type) {
-        case "setResult": {
-          if (message.result === "OK") {
-            setMessage("The item set successfully : " + new Date());
-          }
-          break;
-        }
-      }
-    }, []);
-
-    useEffect(() => {
-      window.addEventListener("message", eventHandler);
-
-      return () => {
-        window.removeEventListener("message", eventHandler);
-      };
-    }, []);
-
-    return (
-      <div className="new__wrapper">
-        {PageNewForm()}
-        {message && <div className="message">{message}</div>}
-      </div>
-    );
-  }
-
-  function PageNewForm() {
-    const keyRef = useRef<HTMLInputElement | null>(null);
-    const valueRef = useRef<HTMLInputElement | null>(null);
-
-    return (
-      <form
-        className="newform__wrapper"
-        onSubmit={(e) => {
-          e.preventDefault();
-          if (!keyRef.current || !valueRef.current) {
-            return;
-          }
-          const key = keyRef.current.value.split(","); //TODO: support array
-          const value = valueRef.current.value;
-
-          kvSet(key, value);
-        }}
-      >
-        <input
-          className="newform__key"
-          name="key"
-          ref={keyRef}
-          type="text"
-          placeholder="Key"
-        />
-        <input
-          className="newform__value"
-          ref={valueRef}
-          type="text"
-          placeholder="Value"
-        />
-        <button className="newform__submit" type="submit">
-          Set
-        </button>
-      </form>
-    );
-  }
-
   interface DatabaseProps {
     database: string | null;
   }
@@ -173,7 +104,15 @@ export function kvChangeDatabase(database: string | null) {
             }}
           />
         )}
-        {page === "new" && <PageNew />}
+        {page === "new" && (
+          <PageGet
+            isNewItem
+            onSaveNewItem={(key, value) => {
+              setSelectedKey(key);
+              setPage("get");
+            }}
+          />
+        )}
         {page === "get" && (
           <PageGet
             selectedKey={selectedKey}
