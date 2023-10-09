@@ -22,6 +22,11 @@ export type PageType = "list" | "new" | "single";
 
   function Database(props: DatabaseProps) {
     const { database } = props;
+    let databaseName = "Default database";
+
+    if (database.startsWith("https://")) {
+      databaseName = "Remote database";
+    }
 
     return (
       <div
@@ -32,7 +37,7 @@ export type PageType = "list" | "new" | "single";
       >
         <IconDatabase width={16} height={16} />
         <div className="database">
-          {database || "Default database"}
+          {databaseName}
         </div>
       </div>
     );

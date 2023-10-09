@@ -3,7 +3,6 @@
 
 import React, { useCallback, useContext, useEffect, useState } from "react";
 import { PageType } from "./main";
-import cx from "classnames";
 import { IconChevronLeft, IconDots, IconPlus } from "./icons";
 import { MenuContext, MenuItemProps } from "./context";
 
