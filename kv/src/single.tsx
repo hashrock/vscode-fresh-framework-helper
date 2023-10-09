@@ -82,12 +82,12 @@ export function PageSingle(props: PageSingleProps) {
   }, [selectedKey]);
 
   return (
-    <div className="get__wrapper">
+    <div className="single__wrapper">
       <div className="label">Key</div>
 
-      <div className="get__key">
+      <div className="single__key">
         <textarea
-          className="get__key__textarea"
+          className="single__key__textarea"
           value={JSON.stringify(selectedKey)}
           onChange={(e) => {
             const value = e.target.value;
@@ -105,7 +105,7 @@ export function PageSingle(props: PageSingleProps) {
       <div className="value-column">
         <div className="label">Value</div>
         <select
-          className="get__value__type"
+          className="single__value__type"
           onChange={(e) => {
             setValueType(e.target.value as ValueType);
           }}
@@ -116,9 +116,9 @@ export function PageSingle(props: PageSingleProps) {
           <option value="number">number</option>
         </select>
       </div>
-      <div className="get__value__wrapper">
+      <div className="single__value__wrapper">
         <textarea
-          className="get__value"
+          className="single__value"
           value={value || ""}
           onChange={(e) => {
             if (e.target.value !== value) {
@@ -128,7 +128,7 @@ export function PageSingle(props: PageSingleProps) {
         />
       </div>
       <button
-        className="get__update"
+        className="single__update"
         onClick={() => {
           if (!newKey) {
             return;
@@ -150,7 +150,7 @@ export function PageSingle(props: PageSingleProps) {
       {versionstamp && (
         <>
           <div className="label">VersionStamp</div>
-          <div className="get__versionstamp">{versionstamp}</div>
+          <div className="single__versionstamp">{versionstamp}</div>
         </>
       )}
     </div>

@@ -116,7 +116,7 @@ html {
   flex: 1;
 }
 
-.get__wrapper {
+.single__wrapper {
   flex: 1;
 }
 .icon {
@@ -133,31 +133,31 @@ html {
   margin-bottom: 0.25rem;
 }
 
-textarea.get__value {
+textarea.single__value {
   height: 10rem;
   flex: 1;
 }
 
-.get__value__wrapper {
+.single__value__wrapper {
   display: flex;
   flex-direction: row;
   flex: 1;
 }
 
-.get__key {
+.single__key {
   display: flex;
   flex-direction: row;
   flex: 1;
 }
 
-.get__key__textarea {
+.single__key__textarea {
   flex: 1;
 }
 
-.get__key__textarea:read-only {
+.single__key__textarea:read-only {
   background-color: transparent;
 }
-.get__key__textarea:focus {
+.single__key__textarea:focus {
   background-color: var(--vscode-inputValidation-infoBackground);
 }
 
