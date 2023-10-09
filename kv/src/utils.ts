@@ -48,3 +48,7 @@ export function queryToKvPrefix(input: string): KvKey {
   }
   return result;
 }
+
+export function kvKeyToString(key: KvKey): string {
+  return key.map((i) => i.toString()).join(",");
+}

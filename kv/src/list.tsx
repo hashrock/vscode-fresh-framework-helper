@@ -11,7 +11,7 @@ import React, {
 import { KvKey, kvList, showMessage } from "./api";
 import { IconSearch, Spinner } from "./icons";
 import { AppContext, MenuContext } from "./context";
-import { queryToKvPrefix } from "./utils";
+import { kvKeyToString, queryToKvPrefix } from "./utils";
 
 interface PageListFormProps {
   prefix: KvKey;
@@ -30,10 +30,7 @@ function PageListForm(props: PageListFormProps) {
     searchKeyRef.current.focus();
   }, []);
 
-  const keyToString = (key: KvKey) => {
-    return key.map((i) => i.toString()).join(",");
-  };
-  const keyString = keyToString(props.prefix);
+  const keyString = kvKeyToString(props.prefix);
 
   return (
     <form

@@ -159,6 +159,16 @@ export function PageSingle(props: PageSingleProps) {
   const context = useContext(MenuContext);
 
   useEffect(() => {
+    const getExample = `const db = Deno.openKv();
+
+const res = await kv.get<string>([${JSON.stringify(newKey || [])}]);
+console.log(res); // value`;
+
+    const setExample = `const db = Deno.openKv();
+
+const res = await kv.set(${JSON.stringify(newKey || [])}, ${value || ""});
+console.log(res.versionstamp);`;
+
     context.setMenuItems([
       {
         title: "Delete this item",
@@ -172,12 +182,17 @@ export function PageSingle(props: PageSingleProps) {
       {
         title: "Copy code with kv.get",
         onClick: () => {
-          navigator.clipboard.writeText("kv.get");
-          console.log("copy code with kv.get");
+          navigator.clipboard.writeText(getExample);
+        },
+      },
+      {
+        title: "Copy code with kv.set",
+        onClick: () => {
+          navigator.clipboard.writeText(setExample);
         },
       },
     ]);
-  }, [context]);
+  }, [context, newKey, value, selectedKey]);
 
   return (
     <div className="single__wrapper">
