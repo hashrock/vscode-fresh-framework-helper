@@ -147,11 +147,17 @@ export function PageSingle(props: PageSingleProps) {
 
   return (
     <div className="single__wrapper">
-      <div className="label">Key</div>
+      <div className="label">
+        Key
+        <span className="doc">
+          <a href="https://docs.deno.com/kv/manual/key_space#keys">doc</a>
+        </span>
+      </div>
 
       <div className="single__key">
         <textarea
           className="single__key__textarea"
+          placeholder='key1,key2 or ["key1", "key2"]'
           rows={1}
           value={JSON.stringify(selectedKey)}
           onChange={(e) => {
@@ -169,14 +175,28 @@ export function PageSingle(props: PageSingleProps) {
       </div>
       {versionstamp && (
         <div>
-          <div className="label">VersionStamp</div>
+          <div className="label">
+            VersionStamp
+            <span className="doc">
+              <a href="https://docs.deno.com/kv/manual/key_space#versionstamp">
+                doc
+              </a>
+            </span>
+          </div>
           <div className="single__versionstamp">{versionstamp}</div>
         </div>
       )}
 
       <div className="single__value">
         <div className="value-column">
-          <div className="label">Value</div>
+          <div className="label">
+            Value
+            <span className="doc">
+              <a href="https://docs.deno.com/kv/manual/key_space#values">
+                doc
+              </a>
+            </span>
+          </div>
           <select
             className="single__value__type"
             onChange={(e) => {
@@ -192,6 +212,7 @@ export function PageSingle(props: PageSingleProps) {
         <div className="single__value__wrapper">
           <textarea
             className="single__value__textarea"
+            placeholder="string, number or json"
             value={value || ""}
             onChange={(e) => {
               if (e.target.value !== value) {

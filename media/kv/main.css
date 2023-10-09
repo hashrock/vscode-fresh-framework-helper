@@ -237,3 +237,11 @@ textarea.single__value__textarea {
   font-size: 90%;
   opacity: 0.8;
 }
+
+span.doc {
+  margin-left: 0.25rem;
+}
+
+span.doc a {
+  font-weight: normal;
+}
