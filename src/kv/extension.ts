@@ -13,9 +13,13 @@ export function activate(context: vscode.ExtensionContext) {
   outputChannel = vscode.window.createOutputChannel("kvViewer");
   context.subscriptions.push(outputChannel);
   outputChannel.appendLine("kvViewer activate");
-  console.log("kvViewer activate");
 
   const workspaceRoute = vscode.workspace.workspaceFolders?.[0].uri.fsPath;
+
+  if (!workspaceRoute) {
+    vscode.window.showErrorMessage("Please open a workspace");
+    return;
+  }
 
   const serverSrc = vscode.Uri.joinPath(
     context.extensionUri,
@@ -39,7 +43,7 @@ export function activate(context: vscode.ExtensionContext) {
     const match = text.match(/Listening on port (\d+)/);
     if (match) {
       const port = match[1];
-      console.log("port", port);
+      console.log("Server listening on port", port);
 
       const webviewProvider = new KvViewProvider(context.extensionUri, port);
       context.subscriptions.push(
@@ -49,11 +53,11 @@ export function activate(context: vscode.ExtensionContext) {
         ),
       );
     }
-    console.log(`stdout: ${data}`);
+    console.log(`Server stdout: ${data}`);
   });
 
   process?.stderr?.on("data", (data) => {
-    console.error(`stderr: ${data}`);
+    console.error(`Server stderr: ${data}`);
   });
 
   process?.on("close", (code) => {
@@ -70,5 +74,6 @@ export function deactivate() {
   }
   if (outputChannel) {
     outputChannel.appendLine("kvViewer deactivate");
+    outputChannel.dispose();
   }
 }
