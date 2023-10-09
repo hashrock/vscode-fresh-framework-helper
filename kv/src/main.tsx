@@ -8,6 +8,7 @@ import { PageSingle } from "./single";
 import { IconDatabase } from "./icons";
 import { Nav } from "./nav";
 import { kvChangeDatabase, KvKey } from "./api";
+import { CSSTransition } from "react-transition-group";
 
 // This script will be run within the webview itself
 // It cannot access the main VS Code APIs directly.
@@ -41,6 +42,8 @@ export type PageType = "list" | "new" | "single";
     const [page, setPage] = useState<PageType>("list");
     const [selectedKey, setSelectedKey] = useState<KvKey>([]);
     const [database, setDatabase] = useState<string | null>(null);
+
+    const showModal = page === "new" || page === "single";
 
     const eventHandler = useCallback((event: MessageEvent) => {
       const message = event.data; // The json data that the extension sent
@@ -78,20 +81,24 @@ export type PageType = "list" | "new" | "single";
             }}
           />
         )}
-        {page === "new" && (
-          <PageSingle
-            isNewItem
-            onSaveNewItem={(key, value) => {
-              setSelectedKey(key);
-              setPage("single");
-            }}
-          />
-        )}
-        {page === "single" && (
-          <PageSingle
-            selectedKey={selectedKey}
-          />
-        )}
+        <CSSTransition in={showModal} timeout={300} classNames="modal">
+          <div className="modal">
+            {page === "new" && (
+              <PageSingle
+                isNewItem
+                onSaveNewItem={(key, value) => {
+                  setSelectedKey(key);
+                  setPage("single");
+                }}
+              />
+            )}
+            {page === "single" && (
+              <PageSingle
+                selectedKey={selectedKey}
+              />
+            )}
+          </div>
+        </CSSTransition>
         <Database database={database} />
       </div>
     );

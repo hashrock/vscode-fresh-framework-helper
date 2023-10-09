@@ -75,6 +75,7 @@ html {
   flex-direction: column;
   flex: 1;
   overflow-y: hidden;
+  overflow-x: hidden;
 }
 
 .result__wrapper {
@@ -174,4 +175,22 @@ textarea.single__value {
 }
 .database {
   padding: 0.5rem 0rem;
+}
+
+.modal {
+  display: flex;
+}
+
+.modal-enter {
+  opacity: 0;
+  transform: translateX(50%);
+}
+.modal-enter-active {
+  opacity: 1;
+  flex: 1;
+  transform: translateX(0);
+  transition: opacity 600ms, transform 200ms ease-out;
+}
+.modal-enter-done {
+  flex: 1;
 }
