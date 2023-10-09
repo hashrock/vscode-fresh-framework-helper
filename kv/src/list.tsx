@@ -127,11 +127,14 @@ interface PageListProps {
 function getExampleCode(selectedKey: KvKey) {
   return `const kv = await Deno.openKv();
 
-kv.list({ prefix: ${JSON.stringify(selectedKey)}});
-for await (const entry of entries) {
+const cur = kv.list({ prefix: ${JSON.stringify(selectedKey)}});
+const result = [];
+
+for await (const entry of cur) {
   console.log(entry.key); // ["preferences", "ada"]
   console.log(entry.value); // { ... }
   console.log(entry.versionstamp); // "00000000000000010000"
+  result.push(entry);
 }`;
 }
 
