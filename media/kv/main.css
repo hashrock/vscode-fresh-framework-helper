@@ -106,6 +106,22 @@ html {
   display: inline;
 }
 
+.key--string {
+}
+.key--number {
+  color: #d59bff;
+}
+/* .result__item__key__strict {
+  display: none;
+}
+
+.result__item:hover .result__item__key__strict {
+  display: inline;
+}
+.result__item:hover .result__item__key__simple {
+  display: none;
+} */
+
 .result__item__value {
   margin-left: 0.5rem;
   display: inline;
@@ -164,6 +180,7 @@ textarea.single__value__textarea {
   height: 10rem;
   flex: 1;
   padding: 0.25rem;
+  color: #c2c1ff;
 }
 
 .single__value__wrapper {
@@ -181,6 +198,7 @@ textarea.single__value__textarea {
 .single__key__textarea {
   flex: 1;
   font-size: 110%;
+  color: #e9e4ca;
 }
 
 .value-column {
@@ -194,10 +212,12 @@ textarea.single__value__textarea {
 }
 
 .single__key__textarea:read-only {
+  border: 1px solid #666;
+  border-radius: 4px;
   background-color: transparent;
 }
 .single__key__textarea:focus {
-  background-color: var(--vscode-inputValidation-infoBackground);
+  /* background-color: var(--vscode-inputValidation-infoBackground); */
 }
 
 .database__wrapper {
@@ -236,7 +256,7 @@ textarea.single__value__textarea {
 .single__versionstamp {
   font-family: monospace;
   font-size: 90%;
-  opacity: 0.8;
+  color: #959595;
 }
 
 span.doc {
@@ -245,6 +265,7 @@ span.doc {
 
 span.doc a {
   font-weight: normal;
+  color: #959595;
 }
 
 .nav__menu {

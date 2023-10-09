@@ -78,7 +78,11 @@ function PageListResultItem(props: PageListResultItemProps) {
       }}
     >
       <div className="result__item__key">
-        {item.key.map((i) => JSON.stringify(i)).join(",")}
+        {
+          <span className="result__item__key__strict">
+            {item.key.map((i) => JSON.stringify(i)).join(",")}
+          </span>
+        }
       </div>
       <div className="result__item__value">{JSON.stringify(item.value)}</div>
     </div>
