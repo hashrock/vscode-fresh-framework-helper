@@ -108,6 +108,7 @@ function PageListResult(props: PageListResultProps) {
       )}
       {items.map((item) => (
         <PageListResultItem
+          key={kvKeyToString(item.key)}
           item={item}
           onChangeSelectedKey={(key) => props.onChangeSelectedKey(key)}
         />
@@ -174,9 +175,6 @@ export function PageList(props: PageListProps) {
 
   useEffect(() => {
     window.addEventListener("message", handleMessage);
-
-    appContext.setIsBusy(true);
-    kvList([]);
 
     return () => {
       window.removeEventListener("message", handleMessage);
