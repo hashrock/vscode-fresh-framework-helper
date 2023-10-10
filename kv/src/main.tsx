@@ -23,7 +23,7 @@ export type PageType = "list" | "new" | "single";
 
   function Database(props: DatabaseProps) {
     const { database } = props;
-    let databaseName = "Default database";
+    let databaseName = database || "Default database";
 
     if (database.startsWith("https://api.deno.com/databases/")) {
       databaseName = "Remote database";
@@ -52,7 +52,7 @@ export type PageType = "list" | "new" | "single";
 
     const showModal = page === "new" || page === "single";
 
-    const changeDatabaseResultHandler = useCallback((event: MessageEvent) => {
+    const changeDatabaseResultHandler = (event: MessageEvent) => {
       const message = event.data; // The json data that the extension sent
       switch (message.type) {
         case "changeDatabaseResult": {
@@ -64,13 +64,12 @@ export type PageType = "list" | "new" | "single";
           break;
         }
       }
-    }, []);
+    };
 
     const [isBusy, setIsBusy] = useState<boolean>(false);
     const [menuItems, setMenuItems] = useState<MenuItemProps[]>([]);
     useEffect(() => {
       window.addEventListener("message", changeDatabaseResultHandler);
-      console.log("Sending message to extension");
 
       return () => {
         window.removeEventListener("message", changeDatabaseResultHandler);
