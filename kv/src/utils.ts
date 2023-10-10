@@ -59,7 +59,7 @@ export function kvKeyToString(key: KvKey): string {
 
 export type ValueType = "string" | "json" | "number";
 
-export interface valueCheckResult {
+export interface ValueCheckResult {
   isValid: boolean;
   reason: string;
 }
@@ -67,7 +67,7 @@ export interface valueCheckResult {
 export function isValidValueType(
   value: unknown,
   valueType: ValueType,
-): valueCheckResult {
+): ValueCheckResult {
   if (valueType === "string") {
     return {
       isValid: true,
