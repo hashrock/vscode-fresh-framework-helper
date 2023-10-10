@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <link href="./vscode.css" rel="stylesheet" />
+    <link href="./main.css" rel="stylesheet" />
+
+    <title>Fresh URL Matcher</title>
+  </head>
+  <body>
+    <div id="app"></div>
+
+    <script>
+      const examples = [
+        {
+          key: ["users", 1],
+          value: "test",
+          versionstamp: "00000000000000010000",
+        },
+        {
+          key: ["users", 2],
+          value: "test\n",
+          versionstamp: "00000000000000040000",
+        },
+        {
+          key: ["users", 3],
+          value: { name: "users" },
+          versionstamp: "00000000000000050000",
+        },
+      ];
+
+      const listResult = new MessageEvent("message", {
+        data: {
+          type: "listResult",
+          result: examples,
+        },
+      });
+
+      const getItem = {
+        key: ["users", 1],
+        value: "test",
+        versionstamp: "00000000000000010000",
+      };
+
+      const getResult = new MessageEvent("message", {
+        data: {
+          type: "getResult",
+          result: getItem,
+        },
+      });
+
+      const changeDatabaseResult = new MessageEvent("message", {
+        data: {
+          type: "changeDatabaseResult",
+          result: "foo",
+        },
+      });
+
+      window.acquireVsCodeApi = () => {
+        return {
+          postMessage: (message) => {
+            console.log(message);
+            if (message.type === "list") {
+              window.dispatchEvent(listResult);
+            }
+            if (message.type === "get") {
+              console.log(getResult);
+              window.dispatchEvent(getResult);
+            }
+            if (message.type === "changeDatabase") {
+              window.dispatchEvent(changeDatabaseResult);
+            }
+          },
+        };
+      };
+    </script>
+
+    <script src="./main.js"></script>
+  </body>
+</html>

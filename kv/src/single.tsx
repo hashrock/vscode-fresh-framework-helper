@@ -4,14 +4,7 @@
 import React, { useCallback, useContext, useEffect, useState } from "react";
 import { kvDelete, kvGet, KvKey, kvSet } from "./api";
 import { MenuContext } from "./context";
-import { queryToKvPrefix } from "./utils";
-
-type ValueType = "string" | "json" | "number";
-
-interface valueCheckResult {
-  isValid: boolean;
-  reason: string;
-}
+import { isValidValueType, queryToKvPrefix, ValueType } from "./utils";
 
 interface PageSingleProps {
   selectedKey?: KvKey;
@@ -33,59 +26,9 @@ export function PageSingle(props: PageSingleProps) {
 
   const [message, setMessage] = useState<Message | null>(null);
   const [valueType, setValueType] = useState<ValueType>("string");
+  const valueCheckResult = isValidValueType(value, valueType);
 
-  const isValidValueType = useCallback((value: unknown): valueCheckResult => {
-    if (valueType === "string") {
-      return {
-        isValid: true,
-        reason: "string is always valid",
-      };
-    }
-    if (valueType === "number") {
-      if (value === null || value === undefined) {
-        return {
-          isValid: false,
-          reason: "number cannot be null",
-        };
-      }
-      if (Number.isNaN(parseFloat(value as string))) {
-        return {
-          isValid: false,
-          reason: "invalid number",
-        };
-      }
-      return {
-        isValid: true,
-        reason: "OK",
-      };
-    }
-    if (valueType === "json") {
-      if (value === null) {
-        return {
-          isValid: false,
-          reason: "json cannot be null",
-        };
-      }
-      try {
-        JSON.parse(value as string);
-      } catch (e) {
-        return {
-          isValid: false,
-          reason: "invalid json",
-        };
-      }
-      return {
-        isValid: true,
-        reason: "OK",
-      };
-    }
-    return {
-      isValid: false,
-      reason: "unknown valueType",
-    };
-  }, []);
-
-  const eventHandler = useCallback((event: MessageEvent) => {
+  const eventHandler = (event: MessageEvent) => {
     console.log("eventHandler");
 
     const message = event.data; // The json data that the extension sent
@@ -95,6 +38,22 @@ export function PageSingle(props: PageSingleProps) {
     }
 
     switch (message.type) {
+      case "setResult": {
+        if (message.result === "OK") {
+          setIsNewItem(false);
+          setMessage({
+            message: "The item set successfully : " + new Date(),
+            level: "success",
+          });
+          if (newKey) {
+            kvGet(newKey);
+          }
+          if (selectedKey) {
+            kvGet(selectedKey);
+          }
+        }
+        break;
+      }
       case "getResult": {
         const value = message.result.value;
         let valueType: ValueType = "string";
@@ -121,31 +80,7 @@ export function PageSingle(props: PageSingleProps) {
         break;
       }
     }
-  }, []);
-
-  const eventUpdateHandler = useCallback((event: MessageEvent) => {
-    console.log("eventUpdateHandler");
-
-    const message = event.data; // The json data that the extension sent
-    switch (message.type) {
-      case "setResult": {
-        if (message.result === "OK") {
-          setIsNewItem(false);
-          setMessage({
-            message: "The item set successfully : " + new Date(),
-            level: "success",
-          });
-          if (newKey) {
-            kvGet(newKey);
-          }
-          if (selectedKey) {
-            kvGet(selectedKey);
-          }
-        }
-        break;
-      }
-    }
-  }, [selectedKey]);
+  };
 
   useEffect(() => {
     if (selectedKey) {
@@ -154,12 +89,9 @@ export function PageSingle(props: PageSingleProps) {
   }, [selectedKey]);
 
   useEffect(() => {
-    window.addEventListener("message", eventUpdateHandler);
     window.addEventListener("message", eventHandler);
-
     return () => {
       window.removeEventListener("message", eventHandler);
-      window.removeEventListener("message", eventUpdateHandler);
     };
   }, []);
 
@@ -273,8 +205,8 @@ console.log(res.versionstamp);`;
         </div>
 
         <div className="single__value-checker">
-          {isValidValueType(value).isValid ? "" : (
-            `❌ ${isValidValueType(value).reason}`
+          {valueCheckResult.isValid ? "" : (
+            `❌ ${valueCheckResult.reason}`
           )}
         </div>
       </div>
