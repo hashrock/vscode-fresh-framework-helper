@@ -29,8 +29,6 @@ export function PageSingle(props: PageSingleProps) {
   const valueCheckResult = isValidValueType(value, valueType);
 
   const eventHandler = (event: MessageEvent) => {
-    console.log("eventHandler");
-
     const message = event.data; // The json data that the extension sent
 
     if (!selectedKey) {
@@ -213,13 +211,15 @@ console.log(res.versionstamp);`;
       <button
         className="single__update"
         onClick={() => {
+          const isValidResult = isValidValueType(value, valueType);
+
           if (!newKey) {
             setMessage({ message: "Key is empty", level: "error" });
             return;
           }
-          if (!isValidValueType(value).isValid) {
+          if (!isValidResult.isValid) {
             setMessage({
-              message: isValidValueType(value).reason,
+              message: isValidResult.reason,
               level: "error",
             });
             return;
