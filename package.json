@@ -2,7 +2,7 @@
   "name": "fresh-framework-helper",
   "displayName": "Fresh framework helper",
   "description": "Deno Fresh Framework Snippets & Code generator",
-  "repository": "https://github.com/hashrock/fresh-mini-codegen",
+  "repository": "https://github.com/hashrock/vscode-fresh-framework-helper",
   "license": "MIT",
   "version": "0.0.7",
   "publisher": "hashrock",
