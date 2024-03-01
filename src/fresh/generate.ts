@@ -81,10 +81,10 @@ export default function __FILENAME__(props: PageProps) {
     label: "Handler route",
     body: `// Document https://fresh.deno.dev/docs/concepts/routes#handler-route
 
-import { HandlerContext, Handlers } from "$fresh/server.ts";
+import { FreshContext, Handlers } from "$fresh/server.ts";
 
 export const handler: Handlers = {
-  GET(_req: Request, _ctx: HandlerContext) {
+  GET(_req: Request, _ctx: FreshContext) {
     return new Response("Hello World");
   },
 };`,
@@ -132,8 +132,9 @@ export default function __FILENAME__(props: PageProps<Data>) {
 }`,
   },
   {
-    label: "Async component route",
-    body: `// Document https://fresh.deno.dev/docs/concepts/routes#handler-route
+    label: "Async route component",
+    body:
+      `// Document https://fresh.deno.dev/docs/concepts/routes#async-route-components
 
 import { RouteContext } from "$fresh/server.ts";
   
@@ -247,9 +248,9 @@ async function generateFile(
 export async function generateLayout(uri: vscode.Uri) {
   const body = `// Document https://fresh.deno.dev/docs/concepts/layouts
 
-import { LayoutProps } from "$fresh/server.ts";
+import { PageProps } from "$fresh/server.ts";
 
-export default function Layout({ Component, state }: LayoutProps) {
+export default function Layout({ Component, state }: PageProps) {
   return (
     <div class="layout">
       <Component />
@@ -277,18 +278,16 @@ export function __FILENAME__(props: JSX.HTMLAttributes<HTMLDivElement>) {
 export async function generateIsland(uri: vscode.Uri) {
   const body = `// Document https://fresh.deno.dev/docs/concepts/islands
 
-import type { Signal } from "@preact/signals";
+import { useSignal } from "@preact/signals";
 
-interface __FILENAME__Props {
-  count: Signal<number>;
-}
+export default function __FILENAME__() {
+  const count = useSignal(0);
 
-export default function __FILENAME__(props: __FILENAME__Props) {
   return (
     <div>
-      <button onClick={() => props.count.value -= 1}>-1</button>
-      <p>{props.count}</p>
-      <button onClick={() => props.count.value += 1}>+1</button>
+      <button onClick={() => count.value -= 1}>-1</button>
+      <p>{count}</p>
+      <button onClick={() => count.value += 1}>+1</button>
     </div>
   );
 }`;
